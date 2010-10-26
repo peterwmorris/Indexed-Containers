@@ -1,0 +1,448 @@
+
+We begin by defining \ensuremath{\Conid{Cont}}:
+
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\Keyword{data}\;\Conid{Cont}\;(\Conid{I}\;\mathbin{:}\;\Conid{Set})\;\mathbin{:}\;\Conid{Set1}\;\Keyword{where}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\_\lhd\_\;\mathbin{:}\;(\Conid{S}\;\mathbin{:}\;\Conid{Set})\;\to \;(\Conid{P}\;\mathbin{:}\;\Conid{S}\;\to \;\Conid{I}\;\to \;\Conid{Set})\;\to \;\Conid{Cont}\;\Conid{I}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\Varid{sh}\;\mathbin{:}\;\{\mskip1.5mu \Conid{I}\;\mathbin{:}\;\Conid{Set}\mskip1.5mu\}\;\to \;\Conid{Cont}\;\Conid{I}\;\to \;\Conid{Set}{}\<[E]%
+\\
+\>[B]{}\Varid{sh}\;(\Conid{S}\;\lhd\;\Conid{P})\;\mathrel{=}\;\Conid{S}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\Varid{po}\;\mathbin{:}\;\{\mskip1.5mu \Conid{I}\;\mathbin{:}\;\Conid{Set}\mskip1.5mu\}\;\to \;(\Conid{C}\;\mathbin{:}\;\Conid{Cont}\;\Conid{I})\;\to \;\Varid{sh}\;\Conid{C}\;\to \;\Conid{I}\;\to \;\Conid{Set}{}\<[E]%
+\\
+\>[B]{}\Varid{po}\;(\Conid{S}\;\lhd\;\Conid{P})\;\mathrel{=}\;\Conid{P}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\Conid{ICont}\;\mathbin{:}\;\Conid{Set}\;\to \;\Conid{Set}\;\to \;\Conid{Set1}{}\<[E]%
+\\
+\>[B]{}\Conid{ICont}\;\Conid{I}\;\Conid{O}\;\mathrel{=}\;\Conid{O}\;\to \;\Conid{Cont}\;\Conid{I}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+
+It will be useful to view \ensuremath{\Conid{ICont}}, as \ensuremath{\Conid{O}}-indexed shapes and positions, rather than being an \ensuremath{\Conid{O}}-indexed \ensuremath{\Conid{Cont}}:
+
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\Keyword{data}\;\Conid{ICont*}\;(\Conid{I}\;\Conid{O}\;\mathbin{:}\;\Conid{Set})\;\mathbin{:}\;\Conid{Set1}\;\Keyword{where}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\_\lhd\_\;\mathbin{:}\;(\Conid{S}\;\mathbin{:}\;\Conid{O}\;\to \;\Conid{Set})\;\to \;(\Conid{P}\;\mathbin{:}\;(\Varid{o}\;\mathbin{:}\;\Conid{O})\;\to \;\Conid{S}\;\Varid{o}\;\to \;\Conid{I}\;\to \;\Conid{Set})\;\to \;\Conid{ICont*}\;\Conid{I}\;\Conid{O}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\Varid{ic*}\;\mathbin{:}\;\{\mskip1.5mu \Conid{I}\;\Conid{O}\;\mathbin{:}\;\Conid{Set}\mskip1.5mu\}\;\to \;\Conid{ICont}\;\Conid{I}\;\Conid{O}\;\to \;\Conid{ICont*}\;\Conid{I}\;\Conid{O}{}\<[E]%
+\\
+\>[B]{}\Varid{ic*}\;\Conid{C}\;\mathrel{=}\;(\lambda\;\Varid{o}\;\to \;\Varid{sh}\;(\Conid{C}\;\Varid{o}))\;\lhd\;\lambda\;\Varid{o}\;\to \;\Varid{po}\;(\Conid{C}\;\Varid{o}){}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\Varid{*ic}\;\mathbin{:}\;\{\mskip1.5mu \Conid{I}\;\Conid{O}\;\mathbin{:}\;\Conid{Set}\mskip1.5mu\}\;\to \;\Conid{ICont*}\;\Conid{I}\;\Conid{O}\;\to \;\Conid{ICont}\;\Conid{I}\;\Conid{O}{}\<[E]%
+\\
+\>[B]{}\Varid{*ic}\;(\Conid{S}\;\lhd\;\Conid{P})\;\Varid{o}\;\mathrel{=}\;\Conid{S}\;\Varid{o}\;\lhd\;\Conid{P}\;\Varid{o}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+
+Similarly we define this view which allows us to see a \ensuremath{\Conid{Cont}\;(\Conid{I}\;\Varid{+}\;\Conid{J})} as having 2 sets of positions:
+
+
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{24}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{29}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\Keyword{data}\;\Conid{Cont+}\;(\Conid{I}\;\Conid{J}\;\mathbin{:}\;\Conid{Set})\;\mathbin{:}\;\Conid{Set1}\;\Keyword{where}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\_\lhd\_,\anonymous \;\mathbin{:}\;(\Conid{S}\;\mathbin{:}\;\Conid{Set})\;\to \;(\Conid{P}\;\mathbin{:}\;\Conid{S}\;\to \;\Conid{I}\;\to \;\Conid{Set})\;\to \;{}\<[E]%
+\\
+\>[3]{}\hsindent{21}{}\<[24]%
+\>[24]{}(\Conid{Q}\;\mathbin{:}\;\Conid{S}\;\to \;\Conid{J}\;\to \;\Conid{Set})\;\to \;\Conid{Cont+}\;\Conid{I}\;\Conid{J}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\Varid{sh}\;\mathbin{:}\;\{\mskip1.5mu \Conid{I}\;\Conid{J}\;\mathbin{:}\;\Conid{Set}\mskip1.5mu\}\;\to \;\Conid{Cont+}\;\Conid{I}\;\Conid{J}\;\to \;\Conid{Set}{}\<[E]%
+\\
+\>[B]{}\Varid{sh}\;(\Conid{S}\;\lhd\;\Conid{P},\Conid{Q})\;\mathrel{=}\;\Conid{S}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\Varid{po}^I\;\mathbin{:}\;\{\mskip1.5mu \Conid{I}\;\Conid{J}\;\mathbin{:}\;\Conid{Set}\mskip1.5mu\}\;\to \;(\Conid{C}\;\mathbin{:}\;\Conid{Cont+}\;\Conid{I}\;\Conid{J})\;\to \;(\Varid{sh}\;\Conid{C})\;\to \;\Conid{I}\;\to \;\Conid{Set}{}\<[E]%
+\\
+\>[B]{}\Varid{po}^I\;(\Conid{S}\;\lhd\;\Conid{P},\Conid{Q})\;\mathrel{=}\;\Conid{P}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\Varid{po}^J\;\mathbin{:}\;\{\mskip1.5mu \Conid{I}\;\Conid{J}\;\mathbin{:}\;\Conid{Set}\mskip1.5mu\}\;\to \;(\Conid{C}\;\mathbin{:}\;\Conid{Cont+}\;\Conid{I}\;\Conid{J})\;\to \;(\Varid{sh}\;\Conid{C})\;\to \;\Conid{J}\;\to \;\Conid{Set}{}\<[E]%
+\\
+\>[B]{}\Varid{po}^J\;(\Conid{S}\;\lhd\;\Conid{P},\Conid{Q})\;\mathrel{=}\;\Conid{Q}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\Varid{c+}\;\mathbin{:}\;\{\mskip1.5mu \Conid{I}\;\Conid{J}\;\mathbin{:}\;\Conid{Set}\mskip1.5mu\}\;\to \;\Conid{Cont}\;(\Conid{I}\;\Varid{+}\;\Conid{J})\;\to \;\Conid{Cont+}\;\Conid{I}\;\Conid{J}{}\<[E]%
+\\
+\>[B]{}\Varid{c+}\;(\Conid{S}\;\lhd\;\Conid{P})\;\mathrel{=}\;\Conid{S}\;\lhd\;(\lambda\;\Varid{s}\;\Varid{i}\;\to \;\Conid{P}\;\Varid{s}\;(\Varid{inl}\;\Varid{i})),(\lambda\;\Varid{s}\;\Varid{j}\;\to \;\Conid{P}\;\Varid{s}\;(\Varid{inr}\;\Varid{j})){}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\Conid{ICont+}\;\mathbin{:}\;\Conid{Set}\;\to \;\Conid{Set}\;\to \;\Conid{Set}\;\to \;\Conid{Set1}{}\<[E]%
+\\
+\>[B]{}\Conid{ICont+}\;\Conid{I}\;\Conid{J}\;\Conid{O}\;\mathrel{=}\;\Conid{O}\;\to \;\Conid{Cont+}\;\Conid{I}\;\Conid{J}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\Keyword{data}\;\Conid{ICont+*}\;(\Conid{I}\;\Conid{J}\;\Conid{O}\;\mathbin{:}\;\Conid{Set})\;\mathbin{:}\;\Conid{Set1}\;\Keyword{where}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\_\lhd\_,\anonymous \;\mathbin{:}\;(\Conid{S}\;\mathbin{:}\;\Conid{O}\;\to \;\Conid{Set})\;\to \;(\Conid{P}\;\mathbin{:}\;(\Varid{o}\;\mathbin{:}\;\Conid{O})\;\to \;\Conid{S}\;\Varid{o}\;\to \;\Conid{I}\;\to \;\Conid{Set})\;\to \;{}\<[E]%
+\\
+\>[3]{}\hsindent{26}{}\<[29]%
+\>[29]{}(\Conid{Q}\;\mathbin{:}\;(\Varid{o}\;\mathbin{:}\;\Conid{O})\;\to \;\Conid{S}\;\Varid{o}\;\to \;\Conid{J}\;\to \;\Conid{Set})\;\to \;\Conid{ICont+*}\;\Conid{I}\;\Conid{J}\;\Conid{O}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\Varid{ic+*}\;\mathbin{:}\;\{\mskip1.5mu \Conid{I}\;\Conid{J}\;\Conid{O}\;\mathbin{:}\;\Conid{Set}\mskip1.5mu\}\;\to \;\Conid{ICont+}\;\Conid{I}\;\Conid{J}\;\Conid{O}\;\to \;\Conid{ICont+*}\;\Conid{I}\;\Conid{J}\;\Conid{O}{}\<[E]%
+\\
+\>[B]{}\Varid{ic+*}\;\Conid{C}\;\mathrel{=}\;(\Varid{\char92 o}\;\to \;\Varid{sh}\;(\Conid{C}\;\Varid{o}))\;\lhd\;(\lambda\;\Varid{o}\;\to \;\Varid{po}^I\;(\Conid{C}\;\Varid{o})),\lambda\;\Varid{o}\;\to \;\Varid{po}^J\;(\Conid{C}\;\Varid{o}){}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+
+\pagebreak
+
+Morphisms in \ensuremath{\Conid{Cont}\;\Conid{I}}:
+
+
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{8}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{10}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\Keyword{data}\;\_\Rightarrow\_\;\{\mskip1.5mu \Conid{I}\;\mathbin{:}\;\Conid{Set}\mskip1.5mu\}\;(\Conid{C}\;\Conid{D}\;\mathbin{:}\;\Conid{Cont}\;\Conid{I})\;\mathbin{:}\;\Conid{Set}\;\Keyword{where}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\_\lhd\_\;\mathbin{:}\;{}\<[10]%
+\>[10]{}(\Varid{f}\;\mathbin{:}\;\Varid{sh}\;\Conid{C}\;\to \;\Varid{sh}\;\Conid{D})\;\to \;{}\<[E]%
+\\
+\>[10]{}(\Varid{r}\;\mathbin{:}\;(\Varid{s}\;\mathbin{:}\;\Varid{sh}\;\Conid{C})\;\to \;(\Varid{i}\;\mathbin{:}\;\Conid{I})\;\to \;\Varid{po}\;\Conid{D}\;(\Varid{f}\;\Varid{s})\;\Varid{i}\;\to \;\Varid{po}\;\Conid{C}\;\Varid{s}\;\Varid{i})\;\to \;\Conid{C}\;\Rightarrow\;\Conid{D}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\Varid{shf}\;\mathbin{:}\;\{\mskip1.5mu \Conid{I}\;\mathbin{:}\;\Conid{Set}\mskip1.5mu\}\;\to \;\{\mskip1.5mu \Conid{C}\;\Conid{D}\;\mathbin{:}\;\Conid{Cont}\;\Conid{I}\mskip1.5mu\}\;\to \;\Conid{C}\;\Rightarrow\;\Conid{D}\;\to \;\Varid{sh}\;\Conid{C}\;\to \;\Varid{sh}\;\Conid{D}{}\<[E]%
+\\
+\>[B]{}\Varid{shf}\;(\Varid{f}\;\lhd\;\Varid{r})\;\mathrel{=}\;\Varid{f}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\Varid{pof}\;\mathbin{:}\;{}\<[8]%
+\>[8]{}\{\mskip1.5mu \Conid{I}\;\mathbin{:}\;\Conid{Set}\mskip1.5mu\}\;\to \;\{\mskip1.5mu \Conid{C}\;\Conid{D}\;\mathbin{:}\;\Conid{Cont}\;\Conid{I}\mskip1.5mu\}\;\to \;(\Varid{m}\;\mathbin{:}\;\Conid{C}\;\Rightarrow\;\Conid{D})\;\to \;(\Varid{s}\;\mathbin{:}\;\Varid{sh}\;\Conid{C})\;\to \;(\Varid{i}\;\mathbin{:}\;\Conid{I})\;\to \;{}\<[E]%
+\\
+\>[8]{}(\Varid{po}\;\Conid{D})\;(\Varid{shf}\;\Varid{m}\;\Varid{s})\;\Varid{i}\;\to \;(\Varid{po}\;\Conid{C})\;\Varid{s}\;\Varid{i}{}\<[E]%
+\\
+\>[B]{}\Varid{pof}\;(\Varid{f}\;\lhd\;\Varid{r})\;\mathrel{=}\;\Varid{r}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\_\cdot\_\;\mathbin{:}\;\{\mskip1.5mu \Conid{I}\;\mathbin{:}\;\Conid{Set}\mskip1.5mu\}\;\{\mskip1.5mu \Conid{C}\;\Conid{D}\;\Conid{E}\;\mathbin{:}\;\Conid{Cont}\;\Conid{I}\mskip1.5mu\}\;\to \;(\Varid{f}\;\mathbin{:}\;\Conid{D}\;\Rightarrow\;\Conid{E})\;\to \;(\Varid{g}\;\mathbin{:}\;\Conid{C}\;\Rightarrow\;\Conid{D})\;\to \;\Conid{C}\;\Rightarrow\;\Conid{E}{}\<[E]%
+\\
+\>[B]{}(\Varid{a}\;\lhd\;\Varid{c})\;\cdot\;(\Varid{b}\;\lhd\;\Varid{d})\;\mathrel{=}\;(\lambda\;\Varid{s}\;\to \;\Varid{a}\;(\Varid{b}\;\Varid{s}))\;\lhd\;\lambda\;\Varid{s}\;\Varid{i}\;\Varid{r}\;\to \;\Varid{d}\;\Varid{s}\;\Varid{i}\;(\Varid{c}\;(\Varid{b}\;\Varid{s})\;\Varid{i}\;\Varid{r}){}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+
+Morphisms in \ensuremath{\Conid{ICont}\;\Conid{I}\;\Conid{J}}:
+
+
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{6}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{7}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{10}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{16}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{23}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\Keyword{data}\;\_\Rightarrow^*\_\;\{\mskip1.5mu \Conid{I}\;\Conid{J}\;\mathbin{:}\;\Conid{Set}\mskip1.5mu\}\;(\Conid{C}\;\Conid{D}\;\mathbin{:}\;\Conid{ICont}\;\Conid{I}\;\Conid{J})\;\mathbin{:}\;\Conid{Set}\;\Keyword{where}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\_\lhd\_\;\mathbin{:}\;{}\<[10]%
+\>[10]{}(\Varid{f}\;\mathbin{:}\;(\Varid{j}\;\mathbin{:}\;\Conid{J})\;\to \;\Varid{sh}\;(\Conid{C}\;\Varid{j})\;\to \;\Varid{sh}\;(\Conid{D}\;\Varid{j}))\;\to \;{}\<[E]%
+\\
+\>[10]{}(\Varid{r}\;\mathbin{:}\;{}\<[16]%
+\>[16]{}(\Varid{j}\;\mathbin{:}\;\Conid{J})\;(\Varid{s}\;\mathbin{:}\;\Varid{sh}\;(\Conid{C}\;\Varid{j}))\;\to \;{}\<[E]%
+\\
+\>[16]{}(\Varid{i}\;\mathbin{:}\;\Conid{I})\;\to \;\Varid{po}\;(\Conid{D}\;\Varid{j})\;(\Varid{f}\;\Varid{j}\;\Varid{s})\;\Varid{i}\;\to \;\Varid{po}\;(\Conid{C}\;\Varid{j})\;\Varid{s}\;\Varid{i})\;\to \;{}\<[E]%
+\\
+\>[10]{}\Conid{C}\;\Rightarrow^*\;\Conid{D}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\Varid{m*}\;\mathbin{:}\;\{\mskip1.5mu \Conid{I}\;\Conid{J}\;\mathbin{:}\;\Conid{Set}\mskip1.5mu\}\;\to \;\{\mskip1.5mu \Conid{C}\;\Conid{D}\;\mathbin{:}\;\Conid{ICont}\;\Conid{I}\;\Conid{J}\mskip1.5mu\}\;\to \;{}\<[E]%
+\\
+\>[B]{}\hsindent{6}{}\<[6]%
+\>[6]{}((\Varid{j}\;\mathbin{:}\;\Conid{J})\;\to \;\Conid{C}\;\Varid{j}\;\Rightarrow\;\Conid{D}\;\Varid{j})\;\to \;\Conid{C}\;\Rightarrow^*\;\Conid{D}{}\<[E]%
+\\
+\>[B]{}\Varid{m*}\;\{\mskip1.5mu \anonymous \mskip1.5mu\}\;\{\mskip1.5mu \anonymous \mskip1.5mu\}\;\{\mskip1.5mu \Conid{C}\mskip1.5mu\}\;\{\mskip1.5mu \Conid{D}\mskip1.5mu\}\;\Varid{m}\;{}\<[23]%
+\>[23]{}\Keyword{with}\;\Varid{ic*}\;\Conid{C}\;\mid \;\Varid{ic*}\;\Conid{D}{}\<[E]%
+\\
+\>[B]{}\Varid{m*}\;\{\mskip1.5mu \anonymous \mskip1.5mu\}\;\{\mskip1.5mu \anonymous \mskip1.5mu\}\;\{\mskip1.5mu \Conid{C}\mskip1.5mu\}\;\{\mskip1.5mu \Conid{D}\mskip1.5mu\}\;\Varid{m}\;\mid \;(\Conid{S}\;\lhd\;\Conid{P})\;\mid \;(\Conid{T}\;\lhd\;\Conid{Q})\;\mathrel{=}\;(\lambda\;\Varid{j}\;\to \;\Varid{shf}\;(\Varid{m}\;\Varid{j}))\;\lhd\;\lambda\;\Varid{j}\;\to \;\Varid{pof}\;(\Varid{m}\;\Varid{j}){}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\Varid{*m}\;\mathbin{:}\;{}\<[7]%
+\>[7]{}\{\mskip1.5mu \Conid{I}\;\Conid{J}\;\mathbin{:}\;\Conid{Set}\mskip1.5mu\}\;\to \;\{\mskip1.5mu \Conid{C}\;\Conid{D}\;\mathbin{:}\;\Conid{ICont}\;\Conid{I}\;\Conid{J}\mskip1.5mu\}\;\to \;{}\<[E]%
+\\
+\>[7]{}(\Conid{C}\;\Rightarrow^*\;\Conid{D})\;\to \;((\Varid{j}\;\mathbin{:}\;\Conid{J})\;\to \;\Conid{C}\;\Varid{j}\;\Rightarrow\;\Conid{D}\;\Varid{j}){}\<[E]%
+\\
+\>[B]{}\Varid{*m}\;\{\mskip1.5mu \anonymous \mskip1.5mu\}\;\{\mskip1.5mu \anonymous \mskip1.5mu\}\;\{\mskip1.5mu \Conid{C}\mskip1.5mu\}\;\{\mskip1.5mu \Conid{D}\mskip1.5mu\}\;(\Varid{f}\;\lhd\;\Varid{r})\;\mathrel{=}\;(\lambda\;\Varid{j}\;\to \;\Varid{f}\;\Varid{j}\;\lhd\;\Varid{r}\;\Varid{j}){}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+
+Give rise to functors, we do not prove the laws here, because we do not need them:
+
+
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{8}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\Varid{left\char95 right}\;\mathbin{:}\;\{\mskip1.5mu \Conid{I}\;\mathbin{:}\;\Conid{Set}\mskip1.5mu\}\;\to \;\Conid{Cont}\;\Conid{I}\;\to \;(\Conid{I}\;\to \;\Conid{Set})\;\to \;\Conid{Set}{}\<[E]%
+\\
+\>[B]{}\Varid{left\char95 right}\;\{\mskip1.5mu \Conid{I}\mskip1.5mu\}\;\Conid{C}\;\Conid{T}\;\mathrel{=}\;\Sigma\;(\Varid{sh}\;\Conid{C})\;(\lambda\;\Varid{s}\;\to \;(\Varid{i}\;\mathbin{:}\;\Conid{I})\;\to \;\Varid{po}\;\Conid{C}\;\Varid{s}\;\Varid{i}\;\to \;\Conid{T}\;\Varid{i}){}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\Varid{\char95 \$\char95 }\;\mathbin{:}\;{}\<[8]%
+\>[8]{}\{\mskip1.5mu \Conid{I}\;\mathbin{:}\;\Conid{Set}\mskip1.5mu\}\;\to \;\{\mskip1.5mu \Conid{C}\;\Conid{D}\;\mathbin{:}\;\Conid{Cont}\;\Conid{I}\mskip1.5mu\}\;\to \;(\Varid{m}\;\mathbin{:}\;\Conid{C}\;\Rightarrow\;\Conid{D})\;\to \;\{\mskip1.5mu \Conid{X}\;\mathbin{:}\;\Conid{I}\;\to \;\Conid{Set}\mskip1.5mu\}\;\to \;{}\<[E]%
+\\
+\>[8]{}\llbracket\;\Conid{C}\;\rrbracket\;\Conid{X}\;\to \;\llbracket\;\Conid{D}\;\rrbracket\;\Conid{X}{}\<[E]%
+\\
+\>[B]{}\Varid{\char95 \$\char95 }\;\{\mskip1.5mu \anonymous \mskip1.5mu\}\;(\Varid{a}\;\lhd\;\Varid{b})\;(\Varid{s},\Varid{f})\;\mathrel{=}\;\Varid{a}\;\Varid{s},\lambda\;\Varid{i}\;\Varid{q}\;\to \;\Varid{f}\;\Varid{i}\;(\Varid{b}\;\Varid{s}\;\Varid{i}\;\Varid{q}){}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+
+Before we define the least fixed point we define partial application. We begin by defining the functor \ensuremath{\Conid{U}}:
+
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{9}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\Conid{U}\;\mathbin{:}\;\{\mskip1.5mu \Conid{I}\;\Conid{J}\;\mathbin{:}\;\Conid{Set}\mskip1.5mu\}\;\to \;\Conid{Cont}\;(\Conid{I}\;\Varid{+}\;\Conid{J})\;\to \;(\Conid{J}\;\to \;\Conid{Set})\;\to \;\Conid{Set}{}\<[E]%
+\\
+\>[B]{}\Conid{U}\;\Conid{C}\;\Conid{T}\;\mathrel{=}\;\llbracket\;(\Varid{sh}\;\Conid{C})\;\lhd\;(\lambda\;\Varid{s}\;\Varid{j}\;\to \;\Varid{po}\;\Conid{C}\;\Varid{s}\;(\Varid{inr}\;\Varid{j}))\;\rrbracket\;\Conid{T}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\Varid{mapU}\;\mathbin{:}\;{}\<[9]%
+\>[9]{}\{\mskip1.5mu \Conid{I}\;\Conid{J}\;\mathbin{:}\;\Conid{Set}\mskip1.5mu\}\;\to \;(\Conid{C}\;\mathbin{:}\;\Conid{Cont}\;(\Conid{I}\;\Varid{+}\;\Conid{J}))\;\to \;\{\mskip1.5mu \Conid{T}\;\Conid{T'}\;\mathbin{:}\;\Conid{J}\;\to \;\Conid{Set}\mskip1.5mu\}\;\to \;{}\<[E]%
+\\
+\>[9]{}(\Varid{f}\;\mathbin{:}\;(\Varid{j}\;\mathbin{:}\;\Conid{J})\;\to \;\Conid{T}\;\Varid{j}\;\to \;\Conid{T'}\;\Varid{j})\;\to \;\Conid{U}\;\Conid{C}\;\Conid{T}\;\to \;\Conid{U}\;\Conid{C}\;\Conid{T'}{}\<[E]%
+\\
+\>[B]{}\Varid{mapU}\;\Conid{C}\;\Varid{f}\;(\Varid{s},\Varid{g})\;\mathrel{=}\;\Varid{s},\lambda\;\Varid{j}\;\Varid{p}\;\to \;\Varid{f}\;\Varid{j}\;(\Varid{g}\;\Varid{j}\;\Varid{p}){}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+
+\pagebreak
+
+And the indexed functor \ensuremath{\Conid{R}}:
+
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{6}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{9}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{41}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\Conid{R}\;\mathbin{:}\;{}\<[6]%
+\>[6]{}\{\mskip1.5mu \Conid{I}\;\Conid{J}\;\mathbin{:}\;\Conid{Set}\mskip1.5mu\}\;\to \;(\Conid{C}\;\mathbin{:}\;\Conid{Cont}\;(\Conid{I}\;\Varid{+}\;\Conid{J}))\;\to \;\{\mskip1.5mu \Conid{T}\;\mathbin{:}\;\Conid{J}\;\to \;\Conid{Set}\mskip1.5mu\}\;\to \;{}\<[E]%
+\\
+\>[6]{}(\Conid{Q}\;\mathbin{:}\;(\Varid{j}\;\mathbin{:}\;\Conid{J})\;\to \;\Conid{T}\;\Varid{j}\;\to \;\Conid{I}\;\to \;\Conid{Set})\;\to \;\Conid{U}\;\Conid{C}\;\Conid{T}\;\to \;\Conid{I}\;\to \;\Conid{Set}{}\<[E]%
+\\
+\>[B]{}\Conid{R}\;\{\mskip1.5mu \anonymous \mskip1.5mu\}\;\{\mskip1.5mu \Conid{J}\mskip1.5mu\}\;\Conid{C}\;\Conid{Q}\;(\Varid{s},\Varid{f})\;\Varid{i}\;\mathrel{=}\;{}\<[E]%
+\\
+\>[B]{}\hsindent{6}{}\<[6]%
+\>[6]{}\Varid{po}\;\Conid{C}\;\Varid{s}\;(\Varid{inl}\;\Varid{i})\;{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\Varid{+}\;{}\<[6]%
+\>[6]{}\Sigma\;\Conid{J}\;(\lambda\;\Varid{j}\;\to \;\Sigma\;(\Varid{po}\;\Conid{C}\;\Varid{s}\;(\Varid{inr}\;\Varid{j}))\;(\lambda\;\Varid{p}\;\to \;\Conid{Q}\;\Varid{j}\;(\Varid{f}\;\Varid{j}\;\Varid{p})\;\Varid{i})){}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\Varid{mapR}\;\mathbin{:}\;{}\<[9]%
+\>[9]{}\{\mskip1.5mu \Conid{I}\;\Conid{J}\;\mathbin{:}\;\Conid{Set}\mskip1.5mu\}\;\to \;(\Conid{C}\;\mathbin{:}\;\Conid{Cont}\;(\Conid{I}\;\Varid{+}\;\Conid{J}))\;\to \;\{\mskip1.5mu \Conid{T}\;\mathbin{:}\;\Conid{J}\;\to \;\Conid{Set}\mskip1.5mu\}\;\to \;{}\<[E]%
+\\
+\>[9]{}\{\mskip1.5mu \Conid{Q}\;\Conid{Q'}\;\mathbin{:}\;(\Varid{j}\;\mathbin{:}\;\Conid{J})\;\to \;\Conid{T}\;\Varid{j}\;\to \;\Conid{I}\;\to \;\Conid{Set}\mskip1.5mu\}\;{}\<[E]%
+\\
+\>[9]{}(\Varid{f}\;\mathbin{:}\;(\Varid{j}\;\mathbin{:}\;\Conid{J})\;(\Varid{t}\;\mathbin{:}\;\Conid{T}\;\Varid{j})\;(\Varid{i}\;\mathbin{:}\;\Conid{I})\;\to \;\Conid{Q}\;\Varid{j}\;\Varid{t}\;\Varid{i}\;\to \;\Conid{Q'}\;\Varid{j}\;\Varid{t}\;\Varid{i})\;\to \;{}\<[E]%
+\\
+\>[9]{}(\Varid{u}\;\mathbin{:}\;\Conid{U}\;\Conid{C}\;\Conid{T})\;(\Varid{i}\;\mathbin{:}\;\Conid{I})\;\to \;\Conid{R}\;\Conid{C}\;\Conid{Q}\;\Varid{u}\;\Varid{i}\;\to \;\Conid{R}\;\Conid{C}\;\Conid{Q'}\;\Varid{u}\;\Varid{i}{}\<[E]%
+\\
+\>[B]{}\Varid{mapR}\;\Conid{C}\;\Varid{f}\;(\Varid{s},\Varid{g})\;\Varid{i}\;(\Varid{inl}\;\Varid{p})\;{}\<[41]%
+\>[41]{}\mathrel{=}\;\Varid{inl}\;\Varid{p}{}\<[E]%
+\\
+\>[B]{}\Varid{mapR}\;\Conid{C}\;\Varid{f}\;(\Varid{s},\Varid{g})\;\Varid{i}\;(\Varid{inr}\;(\Varid{j},(\Varid{p},\Varid{q})))\;{}\<[41]%
+\>[41]{}\mathrel{=}\;\Varid{inr}\;(\Varid{j},(\Varid{p},\Varid{f}\;\Varid{j}\;(\Varid{g}\;\Varid{j}\;\Varid{p})\;\Varid{i}\;\Varid{q})){}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+
+Again, we do not need to prove the functor laws for \ensuremath{\Conid{U}} and \ensuremath{\Conid{R}} but it would be possible in an extensional style.
+
+We will need this relationship between \ensuremath{\Conid{U}} and \ensuremath{\Conid{R}}:
+
+
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{8}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\phi\;\mathbin{:}\;{}\<[8]%
+\>[8]{}\{\mskip1.5mu \Conid{I}\;\Conid{J}\;\mathbin{:}\;\Conid{Set}\mskip1.5mu\}\;(\Conid{C}\;\mathbin{:}\;\Conid{Cont}\;(\Conid{I}\;\Varid{+}\;\Conid{J}))\;\{\mskip1.5mu \Conid{T}\;\Conid{T'}\;\mathbin{:}\;\Conid{J}\;\to \;\Conid{Set}\mskip1.5mu\}\;{}\<[E]%
+\\
+\>[8]{}(\Varid{f}\;\mathbin{:}\;(\Varid{j}\;\mathbin{:}\;\Conid{J})\;\to \;\Conid{T}\;\Varid{j}\;\to \;\Conid{T'}\;\Varid{j})\;{}\<[E]%
+\\
+\>[8]{}(\Conid{Q'}\;\mathbin{:}\;(\Varid{j}\;\mathbin{:}\;\Conid{J})\;\to \;\Conid{T'}\;\Varid{j}\;\to \;\Conid{I}\;\to \;\Conid{Set})\;(\Varid{u}\;\mathbin{:}\;\Conid{U}\;\Conid{C}\;\Conid{T})\;(\Varid{i}\;\mathbin{:}\;\Conid{I})\;\to \;{}\<[E]%
+\\
+\>[8]{}\Conid{R}\;\Conid{C}\;\Conid{Q'}\;(\Varid{mapU}\;\Conid{C}\;\Varid{f}\;\Varid{u})\;\Varid{i}\;\to \;\Conid{R}\;\Conid{C}\;(\lambda\;\Varid{j'}\;\Varid{t}\;\Varid{i'}\;\to \;\Conid{Q'}\;\Varid{j'}\;(\Varid{f}\;\Varid{j'}\;\Varid{t})\;\Varid{i'})\;\Varid{u}\;\Varid{i}{}\<[E]%
+\\
+\>[B]{}\phi\;\Conid{C}\;\Varid{f}\;\Conid{Q'}\;(\Varid{a},\Varid{b})\;\Varid{i}\;\Varid{x}\;\mathrel{=}\;\Varid{x}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+
+We now define the partial application of a \ensuremath{\Conid{Cont}\;(\Conid{I}\;\Varid{+}\;\Conid{J})} to an \ensuremath{\Conid{ICont}\;\Conid{I}\;\Conid{J}}, which gives rise to a functor:
+
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{10}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{21}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\anonymous \;[\mskip1.5mu \anonymous \mskip1.5mu]\;\mathbin{:}\;\{\mskip1.5mu \Conid{I}\;\Conid{J}\;\mathbin{:}\;\Conid{Set}\mskip1.5mu\}\;\to \;(\Conid{C}\;\mathbin{:}\;\Conid{Cont}\;(\Conid{I}\;\Varid{+}\;\Conid{J}))\;\to \;(\Conid{D}\;\mathbin{:}\;\Conid{ICont}\;\Conid{I}\;\Conid{J})\;\to \;\Conid{Cont}\;\Conid{I}{}\<[E]%
+\\
+\>[B]{}\Conid{C}\;[\mskip1.5mu \Conid{D}\mskip1.5mu]\;{}\<[10]%
+\>[10]{}\Keyword{with}\;\Varid{ic*}\;\Conid{D}{}\<[E]%
+\\
+\>[B]{}\Conid{C}\;[\mskip1.5mu \Conid{D}\mskip1.5mu]\;{}\<[10]%
+\>[10]{}\mid \;(\Conid{T}\;\lhd\;\Conid{Q})\;\mathrel{=}\;\Conid{U}\;\Conid{C}\;\Conid{T}\;\lhd\;\Conid{R}\;\Conid{C}\;\Conid{Q}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\Varid{map}\;[\mskip1.5mu \mskip1.5mu]\;\mathbin{:}\;{}\<[10]%
+\>[10]{}\{\mskip1.5mu \Conid{I}\;\Conid{J}\;\mathbin{:}\;\Conid{Set}\mskip1.5mu\}\;(\Conid{C}\;\mathbin{:}\;\Conid{Cont}\;(\Conid{I}\;\Varid{+}\;\Conid{J}))\;\to \;\{\mskip1.5mu \Conid{D}\;\Conid{D'}\;\mathbin{:}\;\Conid{ICont}\;\Conid{I}\;\Conid{J}\mskip1.5mu\}\;\to \;{}\<[E]%
+\\
+\>[10]{}((\Varid{j}\;\mathbin{:}\;\Conid{J})\;\to \;\Conid{D}\;\Varid{j}\;\Rightarrow\;\Conid{D'}\;\Varid{j})\;\to \;\Conid{C}\;[\mskip1.5mu \Conid{D}\mskip1.5mu]\;\Rightarrow\;\Conid{C}\;[\mskip1.5mu \Conid{D'}\mskip1.5mu]{}\<[E]%
+\\
+\>[B]{}\Varid{map}\;[\mskip1.5mu \mskip1.5mu]\;\Conid{C}\;\{\mskip1.5mu \Conid{D}\mskip1.5mu\}\;\{\mskip1.5mu \Conid{D'}\mskip1.5mu\}\;\Varid{m}\;{}\<[21]%
+\>[21]{}\Keyword{with}\;\Varid{m*}\;\Varid{m}{}\<[E]%
+\\
+\>[B]{}\Varid{map}\;[\mskip1.5mu \mskip1.5mu]\;\Conid{C}\;\{\mskip1.5mu \Conid{D}\mskip1.5mu\}\;\{\mskip1.5mu \Conid{D'}\mskip1.5mu\}\;\Varid{m}\;{}\<[21]%
+\>[21]{}\mid \;(\Varid{f}\;\lhd\;\Varid{r})\;\mathrel{=}\;{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\Varid{mapU}\;\Conid{C}\;\Varid{f}\;\lhd\;\lambda\;\Varid{u}\;\Varid{i}\;\Varid{x}\;\to \;\Varid{mapR}\;\Conid{C}\;\Varid{r}\;\Varid{u}\;\Varid{i}\;(\phi\;\Conid{C}\;\Varid{f}\;(\lambda\;\Varid{j}\;\to \;\Varid{po}\;(\Conid{D'}\;\Varid{j}))\;\Varid{u}\;\Varid{i}\;\Varid{x}){}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+  
+We can begin the construction of the least fixed point. The shapes inductive containers will be given by \ensuremath{\Conid{W}}-Types, here the constructor \ensuremath{\Varid{sup}} takes advantage of the functor \ensuremath{\Conid{U}}:
+
+
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{10}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\Keyword{data}\;\Conid{W}\;\{\mskip1.5mu \Conid{I}\;\Conid{J}\;\mathbin{:}\;\Conid{Set}\mskip1.5mu\}\;(\Conid{C}\;\mathbin{:}\;\Conid{ICont}\;(\Conid{I}\;\Varid{+}\;\Conid{J})\;\Conid{J})\;(\Varid{j}\;\mathbin{:}\;\Conid{J})\;\mathbin{:}\;\Conid{Set}\;\Keyword{where}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\Varid{sup}\;\mathbin{:}\;\Conid{U}\;(\Conid{C}\;\Varid{j})\;(\Conid{W}\;\Conid{C})\;\to \;\Conid{W}\;\Conid{C}\;\Varid{j}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\Varid{foldW}\;\mathbin{:}\;{}\<[10]%
+\>[10]{}\{\mskip1.5mu \Conid{I}\;\Conid{J}\;\mathbin{:}\;\Conid{Set}\mskip1.5mu\}\;(\Conid{C}\;\mathbin{:}\;\Conid{ICont}\;(\Conid{I}\;\Varid{+}\;\Conid{J})\;\Conid{J})\;(\Conid{D}\;\mathbin{:}\;\Conid{J}\;\to \;\Conid{Set})\;\to \;{}\<[E]%
+\\
+\>[10]{}((\Varid{j}\;\mathbin{:}\;\Conid{J})\;\to \;\Conid{U}\;(\Conid{C}\;\Varid{j})\;\Conid{D}\;\to \;\Conid{D}\;\Varid{j})\;\to \;(\Varid{j}\;\mathbin{:}\;\Conid{J})\;\to \;\Conid{W}\;\Conid{C}\;\Varid{j}\;\to \;\Conid{D}\;\Varid{j}{}\<[E]%
+\\
+\>[B]{}\Varid{foldW}\;\Conid{C}\;\Conid{D}\;\Varid{m}\;\Varid{j}\;(\Varid{sup}\;\Varid{u})\;\mathrel{=}\;\Varid{m}\;\Varid{j}\;(\Varid{mapU}\;(\Conid{C}\;\Varid{j})\;(\Varid{foldW}\;\Conid{C}\;\Conid{D}\;\Varid{m})\;\Varid{u}){}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+
+Note that \ensuremath{\Conid{U}^{\mu}} from the paper is simply defined as \ensuremath{\Conid{W}}.
+
+The postions will then be given by paths through such a tree, again we take advatage of the functor \ensuremath{\Conid{R}}.
+
+
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\Conid{R}^{\mu}\;\mathbin{:}\;\{\mskip1.5mu \Conid{I}\;\Conid{J}\;\mathbin{:}\;\Conid{Set}\mskip1.5mu\}\;\to \;(\Conid{C}\;\mathbin{:}\;\Conid{ICont}\;(\Conid{I}\;\Varid{+}\;\Conid{J})\;\Conid{J})\;\to \;(\Varid{j}\;\mathbin{:}\;\Conid{J})\;\to \;\Conid{W}\;\Conid{C}\;\Varid{j}\;\to \;\Conid{I}\;\to \;\Conid{Set}{}\<[E]%
+\\
+\>[B]{}\Conid{R}^{\mu}\;\Conid{C}\;\Varid{j}\;(\Varid{sup}\;\Varid{u})\;\Varid{i}\;\mathrel{=}\;\Conid{R}\;(\Conid{C}\;\Varid{j})\;(\Conid{R}^{\mu}\;\Conid{C})\;\Varid{u}\;\Varid{i}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+
+Note that this definition is not structurally recursive, it is however terminating on the size of the \ensuremath{\Conid{W}}-type.
+
+The fixed point of an \ensuremath{\Conid{ICont}\;(\Conid{I}\;\Varid{+}\;\Conid{J})\;\Conid{J}} is an \ensuremath{\Conid{ICont}\;\Conid{I}\;\Conid{J}}: 
+
+
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\mu\;\mathbin{:}\;\{\mskip1.5mu \Conid{I}\;\Conid{J}\;\mathbin{:}\;\Conid{Set}\mskip1.5mu\}\;\to \;(\Conid{F}\;\mathbin{:}\;\Conid{ICont}\;(\Conid{I}\;\Varid{+}\;\Conid{J})\;\Conid{J})\;\to \;\Conid{ICont}\;\Conid{I}\;\Conid{J}{}\<[E]%
+\\
+\>[B]{}\mu\;\Conid{F}\;\Varid{j}\;\mathrel{=}\;\Conid{W}\;\Conid{F}\;\Varid{j}\;\lhd\;\Conid{R}^{\mu}\;\Conid{F}\;\Varid{j}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+
+\pagebreak
+
+The algebra contains a morphism from \ensuremath{\Conid{F}\;[\mskip1.5mu \mu\;\Conid{F}\mskip1.5mu]} to \ensuremath{\mu\;\Conid{F}}, given by:
+
+
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{11}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{36}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\Varid{in}\mu\;\mathbin{:}\;\{\mskip1.5mu \Conid{I}\;\Conid{J}\;\mathbin{:}\;\Conid{Set}\mskip1.5mu\}\;(\Conid{F}\;\mathbin{:}\;\Conid{ICont}\;(\Conid{I}\;\Varid{+}\;\Conid{J})\;\Conid{J})\;\to \;(\Varid{j}\;\mathbin{:}\;\Conid{J})\;\to \;(\Conid{F}\;\Varid{j})\;[\mskip1.5mu \mu\;\Conid{F}\mskip1.5mu]\;\Rightarrow\;\mu\;\Conid{F}\;\Varid{j}{}\<[E]%
+\\
+\>[B]{}\Varid{in}\mu\;\Conid{F}\;\Varid{j}\;{}\<[11]%
+\>[11]{}\Keyword{with}\;\Varid{ic+*}\;(\Varid{\char92 j}\;\to \;\Varid{c+}\;(\Conid{F}\;\Varid{j})){}\<[E]%
+\\
+\>[B]{}\Varid{in}\mu\;\Conid{F}\;\Varid{j}\;{}\<[11]%
+\>[11]{}\mid \;(\Conid{S}\;\lhd\;\Conid{P}^I,\Conid{P}^J)\;\mathrel{=}\;\Varid{sup}\;\lhd\;{}\<[36]%
+\>[36]{}\lambda\;\anonymous \;\anonymous \;\Varid{r}\;\to \;\Varid{r}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+
+And the associated fold by:
+
+
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{10}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{11}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{15}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{23}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{48}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\Varid{fold}\mu\;\mathbin{:}\;{}\<[11]%
+\>[11]{}\{\mskip1.5mu \Conid{I}\;\Conid{J}\;\mathbin{:}\;\Conid{Set}\mskip1.5mu\}\;\to \;(\Conid{F}\;\mathbin{:}\;\Conid{ICont}\;(\Conid{I}\;\Varid{+}\;\Conid{J})\;\Conid{J})\;\to \;(\Conid{H}\;\mathbin{:}\;\Conid{ICont}\;\Conid{I}\;\Conid{J})\;\to \;{}\<[E]%
+\\
+\>[11]{}((\Varid{j}\;\mathbin{:}\;\Conid{J})\;\to \;(\Conid{F}\;\Varid{j})\;[\mskip1.5mu \Conid{H}\mskip1.5mu]\;\Rightarrow\;\Conid{H}\;\Varid{j})\;\to \;(\Varid{j}\;\mathbin{:}\;\Conid{J})\;\to \;\mu\;\Conid{F}\;\Varid{j}\;\Rightarrow\;\Conid{H}\;\Varid{j}{}\<[E]%
+\\
+\>[B]{}\Varid{fold}\mu\;\{\mskip1.5mu \Conid{I}\mskip1.5mu\}\;\{\mskip1.5mu \Conid{J}\mskip1.5mu\}\;\Conid{F}\;\Conid{H}\;\Varid{m}\;{}\<[23]%
+\>[23]{}\Keyword{with}\;\Varid{m*}\;\Varid{m}{}\<[E]%
+\\
+\>[B]{}\Varid{fold}\mu\;\{\mskip1.5mu \Conid{I}\mskip1.5mu\}\;\{\mskip1.5mu \Conid{J}\mskip1.5mu\}\;\Conid{F}\;\Conid{H}\;\Varid{m}\;{}\<[23]%
+\>[23]{}\mid \;(\Varid{a}\;\lhd\;\Varid{b})\;\mathrel{=}\;\Varid{*m}\;(\Varid{foldW}\;\Conid{F}\;{}\<[48]%
+\>[48]{}(\lambda\;\Varid{j}\;\to \;\Varid{sh}\;(\Conid{H}\;\Varid{j}))\;\Varid{a}\;\lhd\;\Varid{d}){}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\Keyword{where}\;{}\<[10]%
+\>[10]{}\Varid{d}\;\mathbin{:}\;{}\<[15]%
+\>[15]{}(\Varid{j}\;\mathbin{:}\;\Conid{J})\;(\Varid{w}\;\mathbin{:}\;\Conid{W}\;\Conid{F}\;\Varid{j})\;(\Varid{i}\;\mathbin{:}\;\Conid{I})\;\to \;{}\<[E]%
+\\
+\>[15]{}\Varid{po}\;(\Conid{H}\;\Varid{j})\;(\Varid{foldW}\;\Conid{F}\;(\lambda\;\Varid{j}\;\to \;\Varid{sh}\;(\Conid{H}\;\Varid{j}))\;\Varid{a}\;\Varid{j}\;\Varid{w})\;\Varid{i}\;\to \;\Conid{R}^{\mu}\;\Conid{F}\;\Varid{j}\;\Varid{w}\;\Varid{i}{}\<[E]%
+\\
+\>[10]{}\Varid{d}\;\Varid{j}\;(\Varid{sup}\;(\Varid{s},\Varid{f}))\;\Varid{i}\;\Varid{q}\;\mathrel{=}\;\Varid{mapR}\;(\Conid{F}\;\Varid{j})\;\Varid{d}\;(\Varid{s},\Varid{f})\;\Varid{i}\;(\Varid{b}\;\Varid{j}\;\anonymous \;\Varid{i}\;\Varid{q}){}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+
+We show that the fold square commutes by observation on the action of the 
+container functor. 
+
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{13}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{17}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{33}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\Varid{fold}\mu\square\;\mathbin{:}\;{}\<[13]%
+\>[13]{}\{\mskip1.5mu \Conid{I}\;\Conid{J}\;\mathbin{:}\;\Conid{Set}\mskip1.5mu\}\;(\Conid{F}\;\mathbin{:}\;\Conid{ICont}\;(\Conid{I}\;\Varid{+}\;\Conid{J})\;\Conid{J})\;(\Conid{H}\;\mathbin{:}\;\Conid{ICont}\;\Conid{I}\;\Conid{J})\;{}\<[E]%
+\\
+\>[13]{}(\Varid{m}\;\mathbin{:}\;(\Varid{j}\;\mathbin{:}\;\Conid{J})\;\to \;(\Conid{F}\;\Varid{j})\;[\mskip1.5mu \Conid{H}\mskip1.5mu]\;\Rightarrow\;\Conid{H}\;\Varid{j})\;\to \;\{\mskip1.5mu \Conid{X}\;\mathbin{:}\;\Conid{I}\;\to \;\Conid{Set}\mskip1.5mu\}\;{}\<[E]%
+\\
+\>[13]{}(\Varid{j}\;\mathbin{:}\;\Conid{J})\;\to \;(\Varid{x}\;\mathbin{:}\;\llbracket\;(\Conid{F}\;\Varid{j})\;[\mskip1.5mu \mu\;\Conid{F}\mskip1.5mu]\;\rrbracket\;\Conid{X})\;\to \;{}\<[E]%
+\\
+\>[13]{}\hsindent{4}{}\<[17]%
+\>[17]{}(((\Varid{m}\;\Varid{j})\;\cdot\;(\Varid{map}\;[\mskip1.5mu \mskip1.5mu]\;(\Conid{F}\;\Varid{j})\;(\Varid{fold}\mu\;\Conid{F}\;\Conid{H}\;\Varid{m})))\;\mathbin{\$}\;\Varid{x})\;{}\<[E]%
+\\
+\>[13]{}\equiv \;{}\<[17]%
+\>[17]{}(((\Varid{fold}\mu\;\Conid{F}\;\Conid{H}\;\Varid{m}\;\Varid{j})\;\cdot\;(\Varid{in}\mu\;\Conid{F}\;\Varid{j}))\;\mathbin{\$}\;\Varid{x}){}\<[E]%
+\\
+\>[B]{}\Varid{fold}\mu\square\;\Conid{F}\;\Conid{H}\;\Varid{m}\;\Varid{j}\;((\Varid{s},\Varid{f}),\Varid{g})\;{}\<[33]%
+\>[33]{}\Keyword{with}\;\Varid{m}\;\Varid{j}{}\<[E]%
+\\
+\>[B]{}\Varid{fold}\mu\square\;\Conid{F}\;\Conid{H}\;\Varid{m}\;\Varid{j}\;((\Varid{s},\Varid{f}),\Varid{g})\;{}\<[33]%
+\>[33]{}\mid \;(\Varid{a}\;\lhd\;\Varid{b})\;\mathrel{=}\;\Conid{SigEq}\;\Varid{refl}\;(\equiv\Varid{ext}\;(\lambda\;\Varid{x}\;\Varid{y}\;\to \;\Varid{refl})){}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks

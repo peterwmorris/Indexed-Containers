@@ -1,0 +1,118 @@
+
+
+\input{prooftree}
+
+\newcommand{\ru}[2]{\vspace{1ex}
+\begin{prooftree}
+#1 \justifies #2
+\end{prooftree}\vspace{1ex}}
+\newcommand{\ax}[1]{
+\ru{}{#1} }
+\newcommand{\Ru}[3]{\vspace{1ex}
+\begin{prooftree}
+#1 \justifies #2 \using{\rm{#3}}
+\end{prooftree}\vspace{1ex}}
+\newcommand{\Ax}[2]{
+\Ru{}{#1}{#2} }
+
+\usepackage{color}
+\usepackage{ifthen}
+\newboolean{showNotes}
+\setboolean{showNotes}{false}
+
+\newcommand{\todo}[1]{
+\ifthenelse
+  {\boolean{showNotes}}
+  {\textcolor{red}{\textbf{Todo:~}#1}}
+  {}}
+\newcommand{\txa}[1]{
+\ifthenelse
+  {\boolean{showNotes}}
+  {\textcolor{red}{\textbf{txa:~}#1}}
+  {}}
+
+\newcommand{\bind}{\mathbin{>\!\!\!>\mkern-6.7mu=}}
+\newcommand{\rbind}{\mathbin{=\mkern-6.7mu<\!\!\!<}}
+
+%\newcommand{\Type}{\mathbf{Type}}
+\newcommand{\Set}{\mathbf{Set}}
+\newcommand{\Fam}{\mathrm{Fam}}
+\newcommand{\Nat}{\mathbb{N}}
+\newcommand{\WW}{\mathrm{W}}
+\newcommand{\Path}{\mathrm{Path}}
+%\newcommand{\path}{\mathrm{path}}
+\newcommand{\inl}{\mathrm{inl}}
+\newcommand{\inr}{\mathrm{inr}}
+\renewcommand{\sup}{\mathrm{sup}}
+\newcommand{\refl}{\mathrm{refl}}
+\newcommand{\In}{\mathrm{in}}
+\newcommand{\Fin}{\mathrm{Fin}}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\FDelta}{\Delta^\mathrm{F}}
+\newcommand{\FSigma}{\Sigma^\mathrm{F}}
+\newcommand{\FPi}{\Pi^\mathrm{F}}
+\newcommand{\FK}{\textrm{K}^\mathrm{F}}
+\newcommand{\Fplus}{+^\mathrm{F}}
+\newcommand{\Ftimes}{\times^\mathrm{F}}
+\newcommand{\CDelta}{\Delta^\mathrm{C}}
+\newcommand{\CSigma}{\Sigma^\mathrm{C}}
+\newcommand{\CPi}{\Pi^\mathrm{C}}
+\newcommand{\Cmu}{\mu^\mathrm{C}}
+\newcommand{\TSigma}{\Sigma^\mathrm{T}}
+\newcommand{\TPi}{\Pi^\mathrm{T}}
+\newcommand{\Tmu}{\mu^\mathrm{T}}
+\newcommand{\TK}{\textrm{K}^\mathrm{T}}
+\newcommand{\Tplus}{+^\mathrm{T}}
+\newcommand{\Ttimes}{\times^\mathrm{T}}
+\newcommand{\id}{\mathrm{id}}
+\newcommand{\Func}{\mathrm{Func}}
+\newcommand{\obj}[1]{{#1}_{\mathrm obj}}
+\newcommand{\mor}[1]{{#1}_{\mathrm mor}}
+\newcommand{\return}{\eta}
+%\newcommand{\bind}{>\!>\!=}
+\newcommand{\returnF}{{\return}^{\mathrm F}}
+\newcommand{\bindF}{\bind^{\mathrm F}}
+\newcommand{\inn}{\mathrm{in}}
+\newcommand{\returnC}{{\return}^{\mathrm C}}
+\newcommand{\bindC}{\bind^{\mathrm C}}
+\newcommand{\returnT}{{\return}^{\mathrm T}}
+\newcommand{\bindT}{\bind^{\mathrm T}}
+\newcommand{\Cont}{\mathrm{Cont}}
+\newcommand{\ExtC}[1]{\llbracket#1\rrbracket^{\mathrm C}}
+\newcommand{\ExtT}[1]{\llbracket#1\rrbracket^{\mathrm T}}
+\newcommand{\ExtF}[1]{\llbracket#1\rrbracket^{\mathrm F}}
+\newcommand{\cont}[2]{#1 \lhd #2}
+\newcommand{\up}{\mathrm{up}}
+\newcommand{\down}{\mathrm{down}}
+\newcommand{\he}{\mathrm{he}}
+\newcommand{\getW}{\mathrm{getW}}
+\newcommand{\getS}{\mathrm{getS}}
+\newcommand{\last}{\mathrm{last}}
+\newcommand{\push}{\mathrm{push}}
+\newcommand{\proj}{\mathrm{proj}}
+\newcommand{\SPF}{\mathrm{SPF}}
+\newcommand{\nattfn}{\Rightarrow}
+
+\newcommand{\Lam}{\mathrm{Lam}}
+\newcommand{\Ne}{\mathrm{Ne}}
+\newcommand{\Nf}{\mathrm{Nf}}
+\newcommand{\var}{\mathrm{var}}
+\newcommand{\app}{\mathrm{app}}
+\newcommand{\lam}{\mathrm{lam}}
+\renewcommand{\ne}{\mathrm{ne}}
+\renewcommand{\succ}{\mathrm{succ}}
+\newcommand{\fzero}{\mathrm{fzero}}
+\newcommand{\fsucc}{\mathrm{fsucc}}
+\newcommand{\vzero}{\mathrm{vzero}}
+\newcommand{\vsucc}{\mathrm{vsucc}}
+\newcommand{\Ty}{\mathrm{Ty}}
+\newcommand{\ty}{\mathrm{ty}}
+\newcommand{\arr}{\mathrm{arr}}
+
+\newtheorem{proposition}{Proposition}
+
+\newcommand{\inx}{\!\in\!}
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 
