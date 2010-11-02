@@ -1,0 +1,47 @@
+
+{-# OPTIONS --universe-polymorphism #-}
+
+module IFunc where
+
+open import Level
+open import Function
+open import HeterogeneousEquality 
+
+_⟶_ : ∀ {l} {I : Set l} (A B : I → Set l) → Set l
+_⟶_ {_} {I} A B = {i : I} → A i → B i
+
+-- To simplfy we want a Lift which only goes up 1 floor: 
+
+record ↑ {ℓ} (A : Set ℓ) : Set (suc ℓ) where
+  constructor lift
+  field ground : A
+
+open ↑ public
+
+-- Lift is a functor from Set l to Set (suc l) its action on morphisms given by:
+
+↑M : {l : Level} {A B : Set l} {B : Set l} (f : A → B) → ↑ A → ↑ B
+↑M f (lift a) = lift (f a) 
+
+-- it should be obvious that this satisfies the functor laws
+
+
+
+record IFunc {l : Level} (I : Set l) : Set (suc l) where
+  constructor ifunc
+  field
+    obj : (I → Set l) → Set l
+    mor : {A B : I → Set l} → (A ⟶ B) → obj A → obj B 
+    idlaw : {A : I → Set l} (x : obj A) → id x ≅ mor {A} {A} (λ a → a) x
+    complaw : {A B C : I → Set l} (f : {i : I} → B i → C i) 
+                                   (g : {i : I} → A i → B i) →
+               (x : obj A) → mor {B} {C} f (mor {A} {B} g x) ≅
+                              mor {A} {C} (λ a → f (g a)) x
+
+record NatTrans {l : Level} {I : Set l} (F G : IFunc I) : Set (suc l) where
+  constructor nattrans
+  field 
+    fun : {A : I → Set l} → IFunc.obj F A → IFunc.obj G A
+    law : {A B : I → Set l} {f : A ⟶ B} (x : IFunc.obj F A) → 
+            fun {B} (IFunc.mor F f x) ≅ IFunc.mor G f (fun {A} x)
+ 

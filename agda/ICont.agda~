@@ -1,0 +1,68 @@
+{-# OPTIONS --universe-polymorphism #-}
+
+module ICont where
+
+  open import Level
+  open import Function
+  open import IFunc
+  open import Unit
+  open import Data.Product renaming (uncurry to split)
+  open import HeterogeneousEquality renaming (proof-irrelevance to uip)
+
+  record ICont {l : Level} (I : Set l) : Set (suc l)  where
+    constructor _◁_
+    field
+      sh : Set l
+      po : sh → I → Set l
+
+  ⟦_⟧ : ∀ {l} → {I : Set l} → ICont I → IFunc I
+  ⟦_⟧ {I = I} (S ◁ P) = 
+    ifunc (λ X → Σ S λ s → {i : I} → P s i → X i) 
+          (λ f → split (λ x y → x , λ i → f (y i))) 
+          (λ _ → refl) (λ _ _ _ → refl)
+
+
+  record _⇒_ {l : Level} {I : Set l} (C D : ICont I) : Set l where
+    constructor _◁_
+    field 
+      sh : ICont.sh C → ICont.sh D
+      po : (s : ICont.sh C) → ICont.po D (sh s) ⟶ ICont.po C s   
+  
+  ⟦_⟧⇒ : {l : Level} {I : Set l} {C D : ICont I} (m : C ⇒ D) → NatTrans ⟦ C ⟧ ⟦ D ⟧ 
+  ⟦ f ◁ r ⟧⇒ = record { fun = split λ x y → f x , (λ q → y (r x q)); law = λ x → refl }
+
+  q⇒ : {l : Level} {I : Set l} {C D : ICont I} → NatTrans ⟦ C ⟧ ⟦ D ⟧ → C ⇒ D
+  q⇒ {C = S ◁ P} {D = T ◁ Q} nt =  (λ s → proj₁ (trick s)) ◁ λ s → proj₂ (trick s) 
+    where trick : (s : S) → IFunc.obj ⟦ T ◁ Q ⟧ (P s)
+          trick s = NatTrans.fun nt (s , λ p → p)
+
+
+  record _≈_ {l : Level} (A B : Set l) : Set l where
+    field
+      φ : A → B
+      ψ : B → A
+      φψ : (b : B) → b ≅ φ (ψ b)
+      ψφ : (a : A) → a ≅ ψ (φ a)   
+
+  fullfaith : {l : Level} {I : Set l} {C D : ICont I} → ↑ (C ⇒ D) ≈ (NatTrans ⟦ C ⟧ ⟦ D ⟧) 
+  fullfaith {C = S ◁ P} {D = T ◁ Q} = record { φ = λ x → ⟦ ↑.ground x ⟧⇒ ; ψ = λ x → lift (q⇒ x) ; φψ = p; ψφ = {!!} }
+    where p : (b : NatTrans ⟦ S ◁ P ⟧ ⟦ T ◁ Q ⟧) → b ≅ ⟦ q⇒ b ⟧⇒
+          p (nattrans x y) = cong₂ nattrans (iext (ext (split λ x' y' → y (x' , λ p → p)))) (iext' λ p → iext' λ q → iext' λ r → ext' (λ a _ _ →  subst (λ p → y a ≅ refl) q UIP ) )
+
+  _≅^C_ : ∀ {l} → {I : Set l} → (C D : ICont I) → Set
+  C ≅^C D = {!!} -- ⟦ C ⟧ 
+
+  η^C :  {l : Level} {I : Set l} → ↑ I → ICont I
+  η^C {I = I} (lift i) = ⊤ ◁ λ _ i' → (i ≅ i') 
+
+  _>>=^C_ : {l : Level} {I J : Set l} (H : ↑ I → ICont J) (F : ICont I) → ICont J 
+  _>>=^C_ {I = I} H (S ◁ P) = 
+    (Σ S (λ s → (i : I) → P s i → ICont.sh (H (lift i)))) ◁ 
+     split (λ s f j → Σ (Σ I λ i → P s i) 
+                         (split (λ i p → ICont.po (H (lift i)) (f i p) j)))
+
+  law1C : {l : Level} {I : Set l} {C : ICont I} → C ≅ (η^C >>=^C C)
+  law1C {C = S ◁ P} = {!need a different way to state this!}
+
+  
+
