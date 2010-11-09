@@ -1,0 +1,74 @@
+%if style==code
+
+\begin{code}
+
+{-# OPTIONS --type-in-type #-}
+
+module paper where
+
+\end{code}
+
+%endif
+
+\documentclass[a4paper]{article}
+
+%include lhs2TeX.fmt
+
+%format forall = "\forall{}"
+%format -*-> = "\dot{\rightarrow}"
+%format _-*->_ = _ -*-> _
+
+\begin{document}
+
+\title{Indexed Containers}
+\author{Thorsten Altenkirch 
+   \and Neil Ghani 
+   \and Peter Hancock 
+   \and Conor McBride 
+   \and Peter Morris}
+\date{\today}
+
+\maketitle
+
+\begin{abstract}
+
+Blah
+
+\end{abstract}
+
+
+\section{Introduction}
+
+\section{Background}
+
+\subsection{Type Theory}
+
+\begin{code}
+
+_-*->_ : {I : Set} -> (A B : I -> Set) -> Set
+_-*->_ {I} A B = {i : I} -> A i -> B i
+
+\end{code}
+
+\subsection{Containers}
+
+\section{Indexed Functors}
+
+\begin{code}
+
+record IFunc (I : Set) : Set where
+  field
+    obj : (A : I -> Set) -> Set
+    mor : forall {A B} -> (A -*-> B) -> obj A -> obj B
+
+\end{code}
+
+\section{Indexed containers}
+
+\section{Initial Algebras of Indexed Containers}
+
+\section{Strictly Positive Types}
+
+\section{Conclusions}
+
+\end{document}

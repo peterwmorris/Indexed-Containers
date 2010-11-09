@@ -1,0 +1,192 @@
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2010.9.2)  8 NOV 2010 15:42
+entering extended mode
+ restricted \write18 enabled.
+ %&-line parsing enabled.
+**paper.tex
+(./paper.tex
+LaTeX2e <2009/09/24>
+Babel <v3.8l> and hyphenation patterns for english, usenglishmax, dumylang, noh
+yphenation, loaded.
+(/usr/share/texmf-texlive/tex/latex/base/article.cls
+Document Class: article 2007/10/19 v1.4h Standard LaTeX document class
+(/usr/share/texmf-texlive/tex/latex/base/size10.clo
+File: size10.clo 2007/10/19 v1.4h Standard LaTeX file (size option)
+)
+\c@part=\count79
+\c@section=\count80
+\c@subsection=\count81
+\c@subsubsection=\count82
+\c@paragraph=\count83
+\c@subparagraph=\count84
+\c@figure=\count85
+\c@table=\count86
+\abovecaptionskip=\skip41
+\belowcaptionskip=\skip42
+\bibindent=\dimen102
+)
+(/usr/share/texmf-texlive/tex/latex/amsmath/amstext.sty
+Package: amstext 2000/06/29 v2.01
+
+(/usr/share/texmf-texlive/tex/latex/amsmath/amsgen.sty
+File: amsgen.sty 1999/11/30 v2.0
+\@emptytoks=\toks14
+\ex@=\dimen103
+))
+(/usr/share/texmf-texlive/tex/latex/amsfonts/amssymb.sty
+Package: amssymb 2009/06/22 v3.00
+
+(/usr/share/texmf-texlive/tex/latex/amsfonts/amsfonts.sty
+Package: amsfonts 2009/06/22 v3.00 Basic AMSFonts support
+\symAMSa=\mathgroup4
+\symAMSb=\mathgroup5
+LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
+(Font)                  U/euf/m/n --> U/euf/b/n on input line 96.
+))
+(/usr/share/texmf-texlive/tex/latex/stmaryrd/stmaryrd.sty
+Package: stmaryrd 1994/03/03 St Mary's Road symbol package
+\symstmry=\mathgroup6
+LaTeX Font Info:    Overwriting symbol font `stmry' in version `bold'
+(Font)                  U/stmry/m/n --> U/stmry/b/n on input line 89.
+)
+(/usr/share/texmf/tex/latex/polytable/polytable.sty
+Package: polytable 2005/04/25 v0.8.2 `polytable' package (Andres Loeh)
+
+(/usr/share/texmf/tex/latex/polytable/lazylist.sty)
+(/usr/share/texmf-texlive/tex/latex/tools/array.sty
+Package: array 2008/09/09 v2.4c Tabular extension package (FMi)
+\col@sep=\dimen104
+\extrarowheight=\dimen105
+\NC@list=\toks15
+\extratabsurround=\skip43
+\backup@length=\skip44
+)
+\PT@colwidth=\dimen106
+\PT@cols=\count87
+\PT@table=\count88
+\PT@toks=\toks16
+\PT@in=\read1
+\PT@out=\write3
+)
+\mathindent=\dimen107
+\blanklineskip=\skip45
+
+(/usr/share/texmf-texlive/tex/latex/tools/calc.sty
+Package: calc 2007/08/22 v4.3 Infix arithmetic (KKT,FJ)
+\calc@Acount=\count89
+\calc@Bcount=\count90
+\calc@Adimen=\dimen108
+\calc@Bdimen=\dimen109
+\calc@Askip=\skip46
+\calc@Bskip=\skip47
+LaTeX Info: Redefining \setlength on input line 76.
+LaTeX Info: Redefining \addtolength on input line 77.
+\calc@Ccount=\count91
+\calc@Cskip=\skip48
+)
+(/usr/share/texmf-texlive/tex/latex/base/fontenc.sty
+Package: fontenc 2005/09/27 v1.99g Standard LaTeX package
+
+(/usr/share/texmf-texlive/tex/latex/base/t1enc.def
+File: t1enc.def 2005/09/27 v1.99g Standard LaTeX file
+LaTeX Font Info:    Redeclaring font encoding T1 on input line 43.
+))
+(/usr/share/texmf-texlive/tex/latex/base/inputenc.sty
+Package: inputenc 2008/03/30 v1.1d Input encoding file
+\inpenc@prehook=\toks17
+\inpenc@posthook=\toks18
+
+(/usr/share/texmf-texlive/tex/latex/ucs/utf8x.def
+File: utf8x.def 2004/10/17 UCS: Input encoding UTF-8
+))
+(/usr/share/texmf-texlive/tex/latex/ucs/ucs.sty
+Package: ucs 2004/10/17 UCS: Unicode input support
+
+(/usr/share/texmf-texlive/tex/latex/ucs/data/uni-global.def
+File: uni-global.def 2004/10/17 UCS: Unicode global data
+)
+\uc@secondtry=\count92
+\uc@combtoks=\toks19
+\uc@combtoksb=\toks20
+\uc@temptokena=\toks21
+) (./paper.aux)
+\openout1 = `paper.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 304.
+LaTeX Font Info:    ... okay on input line 304.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 304.
+LaTeX Font Info:    ... okay on input line 304.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 304.
+LaTeX Font Info:    ... okay on input line 304.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 304.
+LaTeX Font Info:    ... okay on input line 304.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 304.
+LaTeX Font Info:    ... okay on input line 304.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 304.
+LaTeX Font Info:    ... okay on input line 304.
+
+(/usr/share/texmf-texlive/tex/latex/ucs/ucsencs.def
+File: ucsencs.def 2003/11/29 Fixes to fontencodings LGR, T3
+)
+LaTeX Font Info:    Try loading font information for U+msa on input line 314.
+
+(/usr/share/texmf-texlive/tex/latex/amsfonts/umsa.fd
+File: umsa.fd 2009/06/22 v3.00 AMS symbols A
+)
+LaTeX Font Info:    Try loading font information for U+msb on input line 314.
+
+(/usr/share/texmf-texlive/tex/latex/amsfonts/umsb.fd
+File: umsb.fd 2009/06/22 v3.00 AMS symbols B
+)
+LaTeX Font Info:    Try loading font information for U+stmry on input line 314.
+
+
+(/usr/share/texmf-texlive/tex/latex/stmaryrd/Ustmry.fd)
+\openout3 = `paper.ptb'.
+
+LaTeX Font Info:    Try loading font information for T1+cmss on input line 336.
+
+
+(/usr/share/texmf-texlive/tex/latex/base/t1cmss.fd
+File: t1cmss.fd 1999/05/25 v2.5h Standard LaTeX font definitions
+)
+\openout3 = `paper.ptb'.
+
+\openout3 = `paper.ptb'.
+
+\openout3 = `paper.ptb'.
+
+\openout3 = `paper.ptb'.
+
+ [1
+
+{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
+\openout3 = `paper.ptb'.
+
+ [2] (./paper.aux) ) 
+Here is how much of TeX's memory you used:
+ 1871 strings out of 495061
+ 23560 string characters out of 1182583
+ 91697 words of memory out of 3000000
+ 5029 multiletter control sequences out of 15000+50000
+ 23495 words of font info for 62 fonts, out of 3000000 for 9000
+ 28 hyphenation exceptions out of 8191
+ 23i,6n,67p,351b,373s stack positions out of 5000i,500n,10000p,200000b,50000s
+ </home/pwm/.texmf-var/fonts/pk/ljfour/jknappen/ec/ecrm1000
+.600pk> </home/pwm/.texmf-var/fonts/pk/ljfour/jknappen/ec/ecsx1000.600pk> </hom
+e/pwm/.texmf-var/fonts/pk/ljfour/jknappen/ec/ecss1000.600pk> </home/pwm/.texmf-
+var/fonts/pk/ljfour/jknappen/ec/ecbx1200.600pk> </home/pwm/.texmf-var/fonts/pk/
+ljfour/jknappen/ec/ecbx1440.600pk> </home/pwm/.texmf-var/fonts/pk/ljfour/jknapp
+en/ec/ecrm0900.600pk> </home/pwm/.texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx090
+0.600pk> </home/pwm/.texmf-var/fonts/pk/ljfour/jknappen/ec/ecrm1200.600pk> </ho
+me/pwm/.texmf-var/fonts/pk/ljfour/jknappen/ec/ecrm1728.600pk></usr/share/texmf-
+texlive/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texmf-texlive/fon
+ts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texmf-texlive/fonts/type1/pub
+lic/amsfonts/cm/cmr10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts
+/cm/cmr7.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmsy10.pf
+b>
+Output written on paper.pdf (2 pages, 100569 bytes).
+PDF statistics:
+ 206 PDF objects out of 1000 (max. 8388607)
+ 0 named destinations out of 1000 (max. 500000)
+ 1 words of extra memory for PDF output out of 10000 (max. 10000000)
+
