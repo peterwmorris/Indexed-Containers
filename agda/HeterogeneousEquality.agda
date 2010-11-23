@@ -89,6 +89,8 @@ proof-irrelevance refl refl = refl
 UIP : ∀ {l} {A : Set l} {a : A} {B : Set l} {b : B} {p : b ≅ a} {q : b ≅ a} → p ≅ q
 UIP {p = refl} {q = refl} = refl
 
+UIP' : ∀ {l} {A : Set l} {a : A} {B : Set l} {b : B} {p : b ≅ a} → _≅_ {_} {b ≅ b} refl p
+UIP' {p = refl} = refl
 
 isEquivalence : ∀ {l} {A : Set l} →
                 IsEquivalence {A = A} (λ x y → x ≅ y)

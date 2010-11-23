@@ -14,22 +14,6 @@ _⟶_ {_} {I} A B = {i : I} → A i → B i
 _⊚_ : ∀ {l} {I : Set l} {A B C : I → Set l} → (B ⟶ C) → (A ⟶ B) → A ⟶ C
 _⊚_ f g {i} = f {i} ∘ g {i}
 
--- To simplfy we want a Lift which only goes up 1 floor: 
-
-record ↑ {ℓ} (A : Set ℓ) : Set (suc ℓ) where
-  constructor lift
-  field ground : A
-
-open ↑ public
-
--- Lift is a functor from Set l to Set (suc l) its action on morphisms given by:
-
-↑M : {l : Level} {A B : Set l} {B : Set l} (f : A → B) → ↑ A → ↑ B
-↑M f (lift a) = lift (f a) 
-
--- it should be obvious that this satisfies the functor laws
-
-
 
 record IFunc {l : Level} (I : Set l) : Set (suc l) where
   constructor ifunc

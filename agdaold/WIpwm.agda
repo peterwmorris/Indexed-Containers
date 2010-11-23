@@ -1,6 +1,6 @@
 {-# OPTIONS --universe-polymorphism #-}
 
-module WI where
+module WIpwm where
 
 open import Level
 
@@ -10,11 +10,15 @@ data _≡_ {A : Set} (a : A) : {B : Set} → B → Set where
 subst : {A : Set} (P : A → Set) {x y : A} → (x ≡ y) → P x → P y
 subst P refl p = p  
 
+subst₂ : {A : Set} {B : A → Set} (P : (a : A) → B a → Set) → {a a' : A} → a ≡ a'
+          → {b : B a} {b' : B a'} → b ≡ b' → P a b → P a' b'
+subst₂ P refl refl p = p
+
 resp : {A : Set} {B : A → Set} (f : (a : A) → B a) {a b : A} → (a ≡ b) → f a ≡ f b
 resp f refl = refl
 
-k : {A : Set} {a : A} {B : Set} {b : B} (p q : a ≡ b) → p ≡ q
-k refl refl = refl
+uip : {A : Set} {a : A} {B : Set} {b : B} (p q : a ≡ b) → p ≡ q
+uip refl refl = refl
 
 cong : {A : Set} {B : A → Set} (f g : (a : A) → B a) {a b : A} → (f ≡ g) → (a ≡ b) → f a ≡ g b
 cong f .f refl refl = refl
@@ -98,7 +102,11 @@ WI' I S P i = Σ (WIpre I S P) (WIOK I S P i)
 supi' : {I : Set} {S : I → Set} {P : (i : I) → S i → I → Set} 
          {i : I} (s : S i) (f : {j : I} → P i s j → WI' I S P j) → WI' I S P i
 supi' {I} {S} {P} {i = i} s f = (sup (i , s) (split (λ j p → Σ.π₀ (f p)))) , resp (sup ((i , s) , i)) (ext (split (λ j p → Σ.π₁ (f p))))
-   
+
+supi'' : {I : Set} {S : I → Set} {P : (i : I) → S i → I → Set} 
+         {i i' : I} (s : S i) (f : {j : I} → P i s j → WI' I S P j) → i' ≡ i → WI' I S P i'
+supi'' {I} {S} {P} {i } s f refl = supi' {I} {S} {P} {i } s f 
+
 projok₀ : ∀ {I S P} (i : I) {j : I} (s : S j) 
            (f : Σ I (P j s) → W (Σ I S) (split (λ i0 s' → Σ I (P i0 s'))))
             → WIOK I S P i (sup (j , s) f) → i ≡ j
@@ -113,12 +121,13 @@ projok₁ i s f ok p = cong _ _ (Wπ₁≡ ok) refl
 WIelim'' : {I : Set} {S : I → Set} {P : (i : I) → S i → I → Set}
             {i : I} (x : WIpre I S P) (ok : WIOK I S P i x) 
              (Q : {i : I} → WI' I S P i → Set)
-              (msupi' : {i : I} (s : S i) (f : {j : I} → P i s j → WI' I S P j)
-                         (h : {j : I} (p : P i s j) → Q (f p)) → Q (supi' {I} {S} {P} {i} s f))
+              (msupi' : {i i' : I} (s : S i) (f : {j : I} → P i s j → WI' I S P j)
+                         (h : {j : I} (p : P i s j) → Q (f p)) (p : i' ≡ i) → Q (supi'' {I} {S} {P} {i} {i'} s f p))
               → Q (x , ok)
-WIelim'' {I} {S} {P} {i} (sup (i' , s) f) ok Q msupi with projok₀ {I} {S} {P} i s f ok 
-WIelim'' {I} {S} {P} {i} (sup (.i , s) f) ok Q msupi | refl = subst (λ pr → Q (sup (i , s) f , pr)) (k _ _) (msupi s (λ {j} p → f (j , p) , projok₁ {I} {S} {P} i s f ok (j , p)) (λ {j'} p → WIelim'' {I} {S} {P} (f (j' , p)) (projok₁ {I} {S} {P} i s f ok (j' , p)) Q msupi)) 
+WIelim'' {I} {S} {P} {i} (sup (i' , s) f) ok Q msupi -- with projok₀ {I} {S} {P} i s f ok 
+ =   subst (λ pr → Q (sup (i' , s) f , pr)) (uip _ _) (msupi s (λ x → (f (_ , x)) , projok₁ {I} {S} {P} i s f ok (_ , x)) (WIelim'' {I} {S} {P} {!!} {!!} {!Q!} msupi) {! projok₀ {I} {S} {P} i s f ok !})
 
+{-
 
 WIelim' : {I : Set} {S : I → Set} {P : (i : I) → S i → I → Set}
            {i : I} (x : WI' I S P i) (Q : {i : I} → WI' I S P i → Set)
@@ -127,6 +136,15 @@ WIelim' : {I : Set} {S : I → Set} {P : (i : I) → S i → I → Set}
             → Q x
 WIelim' {I} {S} {P} (x , ok) = WIelim'' {I} {S}{P} x ok
 
+
+WIelim''' : {I : Set} {S : I → Set} {P : (i : I) → S i → I → Set}
+             {i : I} (x : WIpre I S P) (ok : WIOK I S P i x) 
+              (Q : {i : I} → WI' I S P i → Set)
+               (msupi' : {i : I} (s : S i) (f : {j : I} → P i s j → WI' I S P j)
+                         (h : {j : I} (p : P i s j) → Q (f p)) → Q (supi' {I} {S} {P} {i} s f))
+               → Q (x , ok)
+WIelim''' = {!!}
+-}
 
 {-
 
