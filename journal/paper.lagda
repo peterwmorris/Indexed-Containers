@@ -85,6 +85,12 @@ _-**->_ {I} A B = {i : I} -> A i -> B i
 
 \begin{document}
 
+\newcounter{theorem}
+
+\newtheorem{proposition}[theorem]{Proposition}
+\newenvironment{proof}[1][Proof]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+
 \title{Indexed Containers}
 \author{Thorsten Altenkirch 
    \and Neil Ghani 
@@ -128,14 +134,14 @@ Given |I : Set| we consider the category of families over |I|. Its objects are
 |I|-indexed families of types |A : I → Set| and morphisms are given by 
 |I|-indexed families of functions:
 
-
-%format -*-> = "\mathbin{\dot{\rightarrow}}"
-%format -**-> = "\mathbin{\dot{\rightarrow}}"
-%format _-*->_ = _ "\dot{\rightarrow}" _
-%format _-**->_ = _ "\dot{\rightarrow}" _
-%format _⊚_ = _ "\dot{\circ}" _ 
-%format ⊚ = "\mathbin{\dot{\circ}}" 
-%format idd = "\dot{" id "}"
+%format * = "^{\star}" 
+%format -*-> = "\rightarrow" *
+%format -**-> = "\rightarrow" *
+%format _-*->_ = _ -*-> _
+%format _-**->_ = _ -**-> _
+%format _⊚_ = _ "\circ" * _ 
+%format ⊚ = "\circ" * 
+%format idd = id *
 
 \begin{code}
 
@@ -179,7 +185,27 @@ Such that both |idd| is mapped to |id| and |_⊚_| to |_∘_| under the action o
 \emph{i.e.} depending on the context |F :  IFunc I| can stand for either the 
 functors action on objects, or on morphisms.
 
+A natural transformation between two such functors is given by:
+
 %format ^F = "^{\text{\tiny F}}"
+%format ⇒^F = "\Rightarrow" ^F
+%format _⇒^F_ = _ ⇒ ^F _
+
+\begin{code}
+_⇒^F_ : ∀ {I} → (F G : IFunc I) → Set
+F ⇒^F G = ∀ {A} → IFunc.obj F A → IFunc.obj G A
+\end{code}
+
+with the obvious naturality condition that for |m : F ⇒ G| the following diagram
+commutes for all |f : A -*-> B|:
+
+ \[
+\xymatrix{
+\mbox{|IFunc.obj F A|}  \ar[r]^{\qquad\mbox{|m {A}|}\qquad} 
+\ar[d]_{\mbox{|IFunc.mor F f|}} & \mbox{|IFunc.obj G A|} \ar[d]^{\mbox{|IFunc.mor G f|}}\\
+\mbox{|IFunc.obj F B|} \ar[r]^{\qquad\mbox{|m {B}|}\qquad} & \mbox{|IFunc.obj G B|}}
+\]
+
 %format η = "\eta"
 %format η^F = η ^F
 %format >>=^F = >>= ^F
@@ -203,11 +229,28 @@ H >>=^F F =
 %format Setsi = Set "_{i+1}" 
 %format ↑ = "\uparrow"
 
-Note, however, that since |IFunc : Seti → Setsi| it cannot be a true monad. 
-Instead, we can describe it as a monad relative\cite{relmonads} to the lifting 
-|↑ : Seti → Setsi| which is trivially a functor.
+\begin{proposition}
+|(IFunc , η^F , _>>=^F_)| is a \emph{relative monad}\cite{relmonads} on the 
+lifting functor |↑ : Seti → Setsi|.
+\end{proposition}
 
-%format * = "^{\star}" 
+\begin{proof}
+It's clear that |IFunc| cannot be a monad in the usual sense, since it is not 
+an endo-functor, it does how ever fit with the notion of relative monad 
+presented by Altenkirch \emph{et al.} Note that in the code above we have 
+elided the use of the lifting functor. To prove the structure is a relative 
+monad we observe that the following natural isomorphisms hold immediately up to 
+Agda's $\beta\eta$-equality. 
+
+For |F : IFunc I|, |G : I → IFunc J|, |H : J → IFunc K|:
+\begin{align}
+|H i|                 &\quad& \approx &&\quad& |H >>=^F (η^F i)|               \\
+|F|                   && \approx &&& |η^F >>=^F F|                 \\
+|H >>=^F (G >>=^F F)| && \approx &&& |(λ i → H >>=^F (G i)) >>=^F F| 
+\end{align}
+
+\end{proof}
+
 %format IFunc* = IFunc * 
 %format obj* = obj *
 %format mor* = mor *
@@ -235,6 +278,21 @@ in which they appear.
 %format obj* = 
 %format mor* = 
 
+Natural transformations:
+
+%format ^F* = "^{\text{\tiny F}^{\star}}"
+%format =*=>^F = "\Rightarrow" ^F*
+%format _=*=>^F_ = _ "\Rightarrow" ^F* _
+
+
+\begin{code}
+
+_=*=>^F_ : ∀ {I J} → (F G : IFunc* I J) → Set
+F =*=>^F G = ∀ {A} → obj* F A -*-> obj* G A   
+
+\end{code}
+
+
 %format Δ = "\Delta"
 %format Δ^F = Δ ^F
 %format Π = "\Pi"
@@ -256,6 +314,8 @@ This construction is used, for instance, if we try to build an indexed functor
 whose fixed point is |Lam|. In the |abs| case we must build a functor 
 |F′ n X = F (1+ n) X|. Or simply |F′ = Δ^F (1+) F|.
 
+|Δ^F| has left and right adjoints |Σ^F| and |Π^F|:
+
 \begin{code}
 
 Σ^F : ∀ {J I K} → (J → K) → IFunc* I J → IFunc* I K
@@ -268,6 +328,10 @@ whose fixed point is |Lam|. In the |abs| case we must build a functor
    record  {  obj  =  λ A → (j : J) → f j ≡ k → obj* F A j 
            ;  mor  =  λ m f j p → mor* F m j (f j p) }
 \end{code}
+
+\begin{proposition}
+|Σ^F| and |Π^F| are left and right adjoint to re-indexing (|Δ^F|).
+\end{proposition}
 
 We can employ the |Σ^F| construction to buld a functor whose fixed point is 
 |Fin| where we want a solution to the equation 
@@ -327,8 +391,8 @@ diagram commutes:
 
  \[
 \xymatrix{
-\mbox{|mor* F A|}  \ar[r]^{\;\mbox{|α|}} 
-\ar[d]_{\mbox{|mor* F f|}} & \mbox{|A|} \ar[d]^{\mbox{|a|}}\\
+\mbox{|obj* F A|}  \ar[r]^{\;\mbox{|α|}} 
+\ar[d]_{\mbox{|mor* F f|}} & \mbox{|A|} \ar[d]^{\mbox{|f|}}\\
 \mbox{|obj* F B|} \ar[r]^{\;\mbox{|β|}} & \mbox{|B|}}
 \]
 
@@ -375,9 +439,9 @@ lifts natural transformations in this way:
 
 
 \begin{code}
-_⟨_⟩M :  ∀ {I J}  (F : IFunc (I ⊎ J)) {G H : IFunc* I J} → 
-                  (  ∀ {A} → obj*            G      A  -*-> obj*                  H      A) →  
-                     ∀ {A} → IFunc.obj (F ⟨  G ⟩F)  A  →          IFunc.obj (F ⟨  H ⟩F)  A 
+_⟨_⟩M :  ∀ {I J}  (F : IFunc (I ⊎ J)) {G H : IFunc* I J}  
+           →        G      =*=>^F        H                  
+           →   F ⟨  G ⟩F   ⇒^F      F ⟨  H ⟩F   
 F ⟨ γ ⟩M = IFunc.mor F [ (λ _ a → a) , γ ] 
 
 \end{code}
@@ -394,17 +458,17 @@ Each of these observations generalises to |IFunc*|:
 _⟨_⟩F* : ∀ {I J K} → IFunc* (I ⊎ J) K → IFunc* I J →  IFunc* I K
 F ⟨ G ⟩F*  = λ k → (F k) ⟨ G ⟩F 
 
-_⟨_⟩M* :  ∀ {I J K}  (F : IFunc* (I ⊎ J) K) {G H : IFunc* I J} → 
-                     (  ∀ {A} → obj*       G       A  -*-> obj*       H       A) →  
-                        ∀ {A} → obj* (F ⟨  G ⟩F*)  A  -*-> obj* (F ⟨  H ⟩F*)  A 
+_⟨_⟩M* :  ∀ {I J K}  (F : IFunc* (I ⊎ J) K) {G H : IFunc* I J}  
+            →           G       =*=>^F       H                    
+            →      F ⟨  G ⟩F*   =*=>^F  F ⟨  H ⟩F*  
 _⟨_⟩M* F {G} {H} γ = λ k → _⟨_⟩M  (F k) {G} {H} γ  
 
 \end{code}
 
-A parametrized algebra |F : IFunc* (I ⊎ J) I| is, then, a indexed-functor 
-|G : IFunc J I| and a natural transformation
-|α : ∀ {A} → F ⟨ G ⟩F* A -*-> G A|. A morphism between two such algebras 
-|(G , α)| and |(H , β)| is a natural transformation |γ : ∀ {A} → G A -*-> H A| 
+A parametrized |F|-algebra for |F : IFunc* (I ⊎ J) I| is a pair of an 
+indexed-functor |G : IFunc J I| and a natural transformation
+|α : F ⟨ G ⟩F* =*=>^F G|. A morphism between two such algebras 
+|(G , α)| and |(H , β)| is a natural transformation |γ : G =*=>^F H| 
 such that the follow diagram commutes:
 
 \[
@@ -413,6 +477,13 @@ such that the follow diagram commutes:
 \ar[d]_{\mbox{|F ⟨ γ ⟩M*|}} & \mbox{|G|} \ar[d]^{\mbox{|γ|}}\\
 \mbox{|F ⟨ H ⟩F*|} \ar[r]^{\quad\mbox{|β|}} & \mbox{|H|}}
 \]
+
+As you might expect, a parametrized initial algebra for |F|, if it is exists, 
+will be the initial object in the category of parametrized |F|-algebras. As 
+before we know that not all |IFunc* (I ⊎ J) I| functors have initial algebras. 
+In the next section, however we spell out what it is for a functor to be given 
+by an indexed container, and these functors are those which have such initial 
+algebras.
 
 \section{Indexed containers}
 
@@ -429,6 +500,9 @@ such that the follow diagram commutes:
 %format projS*  = projS *
 %format projP*  = projP *
 
+An |I|-indexed container is given by a set of shapes, and an |I|-indexed {\emph
+family} of positions:
+
 \begin{code}
 
 record ICont (I : Set) : Set where
@@ -437,10 +511,23 @@ record ICont (I : Set) : Set where
     S : Set
     P : S → I → Set
 
+\end{code}
+
+The extension of such a container is an |IFunc I|:
+
+\begin{code}
+
 ⟦_⟧ : ∀ {I} → ICont I → IFunc I
 ⟦_⟧ {I} (S ◁ P) = 
   record  {  obj  = λ A  → Σ S (λ s → (i : I) → P s i → A i)
           ;  mor  = λ m  → split s & f tilps ↦ (s , m ⊚ f) !m !s }
+
+\end{code}
+
+As with |IFunc| we can extend this notion to doubly indexed containers, where
+an |ICont* I J| is a function from |J| to |ICont I|:
+
+\begin{code}
 
 ICont* : (I J : Set) → Set
 ICont* I J = J → ICont I
@@ -452,6 +539,10 @@ S ◁* P = λ i → S i ◁ P i
 ⟦ C ⟧* = λ j → ⟦ C j ⟧ 
 
 \end{code}
+
+We wil denote the two projections for an |ICont| postfix as |ICont.sh| and
+|ICont.po|. Similarly for |C : ICont* I J| we have |C projS* : J → S| and 
+|C projP* : (j : J) → I → C projS* j → Set|. 
 
 %if style == code 
 
@@ -469,18 +560,25 @@ _projS* C i = ICont.S (C i)
 _projP* : ∀ {I J} → (C : ICont* J I) → (i : I) → ICont.S (C i) → J → Set
 _projP* C i = ICont.P (C i)
 
+
 \end{code}
 
 %endif
 
-%format ⇒ = "\Rightarrow"
+%format ^C = "^{\text{\tiny C}}"
+%format ^C* = "^{\text{\tiny C}^{\star}}"
+%format ⇒ = "\Rightarrow" ^C
 %format _⇒_ = _ ⇒ _
-%format ⇒* = ⇒ *
-%format _⇒*_ = _ ⇒ * _
+%format ⇒* = "\Rightarrow" ^C*
+%format _⇒*_ = _ "\Rightarrow" ^C* _
 %format ⟧⇒ = ⟧ "\mbox{$\!^{\Rightarrow}$}"
 %format ⟦_⟧⇒ = ⟦ _ ⟧⇒
 %format ⟧⇒* = ⟧ "\mbox{$\!^{\Rightarrow^{\!\star}}$}"
 %format ⟦_⟧⇒* = ⟦ _ ⟧⇒*
+
+As with plain containers morphisms in the category of indexed containers are 
+given by functions on shapes and contravariant {\emph indexed} functions on 
+positions:  
 
 \begin{code}
 
@@ -489,6 +587,13 @@ record _⇒_ {I} (C D : ICont I) : Set where
   field 
     f : C projS → D projS
     r : (s : C projS) → (D projP $$ (f s)) -*-> (C projP $$ s)
+
+\end{code}
+
+Container morphisms give rise to natural transformations between the functors 
+they represent:
+
+\begin{code}
 
 ⟦_⟧⇒_ : ∀ {I} {C D : ICont I} (m : C ⇒ D) {A : I → Set} → IFunc.obj ⟦ C ⟧ A → IFunc.obj ⟦ D ⟧ A
 ⟦ f ◁ r ⟧⇒ (s , g) = f s , g ⊚ r s
@@ -518,10 +623,38 @@ _projr = _⇒_.r
 
 %endif
 
-%format ^C = "^{\text{\tiny C}}"
+\begin{proposition}
+
+The functor |(⟦_⟧_ , ⟦_⟧⇒_)| in |[ ICont I , IFunc I ]| is full and faithful.
+
+\end{proposition}
+
+\begin{proof}
+
+This is a straight-forward generalisation of the proof for plain containers. 
+The proof relies on showing that we can `quote' a natural transformation between
+two container functors:
+
+\begin{code}
+
+q : {I : Set} (C D : ICont I) → ({A : I → Set} → IFunc.obj ⟦ C ⟧ A → IFunc.obj ⟦ D ⟧ A) → C ⇒ D
+q C D m = (proj₁ ∘ b) ◁ (proj₂ ∘ b)
+ where
+  eureka : (s : C projS) → IFunc.obj ⟦ D ⟧ (C projP $$ s)
+  eureka s =  m (s , idd)
+
+\end{code}
+
+By naturality this must be the unique inverse to the extesion of a container
+morphism given above.
+
+\end{proof}
+
 %format η^C = η ^C
 %format >>=^C = >>= ^C
 %format _>>=^C_ = _ >>=^C _
+
+As with |IFunc|, we can equip |ICont| with a relative monadic structure:
 
 \begin{code}
 
@@ -534,6 +667,29 @@ _>>=^C_ {I} H (S ◁ P) =  let  T = H projS* ;  Q = H projP*
                                 split s & f tilps j !* ↦ Σ (Σ I (P s)) (split i & p tilps ↦ Q i (f i p) j !m !s) !m !s  
 
 \end{code}
+
+\begin{proposition}
+
+The triple |(ICont , η^C , _>>=^C_)| is a relative monad and, furthermore, this 
+structure is preserved under |⟦_⟧_| 
+
+\end{proposition}
+
+\begin{proof}
+
+Again, given |F : ICont I|, |G : I → ICont J|, |H : J → ICont K|:
+\begin{align}
+|H i|                 &\quad& \approx^{\text{\tiny{C}}} &&\quad& |H >>=^C (η^C i)|   \\
+|F|                   && \approx^{\text{\tiny{C}}} &&& |η^C >>=^C F|                 \\
+|H >>=^C (G >>=^C F)| && \approx^{\text{\tiny{C}}} &&& |(λ i → H >>=^C (G i)) >>=^C F| 
+\end{align}
+
+Here we work up to container isomorphism, given by a pair of a proof that that 
+the sets of shapes are isomorphic and a familie of proof that all the position
+sets are isomorphic (Equivalently, two mutually inverse container morphisms). 
+  
+
+\end{proof}
 
 %format Δ^C = Δ ^C
 %format Π^C = Π ^C
@@ -653,5 +809,8 @@ fold^C {I} {J} {F} G m i = ffold i ◁ rfold i
 
 \section{Conclusions}
 
+
+\bibliographystyle{plain}
+\bibliography{paper}
 
 \end{document}

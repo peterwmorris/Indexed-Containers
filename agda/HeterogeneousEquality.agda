@@ -70,11 +70,11 @@ subst-removable P refl z = refl
                     PropEq.subst P eq z ≅ z
 ≡-subst-removable P refl z = refl
 
-cong : ∀ {l} {A : Set l} {B : A → Set l} {x y}
+cong : ∀ {l l'} {A : Set l} {B : A → Set l'} {x y}
        (f : (x : A) → B x) → x ≅ y → f x ≅ f y
 cong f refl = refl
 
-cong₂ : ∀ {l} {A : Set l} {B : A → Set l} {C : ∀ x → B x → Set l}
+cong₂ : ∀ {l l' l''} {A : Set l} {B : A → Set l'} {C : ∀ x → B x → Set l''}
           {x y u v}
         (f : (x : A) (y : B x) → C x y) → x ≅ y → u ≅ v → f x u ≅ f y v
 cong₂ f refl refl = refl
