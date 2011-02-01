@@ -58,6 +58,7 @@ _-**->_ {I} A B = {i : I} -> A i -> B i
 
 %endif
 
+%format . = "."
 %format $$ = "\!\!" 
 %format split = \ ( "\!"
 %format tilps = "\!\!" )
@@ -77,6 +78,7 @@ _-**->_ {I} A B = {i : I} -> A i -> B i
 \usepackage{amsmath}
 \usepackage{stmaryrd}
 
+\newcommand{\note}[1]{}
 
 %include lhs2TeX.fmt
 %include agda.fmt
@@ -157,7 +159,6 @@ f ⊚ g = λ i → (f i) ∘ (g i)
 
 \end{code}
 
-We call this category |Fam I|.
 
 %if style==code
 
@@ -170,6 +171,8 @@ Fam I = I → Set
 
 %endif
 
+\noindent
+We call this category |Fam I|.
 An |I|-indexed functor is then a functor from |Fam I| to |Set|, given by:
 
 \begin{code}
@@ -181,12 +184,11 @@ record IFunc (I : Set) : Set₁ where
 
 \end{code}
 
+\noindent
 Such that both |idd| is mapped to |id| and |_⊚_| to |_∘_| under the action of 
 |mor|. We adopt the convention that the projections |obj| and |mor| are silent, 
 \emph{i.e.} depending on the context |F :  IFunc I| can stand for either the 
-functor's action on objects, or on morphisms.
-
-A natural transformation between two such functors is given by:
+functor's action on objects, or on morphisms. A natural transformation between two such functors is given by:
 
 %format ^F = "^{\text{\tiny F}}"
 %format ⇒^F = "\Rightarrow" ^F
@@ -197,10 +199,11 @@ _⇒^F_ : ∀ {I} → (F G : IFunc I) → Set₁
 F ⇒^F G = ∀ {A} → IFunc.obj F A → IFunc.obj G A
 \end{code}
 
+\noindent
 with the obvious naturality condition that given |m : F ⇒ G| the following diagram
 commutes for all |f : A -*-> B|:
 
- \[
+\[
 \xymatrix{
 \mbox{|IFunc.obj F A|}  \ar[r]^{\qquad\mbox{|m {A}|}\qquad} 
 \ar[d]_{\mbox{|IFunc.mor F f|}} & \mbox{|IFunc.obj G A|} \ar[d]^{\mbox{|IFunc.mor G f|}}\\
@@ -256,7 +259,8 @@ For |F : IFunc I|, |G : I → IFunc J|, |H : J → IFunc K|:
 %format obj* = obj *
 %format mor* = mor *
 
-The opposite of the Kliesli category associated with |IFunc| has objects 
+\noindent
+The opposite of the Kleisli category associated with |IFunc| has objects 
 |I , J : Set| and morphisms given by |J|-indexed families of |I|-indexed 
 functors. We denote this notion of indexed functor |IFunc*|: 
 
@@ -273,13 +277,13 @@ mor* F m j  = IFunc.mor (F j) m
 
 \end{code}
 
-Again, we will omit calls to |obj*| and |mor*| when inferrable from the context 
-in which they appear.
+\noindent
+Again, we will omit |obj*| and |mor*| when inferrable from the context 
+in which they appear. Natural transformations extend to this double index 
+setting, too:
 
 %format obj* = 
 %format mor* = 
-
-Natural transformations:
 
 %format ^F* = "^{\text{\tiny F}^{\star}}"
 %format =*=>^F = "\Rightarrow" ^F*
@@ -293,14 +297,14 @@ F =*=>^F G = ∀ {A} → obj* F A -*-> obj* G A
 
 \end{code}
 
-
 %format Δ = "\Delta"
 %format Δ^F = Δ ^F
 %format Π = "\Pi"
 %format Π^F = Π ^F
 %format Σ^F = Σ ^F
 
-Clearly, the Kliesli structure gives rise to identities and composition in 
+\noindent
+Clearly, the Kleisli structure gives rise to identities and composition in 
 |IFunc*|. Indeed, composition gives rise to a \emph{re-indexing} operation which
 we denote |Δ^F|:
 
@@ -311,13 +315,19 @@ we denote |Δ^F|:
 
 \end{code}
 
+
+\noindent
 This construction is used, for instance, if we try to build an indexed functor
-whose fixed point is |Lam|. In the |abs| case we must build a functor 
+whose fixed point is |Lam|; Concentranting only on the |abs| case we build a functor 
 |F′ n X = F (1+ n) X|. Or simply |F′ = Δ^F (1+) F|. In general this combinator 
 restricts the functor |F′| to the parts of |F| over indexes in the image of the
 function |F|.
 
-|Δ^F| has left and right adjoints |Σ^F| and |Π^F|:
+What if the restriction appears on the right of such an equation? As an example,
+consider the successor constructor for |Fin|; here we want to solve the 
+equation |F′ (1+ n) X = F n X|. To do this we observe that this is equivalent to
+the equation |F′ n X = Σ Nat λ m → n ≡ 1+ m × F m X|. We denote the general
+construction |Σ^F|, so the 2nd equation can be written |F′ = Σ^F (1+) F|:
 
 \begin{code}
 
@@ -326,30 +336,80 @@ function |F|.
    record  {  obj  =  λ A → Σ J λ j → f j ≡ k × obj* F A j 
            ;  mor  =  λ m → split j & p & x tilps ↦ (j , p , mor* F m j x) !m !s }
  
+\end{code}
+
+\noindent
+Perhaps unsuprisingly, |Σ^F| turns out to be the left adjoint to re-indexing 
+(|Δ^F|). Its right adjoint, we denote |Π^F|:
+
+\begin{code}
+
 Π^F : ∀ {J I K} → (J → K) → IFunc* I J → IFunc* I K
 Π^F {J} f F k = 
    record  {  obj  =  λ A → (j : J) → f j ≡ k → obj* F A j 
-           ;  mor  =  λ m f j p → mor* F m j (f j p) }
+           ;  mor  =  λ m g j p → mor* F m j (g j p) }
 \end{code}
 
 \begin{proposition}
-|Σ^F| and |Π^F| are left and right adjoint to re-indexing (|Δ^F|).
+|Σ^F| and |Π^F| are left and right adjoint to re-indexing (|Δ^F|). 
 \end{proposition}
 
-If we imagine that the indexing set |K| is somehow \emph{larger} than |J| (and 
-that the function |f| is then a projection). We can explain these constructions 
-as the two possible ways to add the extra information --- 
-by picking one instance, or considering all possible instantiations. The 
-equalities state that `projecting' the smaller index out of the larger gives the
-index we cam in with.
+\begin{proof}
 
-We can employ the |Σ^F| construction to buld a functor whose fixed point is 
-|Fin| where we want a solution to the equation 
-|F′ n X = Σ Nat λ m → n ≡ 1+ m × ⊤ + F m X| or |F′ = Σ^F (1+) F|. In 
-abstracting over all possible values for the extra indexing information |Π^F| 
-allows for the construction of infinitely branching trees. 
-We also note that finite co-products and 
-products can be derived from |Σ^F| and |Π^F| respectively. First we construct:
+To show this we need to show that for all |f : J → K|, |g : K → J|, | F : IFunc* I J| and |G : IFunc* I K|:
+
+\[\begin{array}{c}
+|Σ^F f F =*=>^F G|
+\\\hline\hline
+|F =*=>^F Δ^F f G|\\
+\end{array}
+\quad
+\begin{array}{c}
+|Δ^F f F =*=>^F G|
+\\\hline\hline
+|F =*=>^F Π^F f G|\\
+\end{array}
+\]
+
+We can build the components of these isomorphisms easily:
+
+%format Σ⊣Δ = "\Sigma\!\dashv\!\Delta"
+%format Δ⊣Π = "\Delta\!\dashv\!\Pi"
+%format Σ⊣Δφ = Σ⊣Δ "\phi"
+%format Σ⊣Δψ = Σ⊣Δ "\psi"
+%format Δ⊣Πψ = Δ⊣Π "\psi"
+%format Δ⊣Πφ = Δ⊣Π "\phi"
+
+\begin{code}
+
+Σ⊣Δφ : ∀  {I J K} {F : IFunc* I J} {G : IFunc* I K} → 
+          (f : J → K) → Σ^F f F =*=>^F G → F =*=>^F Δ^F f G
+Σ⊣Δφ f m j x = m (f j) (j , refl , x)
+
+Σ⊣Δψ : ∀  {I J K} {F : IFunc* I J} {G : IFunc* I K} → 
+          (f : J → K) → F =*=>^F Δ^F f G → Σ^F f F =*=>^F G
+Σ⊣Δψ f m .(f j) (j , refl , x) = m j x
+
+Δ⊣Πφ : ∀  {I J K} {F : IFunc* I J} {G : IFunc* I K} → 
+          (g : K → J) → Δ^F g F =*=>^F G → F =*=>^F Π^F g G
+Δ⊣Πφ g m .(g k) x k refl = m k x
+
+Δ⊣Πψ : ∀  {I J K} {F : IFunc* I J} {G : IFunc* I K} → 
+          (g : K → J) → F =*=>^F Π^F g G → Δ^F g F =*=>^F G
+Δ⊣Πψ g m k x = m (g k) x k refl
+
+\end{code}
+
+\noindent
+It only remains to observe that these pairs or functions are mutual inverses, 
+which is clear to see.
+
+\end{proof}
+
+In abstracting over all possible values for the extra indexing information |Π^F|
+allows for the construction of infinitely branching trees, such as rose trees. 
+We also note that finite co-products and products can be derived from |Σ^F| and 
+|Π^F| respectively. First we construct:
 
 %format H0 = H "_{0}"
 %format H2 = H "_{2}"
@@ -388,6 +448,7 @@ _×^F_ : ∀ {I} → (F G : IFunc I) → IFunc* I ⊤
 F ×^F G = Π^F _ (H2 F G) 
 \end{code}
 
+\noindent
 Clearly these are simply the constantly |⊤| and |⊥| valued functors, and the 
 point-wise product and co-product of functors, but this encoding allows us to 
 keep the number of constants in out vocabulary to a minimum.
@@ -407,6 +468,7 @@ diagram commutes:
 \mbox{|obj* F B|} \ar[r]^{\;\mbox{|β|}} & \mbox{|B|}}
 \]
 
+\noindent
 If it exists then the initial algebra of |F| is the initial object of the 
 category of |F|-algebras spelt out above. It follows from the fact that not all
 functors in |Set → Set| (for instance |F A = (A → Bool) → Bool|) have initial 
@@ -417,17 +479,16 @@ above, an endo-functor |IFunc* I I| gives rise to an initial algebra in |Fam I|.
 This prevents us from being able to define nested, or mutual inductive families 
 in this way.
 
-Before we get there we observe that, for the morphism part of an indexed-functor:
+We observe that, for the morphism part of an indexed-functor over a co-product:
 
 \begin{align*}
 |IFunc (I ⊎ J)| 
   & \equiv      & |(I ⊎ J → Set) → Set| \\
   & \cong       & |(I → Set) × (J → Set) → Set|\\
   & \cong       & |(I → Set) → (J → Set) → Set|\\
-  & \rightarrow & |((I → Set) → J → Set) → (I → Set) → Set|\\
-  & \equiv      & |IFunc* I J → IFunc I|
 \end{align*}
 
+\noindent
 This gives us partial application for indexed 
 functors of the form |IFunc (I ⊎ J)|. Spelt out concretely we have:
 
@@ -445,8 +506,9 @@ F ⟨ G ⟩F  =
           ;  mor  = λ f  → IFunc.mor F [ f  , mor*  G f  ] }
 \end{code}
 
-It's an important observation that this construction is functorial, in that it 
-lifts natural transformations in this way:
+\noindent
+This construction is functorial, in that it lifts natural transformations in 
+the following way:
 
 
 \begin{code}
@@ -457,6 +519,7 @@ F ⟨ γ ⟩M = IFunc.mor F [ (λ _ a → a) , γ ]
 
 \end{code}
 
+\noindent
 Each of these observations generalises to |IFunc*|:
 
 %format ⟩F*  = ] "^{\text{\tiny{F}}^{\star}}"
@@ -476,6 +539,7 @@ _⟨_⟩M* F {G} {H} γ = λ k → _⟨_⟩M  (F k) {G} {H} γ
 
 \end{code}
 
+\noindent
 A parametrized |F|-algebra for |F : IFunc* (I ⊎ J) I| is a pair of an 
 indexed-functor |G : IFunc J I| and a natural transformation
 |α : F ⟨ G ⟩F* =*=>^F G|. A morphism between two such algebras 
@@ -489,8 +553,15 @@ such that the follow diagram commutes:
 \mbox{|F ⟨ H ⟩F*|} \ar[r]^{\quad\mbox{|β|}} & \mbox{|H|}}
 \]
 
+\noindent
 As you might expect, a parametrized initial algebra for |F|, if it is exists, 
-will be the initial object in the category of parametrized |F|-algebras. As 
+will be the initial object in the category of parametrized |F|-algebras. 
+
+The fact that the parametrized initial algebra construction can be iterated, 
+means that we can define nested and mutual families of data-types, such as the
+triple of terms, types and contexts outlined in the introduction. 
+
+As 
 before we know that not all |IFunc* (I ⊎ J) I| functors have initial algebras. 
 In the next section, however we spell out what it is for a functor to be given 
 by an indexed container, and these functors are those which have such initial 
@@ -508,8 +579,10 @@ algebras.
 %format ICont.P = _ "." P
 %format projS  = "\!." S
 %format projP  = "\!." P
-%format projS*  = projS *
-%format projP*  = projP *
+%format projS*  = projS 
+%format projP*  = projP 
+%format $* = "\!\!"
+%format λ* = "\!\!"
 
 An |I|-indexed container is given by a set of shapes, and an |I|-indexed \emph{family} of positions:
 
@@ -538,21 +611,21 @@ As with |IFunc| we can extend this notion to doubly indexed containers, where
 an |ICont* I J| is a function from |J| to |ICont I|:
 
 \begin{code}
+record ICont* (I J : Set) : Set₁ where
+  constructor _◁*_
+  field
+    S : J → Set
+    P : (j : J) → S j → I → Set
 
-ICont* : (I J : Set) → Set₁
-ICont* I J = J → ICont I
-
-_◁*_ : ∀ {I J} → (S : I → Set) → (P : (i : I) → S i → J → Set) → ICont* J I
-S ◁* P = λ i → S i ◁ P i
 
 ⟦_⟧* : ∀ {I J} → ICont* I J → IFunc* I J
-⟦ C ⟧* = λ j → ⟦ C j ⟧ 
+⟦ S ◁* P ⟧* i = ⟦ S i ◁ P i ⟧
+
 
 \end{code}
 
-We will denote the two projections for an |ICont| postfix as |ICont.sh| and
-|ICont.po|. Similarly for |C : ICont* I J| we have |C projS* : J → S| and 
-|C projP* : (j : J) → I → C projS* j → Set|. 
+We will denote the two projections for an |ICont| postfix as |_ projS| and
+|_ projP|. 
 
 %if style == code 
 
@@ -565,11 +638,16 @@ _projP : ∀ {I} → (C : ICont I) → ICont.S C → I → Set
 _projP = ICont.P
 
 _projS* : ∀ {I J} → ICont* J I → I → Set
-_projS* C i = ICont.S (C i)
+_projS* C = ICont*.S C 
 
-_projP* : ∀ {I J} → (C : ICont* J I) → (i : I) → ICont.S (C i) → J → Set
-_projP* C i = ICont.P (C i)
+_projP* : ∀ {I J} → (C : ICont* J I) → (i : I) → ICont*.S C i → J → Set
+_projP* C = ICont*.P C
 
+_$*_ : ∀ {I J} → ICont* I J → J → ICont I
+(S ◁* P) $* j = S j ◁ P j
+
+λ* : ∀ {I J} → (J → ICont I) → ICont* I J
+λ* F = (λ j → (F j) projS) ◁* (λ j → (F j) projP)
 
 \end{code}
 
@@ -584,10 +662,22 @@ _projP* C i = ICont.P (C i)
 %format ⟧⇒ = ⟧ "\mbox{$\!^{\Rightarrow}$}"
 %format ⟦_⟧⇒ = ⟦ _ ⟧⇒
 %format ⟧⇒* = ⟧ "\mbox{$\!^{\Rightarrow^{\!\star}}$}"
-%format ⟦_⟧⇒* = ⟦ _ ⟧⇒*
+%format ⟦_⟧⇒*_ = ⟦ _ ⟧⇒* _
 
-As with plain containers morphisms in the category of indexed containers are 
-given by functions on shapes and contravariant {\emph indexed} functions on 
+\noindent
+We can derive what a container morphism by observing that for |S ◁ P : ICont I| 
+and functor |F : IFunc I|:
+
+\begin{align*}
+                & |⟦ S ◁ P ⟧ ⇒^F F| \\
+  \equiv  \;    & |{X : Set} → (Σ S λ s → (i : I) → P s i → X i) → F X| \\
+  \cong   \;    & |(s : S) → {X : Set} → ((i : I) → P s i → X i) → F X|\\
+  \cong   \;    & |(s : S) → F (P s)|\\
+\end{align*}
+
+\noindent
+If |F| is also an indexed container then we can pick apart the morphisms into a
+function on shapes and a contravariant \emph{indexed} function on 
 positions:  
 
 \begin{code}
@@ -600,26 +690,31 @@ record _⇒_ {I} (C D : ICont I) : Set₁ where
 
 \end{code}
 
+\noindent
 Container morphisms give rise to natural transformations between the functors 
 they represent:
 
 \begin{code}
 
-⟦_⟧⇒_ : ∀ {I} {C D : ICont I} (m : C ⇒ D) {A : I → Set} → IFunc.obj ⟦ C ⟧ A → IFunc.obj ⟦ D ⟧ A
+⟦_⟧⇒ : ∀ {I} {C D : ICont I} (m : C ⇒ D) {A : I → Set} → IFunc.obj ⟦ C ⟧ A → IFunc.obj ⟦ D ⟧ A
 ⟦ f ◁ r ⟧⇒ (s , g) = f s , g ⊚ r s
 
-_⇒*_ : ∀ {J I} (C D : ICont* I J) → Set₁ 
-_⇒*_ {J} C D = (j : J) → C j ⇒ D j 
+record _⇒*_ {I J} (C D : ICont* I J) : Set₁ where
+  constructor _◁*_
+  field 
+    f : C projS* -*-> D projS*
+    r : {j : J} (s : C projS* $$ j) → (D projP* $$ j $$ (f j s)) -*-> (C projP* $$ j $$ s)
+
 
 ⟦_⟧⇒* : ∀ {I J} {C D : ICont* I J} (m : C ⇒* D) {A : I → Set} → obj* ⟦ C ⟧* A -*-> obj* ⟦ D ⟧* A
-⟦ m ⟧⇒* j x = ⟦ m j ⟧⇒ x 
+⟦ f ◁* r ⟧⇒* j = ⟦ (f j) ◁ r ⟧⇒  
 
 \end{code}
 
 %format projf  = "\!." f
 %format projr  = "\!." r
-%format projf*  = "\!." f *
-%format projr*  = "\!." r *
+%format projf*  = "\!." f 
+%format projr*  = "\!." r 
 
 %if style == code 
 
@@ -632,10 +727,10 @@ _projr : ∀ {I} {C D : ICont I} (m : C ⇒ D) (s : C projS) → (D projP $$ (m 
 _projr = _⇒_.r
 
 _projf* :  ∀ {I J} {C D : ICont* I J} (m : C ⇒* D) (j : J) → C projS* $$ j → D projS* $$ j
-_projf* m j = _⇒_.f (m j) 
+_projf* m j = _⇒*_.f m j 
 
 _projr* : ∀ {I J} {C D : ICont* I J} (m : C ⇒* D) (j : J) (s : C projS* $$ j) → (D projP* $$ j $$ (m projf* $$ j $$ s)) -*-> (C projP* $$ j $$ s)
-_projr* m j = _⇒_.r (m j) 
+_projr* m j = _⇒*_.r m  
 
 \end{code}
 
@@ -649,23 +744,23 @@ The functor |(⟦_⟧_ , ⟦_⟧⇒_)| in |[ ICont I , IFunc I ]| is full and fa
 
 \begin{proof}
 
-This is a straight-forward generalisation of the proof for plain containers. 
-The proof relies on showing that we can `quote' a natural transformation between
-two container functors:
+This follows directly from our derivation of morphisms from a container functor.
 
-\begin{code}
 
-q : {I : Set} (C D : ICont I) → ({A : I → Set}  → IFunc.obj ⟦  C ⟧ A  → IFunc.obj ⟦  D ⟧ A) 
-                                                →              C      ⇒              D
-q C D m = (proj₁ ∘ eureka) ◁ (proj₂ ∘ eureka)
- where
-  eureka : (s : C projS) → IFunc.obj ⟦ D ⟧ (C projP $$ s)
-  eureka s =  m (s , idd)
-
-\end{code}
-
-By naturality this must be the unique inverse to the extesion of a container
-morphism given above.
+%%\begin{code}
+%%
+%%q : {I : Set} (C D : ICont I) → ({A : I → Set}  → IFunc.obj ⟦  C ⟧ A  → IFunc.%%obj ⟦  D ⟧ A) 
+%%                                                →              C      ⇒       %%       D
+%%q C D m = (proj₁ ∘ eureka) ◁ (proj₂ ∘ eureka)
+%% where
+%%  eureka : (s : C projS) → IFunc.obj ⟦ D ⟧ (C projP $$ s)
+%%  eureka s =  m (s , idd)
+%%
+%%\end{code}
+%%
+%%By naturality this must be the unique inverse to the extesion of a container
+%%morphism given above.
+%%
 
 \end{proof}
 
@@ -680,33 +775,37 @@ As with |IFunc|, we can equip |ICont| with a relative monadic structure:
 η^C : ∀ {I} → I → ICont I
 η^C i = ⊤ ◁ λ _ i′ → i ≡ i′
 
-_>>=^C_ : ∀ {I J} → (I → ICont J) → ICont I → ICont J
-_>>=^C_ {I} H (S ◁ P) =  let  T = H projS* ;  Q = H projP* 
-                         in   (IFunc.obj ⟦ S ◁ P ⟧ T) ◁
+_>>=^C_ : ∀ {I J} → ICont* J I → ICont I → ICont J
+_>>=^C_ {I} (T ◁* Q) (S ◁ P) =  (IFunc.obj ⟦ S ◁ P ⟧ T) ◁
                                 split s & f tilps j !* ↦ Σ (Σ I (P s)) (split i & p tilps ↦ Q i (f i p) j !m !s) !m !s  
 
 \end{code}
 
+%format ≈^C = "\approx^{\text{\tiny{C}}}"
+
 \begin{proposition}
 
 The triple |(ICont , η^C , _>>=^C_)| is a relative monad and, furthermore, this 
-structure is preserved under |⟦_⟧_| 
+structure is preserved (upto |≈^C|) under |⟦_⟧_|.
 
 \end{proposition}
 
 \begin{proof}
 
 Again, given |F : ICont I|, |G : I → ICont J|, |H : J → ICont K|:
+
 \begin{align}
 |H i|                 &\quad& \approx^{\text{\tiny{C}}} &&\quad& |H >>=^C (η^C i)|   \\
 |F|                   && \approx^{\text{\tiny{C}}} &&& |η^C >>=^C F|                 \\
 |H >>=^C (G >>=^C F)| && \approx^{\text{\tiny{C}}} &&& |(λ i → H >>=^C (G i)) >>=^C F| 
 \end{align}
 
+\noindent
 Here we work up to container isomorphism, given by a pair of a proof that that 
 the sets of shapes are isomorphic and a family of proofs that all the position
 sets are isomorphic (Equivalently, two mutually inverse container morphisms). 
   
+\note{Lemma about |≈^C| being the same as mutually inverse morphisms}
 
 \end{proof}
 
@@ -720,21 +819,21 @@ has left and right adjoints |Σ^C| and |Π^C|:
 \begin{code}
 
 Δ^C : ∀ {I J K} → (J → K) → ICont* I K → ICont* I J
-Δ^C f F = F ∘ f 
+Δ^C f F = λ* λ k → F $* (f k) 
 
 Σ^C : ∀ {J I K} → (J → K) → ICont* I J → ICont* I K
-Σ^C {J} f C k =  (Σ J λ j → f j ≡ k × (C j) projS) ◁ 
-                     split j & eq & s tilps ↦ C projP* $$ j $$ s !m !s
+Σ^C {J} f (S ◁* P) =  λ* λ k →  (Σ J λ j → f j ≡ k × S j) ◁
+                                split j & eq & s tilps ↦ P j s !m !s
  
 Π^C : ∀ {J I K} → (J → K) → ICont* I J → ICont* I K
-Π^C {J} f C k =  ((j : J) → f j ≡ k → (C j) projS) ◁ 
-                     λ s i → Σ J λ j → Σ (f j ≡ k) λ eq → (C j) projP $$ (s j eq)$$ i 
+Π^C {J} f (S ◁* P) =  λ* λ k →  ((j : J) → f j ≡ k → S j) ◁
+                                λ s i → Σ J λ j → Σ (f j ≡ k) λ eq → P j (s j eq) i 
 
 \end{code}
 
 \begin{proposition}
-|Σ^F| and |Π^F| are left and right adjoint to re-indexing (|Δ^F|), and 
-are preserved under |⟦_⟧_|.
+|Σ^C| and |Π^C| are left and right adjoint to re-indexing (|Δ^C|), and 
+are preserved (upto |≈^C|) under |⟦_⟧_|.
 \end{proposition}
 
 %format ✧ = "\lozenge"
@@ -749,22 +848,24 @@ are preserved under |⟦_⟧_|.
 %format PI = P "^{" I "}"
 %format PJ = P "^{" J "}" 
 
-Before we build the initial algebras of, it will help to define their partial
-application. 
+Before we build the initial algebras of indexed containers, it will help to 
+define their partial application. 
 
 \begin{code}
 
 _⟨_⟩C : ∀ {I J} → ICont (I ⊎ J) → ICont* J I → ICont J
-_⟨_⟩C {I} {J} (S ◁ P) D = 
+_⟨_⟩C {I} {J} (S ◁ P) (T ◁* Q) = 
   let  PI  : S  → I  → Set            ;  PI  s  i  = P s (inj₁ i) 
        PJ  : S  → J  → Set            ;  PJ  s  j  = P s (inj₂ j) 
-       T   : I → Set                  ;  T      i  = (D i) projS
-       Q   : (i : I) → T i → J → Set  ;  Q      i  = (D i) projP
-  in   IFunc.obj ⟦ S ◁ PI ⟧ T ◁ (split s & f tilps j !* ↦ PJ s j ⊎ (Σ I λ i → Σ (PI s i) λ p → Q i (f i p) j) !m !s)
+  in   IFunc.obj ⟦ S ◁ PI ⟧ T ◁     (split s & f tilps j !* ↦ PJ s j 
+                                 ⊎  (Σ I λ i → Σ (PI s i) λ p → Q i (f i p) j) !m !s)
+
+
 
 \end{code}
 
-The composite container has shapes given by an shape |s : S| and an assigment of |T| 
+\noindent
+The composite container has shapes given by a shape |s : S| and an assigment of |T| 
 shapes to |PI s| positions. Positions are then a choice between 
 a |J|-indexed position, or a pair of an |I|-indexed position, and a |Q| position
 \emph{underneath} the appropriate |T| shape. 
@@ -774,12 +875,13 @@ a |J|-indexed position, or a pair of an |I|-indexed position, and a |Q| position
 \begin{code}
 
 _⟨_⟩C* : ∀ {I J K} → ICont* (I ⊎ J) K → ICont* J I →  ICont* J K
-_⟨_⟩C* C D k = (C k) ⟨ D ⟩C
+_⟨_⟩C* C D = λ* λ k → (C $* k) ⟨ D ⟩C
 
 \end{code}
 
 %endif
 
+\noindent
 As with indexed functors, this construction is functorial in its second 
 argument, and lifts container morphisms in this way:
 
@@ -789,8 +891,8 @@ _⟨_⟩CM :  ∀  {I J} (C : ICont (I ⊎ J)) {D E : ICont* J I} →
                     D      ⇒*        E        
              → C ⟨  D ⟩C   ⇒    C ⟨  E ⟩C  
 C ⟨ γ ⟩CM = 
-  (  split s & f tilps ↦ (s , λ i p → (γ i) projf $$ (f i p)) !m !s) ◁ 
-     split s & f tilps j !* ↦ [ inj₁ , (split i & p & q tilps ↦ inj₂ (i , p , (γ i) projr $$ (f i p) $$ j $$ q) !m !s) ] !m !s 
+  (  split s & f tilps ↦ (s , λ i p → γ projf* $$ i $$ (f i p)) !m !s) ◁ 
+     split s & f tilps j !* ↦ [ inj₁ , (split i & p & q tilps ↦ inj₂ (i , p , γ projr* $$ i $$ (f i p) $$ j $$ q) !m !s) ] !m !s 
 
 \end{code}
 
@@ -798,7 +900,8 @@ C ⟨ γ ⟩CM =
 
 \section{Initial Algebras of Indexed Containers}
 
-We will now examine how to construct the initial algebra of a container of the form |F : ICont* (I ⊎ J) I|. The shapes of such a container are an |I|-indexed family of |Set|s and the positions are in |(i : I) → S i → I ⊎ J → Set|; we will treat these position as two separate entities, those positions indexed by |I| (|PI : (i : I) → S i → I → Set|) and those by |J| (|PJ : (i : I) → S i → I → Set|).
+We will now examine how to construct the initial algebra of a container of the form |F : ICont* (I ⊎ J) I|. The shapes of such a container are an |I|-indexed family of |Set|s and the positions are in |(i : I) → S i → I ⊎ J → Set|; we will treat these position as two separate entities, those positions indexed by |I| (|PI : (i : I) → S i → I → Set|) -- the recusive positions -- and those by |J| 
+(|PJ : (i : I) → S i → I → Set|) -- the payload positions.
 
 The shapes of initial algebra we are constructing will be trees with S shapes at the nodes and which branch over the recursive |PI| positions. We call these trees \emph{indexed} |W|-types, denoted |WI| and they are the initial algebra of the functor |⟦ S ◁ PI ⟧*|:
 
@@ -815,6 +918,8 @@ WIfold f i (sup (s , g)) = f i (s , λ i′ p → WIfold f i′ (g i′ p))
 
 \end{code}
 
+
+\noindent
 This mirrors the construction for plain containers, where we can view ordinary |W| types as the initial algebra of a container functor.
 
 Positions are given by paths through such a tree, terminated by a non-recursive |PJ|:
@@ -831,14 +936,26 @@ data Path  {I J : Set} (S : I → Set)
 
 \end{code}
 
-This exchoes the partial application construction where positions were given by a |PJ| position at the top level, or a pair of a |PJ| position and a sub |Q| position. Here the |Q| positions are recursive |Path| positions. Indeed we can mediate between a |Path| view of the position sets and a partial applicaton syle position:
+\noindent
+Again this mirrors the partial application construction where positions were 
+given by a |PJ| position at the top level, or a pair of a |PJ| position and a 
+sub |Q| position. Here the |Q| positions are recursive |Path| positions. Indeed 
+we can mediate between a |Path| view of the position sets and a partial 
+applicaton style position:
+
+%format Path′ = Path ′
 
 \begin{code}
 
-Path' : ∀ {I J} S (PI : (i : I) → S i → I  → Set) → (PJ : (i : I) → S i → J  → Set) (i : I) →  WI S PI i → J → Set
-Path' {I} S PI PJ i (sup (s , f)) j = PJ i s j ⊎ (Σ I λ i′ → Σ (PI i s i′) λ p → Path S PI PJ i′ (f i′ p) j)
+Path′ : ∀  {I J} S  (PI : (i : I) → S i → I  → Set) 
+                    (PJ : (i : I) → S i → J  → Set) 
+           (i : I) →  WI S PI i → J → Set
+Path′ {I} S PI PJ i (sup (s , f)) j = 
+     PJ i s j 
+  ⊎  (Σ I λ i′ → Σ (PI i s i′) λ p → Path S PI PJ i′ (f i′ p) j)
 
-path : ∀ {I J S PI PJ} {i : I} {x : WI S PI i} {j : J} → Path S PI PJ i x j → Path' S PI PJ i x j
+path : ∀  {I J S PI PJ} {i : I} {x : WI S PI i} {j : J} → 
+          Path S PI PJ i x j → Path' S PI PJ i x j
 path (here p)        = inj₁ p
 path (there i′ p q)  = inj₂ (i′ , (p , q))
 
@@ -847,45 +964,49 @@ path (there i′ p q)  = inj₂ (i′ , (p , q))
 %format μ = "\mu"
 %format μ^C = μ ^C
 
-We can now give the object part of the patrametrized intial algebra of a container, given by:
+\noindent
+We can now give the object part of the patrametrized initial algebra of a container, given by:
 
 \begin{code}
 
 μ^C : {I J : Set} → ICont* (I ⊎ J) I → ICont* J I
-μ^C {I} {J} F = 
-  let  S = F projS*  
-       PI  : (i : I) → S i → I  → Set ;  PI  i s i′  = F projP* $$ i $$ s $$ (inj₁ i′) 
-       PJ  : (i : I) → S i → J  → Set ;  PJ  i s j   = F projP* $$ i $$ s $$ (inj₂ j)
+μ^C {I} {J} (S ◁* P) = 
+  let  PI  : (i : I) → S i → I  → Set ;  PI  i s i′  = P $$ i $$ s $$ (inj₁ i′) 
+       PJ  : (i : I) → S i → J  → Set ;  PJ  i s j   = P $$ i $$ s $$ (inj₂ j)
   in   WI S PI ◁* Path S PI PJ
 \end{code}
 
 %format in^C = "\Varid{in}" ^C
 %format fold^C = fold ^C
 
+\noindent
 The algebra map is a container morphism from the partial aplication of |F| and its parametrised initial algebra, to the initial algebra, given by the algebra map of |WI| (|sup|) and our mediation funtion |path|:
 
 \begin{code}
 
 in^C : ∀ {I J} → (F : ICont* (I ⊎ J) I) → F ⟨ μ^C F ⟩C* ⇒* μ^C F
-in^C F i = sup ◁ λ _ _ p → path p 
+in^C F = (λ _ → sup) ◁* λ _ _ p → path p 
 
 \end{code}
 
 \begin{code}
  
 fold^C : ∀ {I J} {F : ICont* (I ⊎ J) I} (G : ICont* J I) → F ⟨ G ⟩C* ⇒* G → μ^C F ⇒* G
-fold^C {I} {J} {F} G m i = ffold i ◁ rfold i 
-    where  S = F projS*  
-           PI  :  (i : I) → S i → I  → Set ;  PI  i s i′  = F projP* $$ i $$ s $$ (inj₁ i′) 
-           PJ  :  (i : I) → S i → J  → Set ;  PJ  i s j   = F projP* $$ i $$ s $$ (inj₂ j)
-           Q = G projP*
-           ffold = WIfold (m projf*)
-           rfold :  (i : I) (s : WI S PI i) (j : J) → Q i (ffold i s) j → Path S PI PJ i s j
-           rfold i (sup (s , f)) j p  with m projr* $$ i $$ (s , _) $$ j $$ p
-           rfold i (sup (s , f)) j p  | inj₁ x               = here x
-           rfold i (sup (s , f)) j p  | inj₂ (i′ , (q , y))  = there i′ q (rfold i′ (f i′ q) j y)
+fold^C {I} {J} {S ◁* P} (T ◁* Q) (f ◁* r) = ffold ◁* rfold 
+    where  PI  :  (i : I) → S i → I  → Set ;  PI  i s i′  = P i s (inj₁ i′) 
+           PJ  :  (i : I) → S i → J  → Set ;  PJ  i s j   = P i s (inj₂ j)
+           ffold = WIfold f
+           rfold :  {i : I} (s : WI S PI i) (j : J) → Q i (ffold i s) j → Path S PI PJ i s j
+           rfold (sup (s , f)) j p  with r (s , _) j p
+           rfold (sup (s , f)) j p  | inj₁ x               = here x
+           rfold (sup (s , f)) j p  | inj₂ (i′ , (q , y))  = there i′ q (rfold (f i′ q) j y)
+
 
 \end{code}
+
+\section{Terminal Co-Algebras of Indexed Containers}
+
+\section{W is still enough}
 
 \section{Strictly Positive Types}
 
