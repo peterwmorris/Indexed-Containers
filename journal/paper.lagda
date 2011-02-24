@@ -117,6 +117,49 @@ Blah
 
 \subsection{Type Theory}
 
+\newcommand{\prodd}{\ensuremath{\mathaccent\cdot{\prod}}}
+
+%format ∫ = "\prodd"
+%format ** = "."
+%format Setop = Set "^{" op "}"
+
+%if style==newcode
+
+\begin{code}
+EndS : ∀ {l l'} {T : Set l} → (F : T → Set l') → Set (l ⊔ l')
+EndS {T = T} F = {X : T} → F X
+
+
+syntax EndS (λ X → F) = ∫ X ** F
+
+Setop : Set₁
+Setop  = Set 
+\end{code}
+
+%endif
+
+
+Our contructions are all developed in Agda, and so we adopt it's type-theory and
+syntax. With the following extra pieces of notation:
+
+We are going to use type theory versions of certain category theoretic concepts 
+For instance, we use ends |End| to capture natural transformations.
+Given a bifunctor |F : Setop → Set → Set|, an element of |∫ X ** F X X| is
+equivalent to an element of |f : {X : Set} → F X X|, along with a proof:
+
+\[ \mbox{|{A B : Set} (g : A → B) → F g B (f {B}) ≡ F A g (f {A})|} \]
+
+
+\noindent
+The natural transformations between functors |F| and |G| are
+ends |∫ X ** F X → G X|. We will often ignore the presence of the proofs, and 
+use such ends directly as polymorphic functions.
+
+In this setting, the Yoneda lemma can be stated as follows:
+
+\[\mbox{| F X ≅ ∫ Y ** (X → Y) → F Y |}\]
+
+we will make use of this fact later on.
 
 \subsection{Containers}
 
@@ -188,7 +231,7 @@ record IFunc (I : Set) : Set₁ where
 Such that both |idd| is mapped to |id| and |_⊚_| to |_∘_| under the action of 
 |mor|. We adopt the convention that the projections |obj| and |mor| are silent, 
 \emph{i.e.} depending on the context |F :  IFunc I| can stand for either the 
-functor's action on objects, or on morphisms. A natural transformation between two such functors is given by:
+functor's action on objects, or on morphisms. A natural transformation between two such functors is given by an end:
 
 %format ^F = "^{\text{\tiny F}}"
 %format ⇒^F = "\Rightarrow" ^F
@@ -196,19 +239,12 @@ functor's action on objects, or on morphisms. A natural transformation between t
 
 \begin{code}
 _⇒^F_ : ∀ {I} → (F G : IFunc I) → Set₁
-F ⇒^F G = ∀ {A} → IFunc.obj F A → IFunc.obj G A
+F ⇒^F G = ∫ A ** (IFunc.obj F A → IFunc.obj G A)
 \end{code}
 
 \noindent
-with the obvious naturality condition that given |m : F ⇒ G| the following diagram
-commutes for all |f : A -*-> B|:
 
-\[
-\xymatrix{
-\mbox{|IFunc.obj F A|}  \ar[r]^{\qquad\mbox{|m {A}|}\qquad} 
-\ar[d]_{\mbox{|IFunc.mor F f|}} & \mbox{|IFunc.obj G A|} \ar[d]^{\mbox{|IFunc.mor G f|}}\\
-\mbox{|IFunc.obj F B|} \ar[r]^{\qquad\mbox{|m {B}|}\qquad} & \mbox{|IFunc.obj G B|}}
-\]
+
 
 %format η = "\eta"
 %format η^F = η ^F
@@ -293,7 +329,7 @@ setting, too:
 \begin{code}
 
 _=*=>^F_ : ∀ {I J} → (F G : IFunc* I J) → Set₁
-F =*=>^F G = ∀ {A} → obj* F A -*-> obj* G A   
+F =*=>^F G = ∫ A ** obj* F A -*-> obj* G A
 
 \end{code}
 
@@ -520,7 +556,7 @@ F ⟨ γ ⟩M = IFunc.mor F [ (λ _ a → a) , γ ]
 \end{code}
 
 \noindent
-Each of these observations generalises to |IFunc*|:
+Each of these definitions generalises to |IFunc*|:
 
 %format ⟩F*  = ] "^{\text{\tiny{F}}^{\star}}"
 %format _⟨_⟩F* = _ ⟨ _ ⟩F*
@@ -670,15 +706,23 @@ and functor |F : IFunc I|:
 
 \begin{align*}
                 & |⟦ S ◁ P ⟧ ⇒^F F| \\
-  \equiv  \;    & |{X : Set} → (Σ S λ s → (i : I) → P s i → X i) → F X| \\
-  \cong   \;    & |(s : S) → {X : Set} → ((i : I) → P s i → X i) → F X|\\
+  \equiv  \;    & |∫ X ** (Σ S λ s → P s -*-> X) → F X| \\
+  \cong   \;    & |(s : S) → ∫ X ** (P s -*-> X) → F X| \\
   \cong   \;    & |(s : S) → F (P s)|\\
 \end{align*}
 
 \noindent
-If |F| is also an indexed container then we can pick apart the morphisms into a
-function on shapes and a contravariant \emph{indexed} function on 
-positions:  
+Where the last step is by Yoneda.
+If |F| is also an indexed container |T ◁ Q| then we have:
+
+\begin{align*}
+           & |⟦ S ◁ P ⟧ ⇒^F ⟦ T ◁ Q ⟧| \\
+ \cong \;  & |(s : S) → Σ T λ t → Q t → P s| \\
+ \cong \;  & |Σ (S → T) λ f → (s : S) → Q (f s) → P s|
+\end{align*}
+ 
+We will use this last line as the definition for container morphisms, captured by 
+this record type:  
 
 \begin{code}
 
@@ -691,13 +735,46 @@ record _⇒_ {I} (C D : ICont I) : Set₁ where
 \end{code}
 
 \noindent
-Container morphisms give rise to natural transformations between the functors 
-they represent:
+We witness one side of the isomorphism between container morphisms and natural 
+transformations and between container functors:
 
 \begin{code}
 
-⟦_⟧⇒ : ∀ {I} {C D : ICont I} (m : C ⇒ D) {A : I → Set} → IFunc.obj ⟦ C ⟧ A → IFunc.obj ⟦ D ⟧ A
+⟦_⟧⇒ : ∀ {I} {C D : ICont I} (m : C ⇒ D) → ∫ A ** (IFunc.obj ⟦ C ⟧ A → IFunc.obj ⟦ D ⟧ A)
 ⟦ f ◁ r ⟧⇒ (s , g) = f s , g ⊚ r s
+
+\end{code}
+
+\begin{proposition}
+
+The functor |(⟦_⟧_ , ⟦_⟧⇒_)| in |[ ICont I , IFunc I ]| is full and faithful.
+
+\end{proposition}
+
+\begin{proof}
+
+By construction.
+
+%%\begin{code}
+%%
+%%q : {I : Set} (C D : ICont I) → ({A : I → Set}  → IFunc.obj ⟦  C ⟧ A  → IFunc.%%obj ⟦  D ⟧ A) 
+%%                                                →              C      ⇒       %%       D
+%%q C D m = (proj₁ ∘ eureka) ◁ (proj₂ ∘ eureka)
+%% where
+%%  eureka : (s : C projS) → IFunc.obj ⟦ D ⟧ (C projP $$ s)
+%%  eureka s =  m (s , idd)
+%%
+%%\end{code}
+%%
+%%By naturality this must be the unique inverse to the extesion of a container
+%%morphism given above.
+%%
+
+\end{proof}
+
+We can lift this functor to the doubly indexed variant:
+
+\begin{code}
 
 record _⇒*_ {I J} (C D : ICont* I J) : Set₁ where
   constructor _◁*_
@@ -706,7 +783,7 @@ record _⇒*_ {I J} (C D : ICont* I J) : Set₁ where
     r : {j : J} (s : C projS* $$ j) → (D projP* $$ j $$ (f j s)) -*-> (C projP* $$ j $$ s)
 
 
-⟦_⟧⇒* : ∀ {I J} {C D : ICont* I J} (m : C ⇒* D) {A : I → Set} → obj* ⟦ C ⟧* A -*-> obj* ⟦ D ⟧* A
+⟦_⟧⇒* : ∀ {I J} {C D : ICont* I J} (m : C ⇒* D) → ∫ A ** (obj* ⟦ C ⟧* A -*-> obj* ⟦ D ⟧* A)
 ⟦ f ◁* r ⟧⇒* j = ⟦ (f j) ◁ r ⟧⇒  
 
 \end{code}
@@ -735,34 +812,6 @@ _projr* m j = _⇒*_.r m
 \end{code}
 
 %endif
-
-\begin{proposition}
-
-The functor |(⟦_⟧_ , ⟦_⟧⇒_)| in |[ ICont I , IFunc I ]| is full and faithful.
-
-\end{proposition}
-
-\begin{proof}
-
-This follows directly from our derivation of morphisms from a container functor.
-
-
-%%\begin{code}
-%%
-%%q : {I : Set} (C D : ICont I) → ({A : I → Set}  → IFunc.obj ⟦  C ⟧ A  → IFunc.%%obj ⟦  D ⟧ A) 
-%%                                                →              C      ⇒       %%       D
-%%q C D m = (proj₁ ∘ eureka) ◁ (proj₂ ∘ eureka)
-%% where
-%%  eureka : (s : C projS) → IFunc.obj ⟦ D ⟧ (C projP $$ s)
-%%  eureka s =  m (s , idd)
-%%
-%%\end{code}
-%%
-%%By naturality this must be the unique inverse to the extesion of a container
-%%morphism given above.
-%%
-
-\end{proof}
 
 %format η^C = η ^C
 %format >>=^C = >>= ^C
@@ -955,7 +1004,7 @@ Path′ {I} S PI PJ i (sup (s , f)) j =
   ⊎  (Σ I λ i′ → Σ (PI i s i′) λ p → Path S PI PJ i′ (f i′ p) j)
 
 path : ∀  {I J S PI PJ} {i : I} {x : WI S PI i} {j : J} → 
-          Path S PI PJ i x j → Path' S PI PJ i x j
+          Path S PI PJ i x j → Path′ S PI PJ i x j
 path (here p)        = inj₁ p
 path (there i′ p q)  = inj₂ (i′ , (p , q))
 

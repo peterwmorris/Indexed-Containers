@@ -22,18 +22,24 @@ module ICont where
           (λ f → split (λ x y → x , λ i → f (y i))) 
           refl (λ f g → refl)
 
+  _⇒_ : {l : Level} {I : Set l} (C D : ICont I) → Set l 
+  C ⇒ D = (s : ICont.sh C) → Σ (ICont.sh D) λ t → ICont.po D t ⟶ ICont.po C s  
 
+  {- 
   record _⇒_ {l : Level} {I : Set l} (C D : ICont I) : Set l where
     constructor _◁_
     field 
       sh : ICont.sh C → ICont.sh D
       po : (s : ICont.sh C) → ICont.po D (sh s) ⟶ ICont.po C s   
-  
+  -}
+
   ⟦_⟧⇒ : {l : Level} {I : Set l} {C D : ICont I} (m : C ⇒ D) → NatTrans ⟦ C ⟧ ⟦ D ⟧ 
-  ⟦ f ◁ r ⟧⇒ = record { fun = split λ x y → f x , (λ q → y (r x q)); law = refl }
+  ⟦ m ⟧⇒ = record { fun = split (λ s f → proj₁ (m s) , λ q → f (proj₂ (m s) q)) ; law = refl }
 
   q⇒ : {l : Level} {I : Set l} {C D : ICont I} → NatTrans ⟦ C ⟧ ⟦ D ⟧ → C ⇒ D
-  q⇒ {C = S ◁ P} {D = T ◁ Q} nt =  (λ s → proj₁ (trick s)) ◁ λ s → proj₂ (trick s) 
+  q⇒ {C = S ◁ P} {D = T ◁ Q} nt =  λ s → NatTrans.fun nt (s , λ p → p) -- (λ s → proj₁ (trick s)) ◁ λ s → proj₂ (trick s) 
+
+  {-
     where trick : (s : S) → IFunc.obj ⟦ T ◁ Q ⟧ (P s)
           trick s = NatTrans.fun nt (s , λ p → p)
 
@@ -42,5 +48,32 @@ module ICont where
       sh : ICont.sh C ≈ ICont.sh D
       po : (s : ICont.sh C) → ICont.po C s ≈≈ ICont.po D (_≈_.φ sh s)
 
+  Δ^C : ∀ {l} {I : Set l} {J K : Set l} → (J → K) → (K → ICont I) → J → ICont I
+  Δ^C f F j = F (f j) 
+
+  Σ^C : ∀ {l} {I J K : Set l} → (J → K) → (J → ICont I) → K → ICont I
+  Σ^C {J = J} f F k =     (Σ J λ j → f j ≅ k × ICont.sh (F j)) 
+                       ◁  split (λ j → split λ p x → ICont.po (F j) x) 
+
+  Π^C : ∀ {l} {I J K : Set l} → (J → K) → (J → ICont I) → K → ICont I
+  Π^C {J = J} f F k =     ((j : J) → f j ≅ k → ICont.sh (F j)) 
+                       ◁  λ g i → Σ J λ j → Σ (f j ≅ k) λ p → ICont.po (F j) (g j p) i 
+ 
+  Δ≅ : ∀ {l} {I : Set l} {J K : Set l} (f : J → K) (F : K → ICont I) (j : J) {X : I → Set l} → IFunc.obj ⟦ Δ^C f F j ⟧ X ≅ IFunc.obj (Δ^F f (λ k → ⟦ F k ⟧) j) X
+  Δ≅ = {!easy!}
+
+  Σ≅ : ∀ {l} {I : Set l} {J K : Set l} (f : J → K) (F : J → ICont I) (k : K) {X : I → Set l} → IFunc.obj ⟦ Σ^C f F k ⟧ X ≅ IFunc.obj (Σ^F f (λ j → ⟦ F j ⟧) k) X
+  Σ≅ = {!easy!}
+ 
+{-
+
+  Σ^C : ∀ {J I K} → (J → K) → ICont* I J → ICont* I K
+  Σ^C {J} f (S ◁* P) =  λ* λ k →  (Σ J λ j → f j ≡ k × S j) ◁
+                                split j & eq & s tilps ↦ P j s !m !s
+ 
+  Π^C : ∀ {J I K} → (J → K) → ICont* I J → ICont* I K
+  Π^C {J} f (S ◁* P) =  λ* λ k →  ((j : J) → f j ≡ k → S j) ◁
+                                  λ s i → Σ J λ j → Σ (f j ≡ k) λ eq → P j (s j eq) i 
 
 
+-}-}
