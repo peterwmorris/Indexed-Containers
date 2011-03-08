@@ -29,3 +29,6 @@
 
 %format ′ = "\prime"
 %format : = "\in"
+
+%format minusone = ⁻¹
+%format . = ".\!"

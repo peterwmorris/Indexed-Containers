@@ -42,7 +42,7 @@ module ICont where
   {-
     where trick : (s : S) → IFunc.obj ⟦ T ◁ Q ⟧ (P s)
           trick s = NatTrans.fun nt (s , λ p → p)
-
+-}
   record _≅^C_ {l : Level} {I : Set l} (C D : ICont I) : Set l where
     field 
       sh : ICont.sh C ≈ ICont.sh D
@@ -60,10 +60,13 @@ module ICont where
                        ◁  λ g i → Σ J λ j → Σ (f j ≅ k) λ p → ICont.po (F j) (g j p) i 
  
   Δ≅ : ∀ {l} {I : Set l} {J K : Set l} (f : J → K) (F : K → ICont I) (j : J) {X : I → Set l} → IFunc.obj ⟦ Δ^C f F j ⟧ X ≅ IFunc.obj (Δ^F f (λ k → ⟦ F k ⟧) j) X
-  Δ≅ = {!easy!}
+  Δ≅ f F j = refl
 
-  Σ≅ : ∀ {l} {I : Set l} {J K : Set l} (f : J → K) (F : J → ICont I) (k : K) {X : I → Set l} → IFunc.obj ⟦ Σ^C f F k ⟧ X ≅ IFunc.obj (Σ^F f (λ j → ⟦ F j ⟧) k) X
-  Σ≅ = {!easy!}
+  Σ≅ : ∀ {l} {I : Set l} {J K : Set l} (f : J → K) (F : J → ICont I) (k : K) → ⟦ Σ^C f F k ⟧ ≅^F  Σ^F f (λ j → ⟦ F j ⟧) k
+  Σ≅ f F k = record { fiso = λ {A} → iso (split (split (λ w → split (λ x y z → w , x , (y , z))))) (split (λ w → split (λ x → split (λ y z → (w , (x , y)) , z)))) refl refl; law1 = refl; law2 = refl }
+
+  Π≅ : ∀ {l} {I : Set l} {J K : Set l} (f : J → K) (F : J → ICont I) (k : K) → ⟦ Π^C f F k ⟧ ≅^F  Π^F f (λ j → ⟦ F j ⟧) k
+  Π≅ f F k = record { fiso = λ {A} → iso ( λ x j x' → (proj₁ x j x') , (λ x0 → proj₂ x (j , (x' , x0)))) (λ x → (λ j p → proj₁ (x j p)) , λ {i} → split (λ j → split λ p q → proj₂ (x j p) q)) refl refl; law1 = refl; law2 = refl }
  
 {-
 
@@ -76,4 +79,4 @@ module ICont where
                                   λ s i → Σ J λ j → Σ (f j ≡ k) λ eq → P j (s j eq) i 
 
 
--}-}
+-}

@@ -219,7 +219,16 @@ msup⁻¹₁ m y n p = sup₁ (m (succ n)) p
 α :  ∀ {S P} → ⟦ S ◁ P ⟧₁ (M S P) → M S P
 α (s , f) = (msup₀ s f) , msup₁ s f
 
+α′₀ : ∀ {S P} → M S P → S
+α′₀ (x , y) = sup₀ (x (succ zero))
+
+
+
 α′ :  ∀ {S P} → M S P → ⟦ S ◁ P ⟧₁ (M S P) 
+α′ m = α′₀ m , {!!}
+
+{-
+
 α′ {S} {P} (x , y) = sup₀ (x (succ zero)) , λ p → (λ n → sup₁ (x (succ n)) (subst P (msup⁻¹₀≡ n (x , y)) p)) , λ n → trans (sup₁t≡ (x (succ (succ n))) (subst P (msup⁻¹₀≡ (succ n) (x , y)) p)) (cong₂ {A = WM S P (succ n)} {B = λ w → P (sup₀ w)} {C = λ w p → WM S P n} {trunc (x (succ (succ n)))} {x (succ n)} sup₁ (y (succ n)) (trans (subst-removable P (sym (sup₀t≡ (x (succ (succ n))))) _) (trans (subst-removable P (trans (msup⁻¹₀≡ n (x , y))
  (trans (sym (cong sup₀ (y (succ n))))
   (sup₀t≡ (x (succ (succ n)))))) _) (sym (subst-removable P (msup⁻¹₀≡ n (x , y)) _))))) 
@@ -237,3 +246,5 @@ prfα {S} {P} (x , y) = ≡M foo
   where foo :  (n : Nat) → proj₁ (α (α′ (x , y))) n ≡ x n
         foo zero = WM0≡ _ _
         foo (succ n') = {!!}
+
+-}

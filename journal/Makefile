@@ -1,4 +1,4 @@
 %.tex: %.lagda
-	lhs2tex --agda $< > $@
+	lhs2TeX --agda $< > $@
 %.pdf : %.tex
 	pdflatex $<
