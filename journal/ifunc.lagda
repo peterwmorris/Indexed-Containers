@@ -52,7 +52,8 @@ _-*->_ {I} A B = (i : I) -> A i -> B i
 idd : {I : Set} {A : I → Set} → A -*-> A
 idd i a = a 
 
-_⊚_ : {I : Set} {A B C : I → Set} → B -*-> C → A -*-> B → A -*-> C
+_⊚_ :  {I : Set} {A B C : I → Set} → 
+       (B -*-> C) → (A -*-> B) → (A -*-> C)
 f ⊚ g = λ i → (f i) ∘ (g i)
 
 \end{code}
@@ -83,10 +84,10 @@ record IFunc (I : Set) : Set₁ where
 \end{code}
 
 \noindent
-Such that both |idd| is mapped to |id| and |_⊚_| to |_∘_| under the action of 
+such that both |idd| is mapped to |id| and |_⊚_| to |_∘_| under the action of 
 |mor|. We adopt the convention that the projections |obj| and |mor| are silent, 
 \emph{i.e.} depending on the context |F :  IFunc I| can stand for either the 
-functor's action on objects, or on morphisms. A morphism between too such 
+functor's action on objects, or on morphisms. A morphism between to such 
 indexed functors is a natural transormation:
 
 %format ^F = "^{\text{\tiny F}}"
@@ -121,6 +122,12 @@ H >>=^F F =
 
 \end{code}
 
+\noindent
+It's clear that |IFunc| cannot be a monad in the usual sense, since it is not 
+an endo-functor, it does how ever fit with the notion of relative monad 
+presented by Altenkirch \emph{et al.} Note that in the code above we have 
+elided the use of the lifting functor.
+
 %format Seti = Set "_{i}"
 %format Setsi = Set "_{i+1}" 
 %format ↑ = "\uparrow"
@@ -131,18 +138,15 @@ lifting functor |↑ : Seti → Setsi|.
 \end{proposition}
 
 \begin{proof}
-It's clear that |IFunc| cannot be a monad in the usual sense, since it is not 
-an endo-functor, it does how ever fit with the notion of relative monad 
-presented by Altenkirch \emph{et al.} Note that in the code above we have 
-elided the use of the lifting functor. To prove the structure is a relative 
-monad we observe that the following natural isomorphisms hold immediately up to 
-Agda's $\beta\eta$-equality.
+To prove the structure is a relative 
+monad we observe that the following equlities hold up to 
+Agda's $\beta\eta$-equality, and our postulate |ext|.
 
 For |F : IFunc I|, |G : I → IFunc J|, |H : J → IFunc K|:
 \begin{align}
-|H i|                 &\quad& \approx &&\quad& |H >>=^F (η^F i)|               \\
-|F|                   && \approx &&& |η^F >>=^F F|                 \\
-|H >>=^F (G >>=^F F)| && \approx &&& |(λ i → H >>=^F (G i)) >>=^F F| 
+|H i|                 &\quad& \equiv &&\quad& |H >>=^F (η^F i)|               \\
+|F|                   && \equiv &&& |η^F >>=^F F|                 \\
+|H >>=^F (G >>=^F F)| && \equiv &&& |(λ i → H >>=^F (G i)) >>=^F F| 
 \end{align}
 
 \end{proof}
