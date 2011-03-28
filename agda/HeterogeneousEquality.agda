@@ -104,6 +104,10 @@ isEquivalence = record
 app≅ : {l l' : Level} {A : Set l} {B : A → Set l'} {f g : (a : A) → B a} → f ≅ g → (a : A) → f a ≅ g a 
 app≅ refl a = refl
 
+app≅' : {l l' : Level} {A : Set l} {A' : Set l} → A ≅ A' → {B : A → Set l'} {B' : A' → Set l'} → B ≅ B' → {f : (a : A) → B a} {g : (a' : A') → B' a'} → f ≅ g → (a : A) (a' : A') → a ≅ a' → f a ≅ g a' 
+app≅' refl refl refl a .a refl = refl
+
+
 postulate
   ext' : {l l' : Level} {A A' : Set l} {B : A → Set l'} {B' : A' → Set l'} {f : (a : A) → B a} {g : (a : A') → B' a} → ((a : A) (a' : A') → a ≅ a' → f a ≅ g a') → f ≅ g
   iext' : {l l' : Level} {A A' : Set l} {B : A → Set l'} {B' : A' → Set l'} {f : {a : A} → B a} {g : {a : A'} → B' a} → ({a : A} {a' : A'} → a ≅ a' → f {a} ≅ g {a'}) → _≅_ {_} {{a : A} → B a} f {{a : A'} → B' a} g 

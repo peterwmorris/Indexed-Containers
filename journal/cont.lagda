@@ -5,6 +5,7 @@
 module cont where
 
 open import Data.Product
+open import Function
 
 \end{code}
 
@@ -14,7 +15,6 @@ open import Data.Product
 
 %format ◁ = "\lhd"
 %format _◁_ = _ ◁ _
-
 
 \begin{code}
 
@@ -26,5 +26,6 @@ record Cont : Set₁ where
 
 ⟦_⟧ : Cont → Set → Set
 ⟦ S ◁ P ⟧ X = Σ S λ s → P s → X
+
 
 \end{code}
