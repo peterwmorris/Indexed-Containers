@@ -2998,6 +2998,9 @@ morphisms:
 
 
 
+
+
+
 \begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
@@ -3005,7 +3008,7 @@ morphisms:
 \\
 \>[B]{}\bot^{\text{\tiny T}}\;\mathrel{=}\;\Sigma^{\text{\tiny T}}\;\{\mskip1.5mu \Conid{J}\;\mathrel{=}\;\bot\mskip1.5mu\}\;\{\mskip1.5mu \Conid{K}\;\mathrel{=}\;\top\mskip1.5mu\}\;\anonymous \;(\lambda\;())\;\anonymous {}\<[E]%
 \\[\blanklineskip]%
-\>[B]{}\anonymous \Varid{⊎\char94 T}\anonymous \;\in\;\forall{}\;\{\mskip1.5mu \Conid{I}\mskip1.5mu\}\;\rightarrow\;(\Conid{F}\;\Conid{G}\;\in\;\Conid{ISPT}\;\Conid{I})\;\rightarrow\;\Conid{ISPT}\;\Conid{I}{}\<[E]%
+\>[B]{}\anonymous \uplus^{\text{\tiny T}}\anonymous \;\in\;\forall{}\;\{\mskip1.5mu \Conid{I}\mskip1.5mu\}\;\rightarrow\;(\Conid{F}\;\Conid{G}\;\in\;\Conid{ISPT}\;\Conid{I})\;\rightarrow\;\Conid{ISPT}\;\Conid{I}{}\<[E]%
 \\
 \>[B]{}\Conid{F}\;\mathbin{\uplus^{\text{\tiny T}}}\;\Conid{G}\;\mathrel{=}\;\Sigma^{\text{\tiny T}}\;\{\mskip1.5mu \Conid{K}\;\mathrel{=}\;\top\mskip1.5mu\}\;\anonymous \;(\lambda\;\Varid{b}\;\rightarrow\;\Varid{if}\;\Varid{b}\;\Varid{then}\;\Conid{F}\;\Varid{else}\;\Conid{G})\;\anonymous {}\<[E]%
 \\[\blanklineskip]%
@@ -3013,7 +3016,7 @@ morphisms:
 \\
 \>[B]{}\top^{\text{\tiny T}}\;\mathrel{=}\;\Pi^{\text{\tiny T}}\;\{\mskip1.5mu \Conid{J}\;\mathrel{=}\;\bot\mskip1.5mu\}\;\{\mskip1.5mu \Conid{K}\;\mathrel{=}\;\top\mskip1.5mu\}\;\anonymous \;(\lambda\;())\;\anonymous {}\<[E]%
 \\[\blanklineskip]%
-\>[B]{}\anonymous \mathbin{\times^{\text{\tiny T}}}\anonymous \;\in\;\forall{}\;\{\mskip1.5mu \Conid{I}\mskip1.5mu\}\;\rightarrow\;(\Conid{F}\;\Conid{G}\;\in\;\Conid{ISPT}\;\Conid{I})\;\rightarrow\;\Conid{ISPT}\;\Conid{I}{}\<[E]%
+\>[B]{}\anonymous \times^{\text{\tiny T}}\anonymous \;\in\;\forall{}\;\{\mskip1.5mu \Conid{I}\mskip1.5mu\}\;\rightarrow\;(\Conid{F}\;\Conid{G}\;\in\;\Conid{ISPT}\;\Conid{I})\;\rightarrow\;\Conid{ISPT}\;\Conid{I}{}\<[E]%
 \\
 \>[B]{}\Conid{F}\;\mathbin{\times^{\text{\tiny T}}}\;\Conid{G}\;\mathrel{=}\;\Pi^{\text{\tiny T}}\;\{\mskip1.5mu \Conid{K}\;\mathrel{=}\;\top\mskip1.5mu\}\;\anonymous \;(\lambda\;\Varid{b}\;\rightarrow\;\Varid{if}\;\Varid{b}\;\Varid{then}\;\Conid{F}\;\Varid{else}\;\Conid{G})\;\anonymous {}\<[E]%
 \ColumnHook
@@ -3027,30 +3030,30 @@ morphisms:
 \column{15}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{21}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
-\>[B]{}\Conid{T}_{Fin}\;\in\;\Conid{SPF}\;\bot\;\Conid{ℕ}{}\<[E]%
+\>[B]{}\Conid{T}_{\Conid{Fin}}\;\in\;\Conid{SPF}\;\bot\;\Conid{ℕ}{}\<[E]%
 \\
-\>[B]{}\Conid{T}_{Fin}\;\mathrel{=}\;\mu^{\text{\tiny T}}\;(\Sigma^{\text{\tiny T}}\;\Varid{suc}\;(\Varid{⊤\char94 T*}\;\Varid{+\char94 T*}\;(\eta^{\text{\tiny T}}\;\ensuremath{\mbox{$\circ$}}\;\Varid{inr}))){}\<[E]%
+\>[B]{}\Conid{T}_{\Conid{Fin}}\;\mathrel{=}\;\mu^{\text{\tiny T}}\;(\Sigma^{\text{\tiny T}}\;\Varid{suc}\;(\top^{\text{\tiny T}}\;\mathbin{\uplus^{\text{\tiny T}}}\;(\eta^{\text{\tiny T}}\;\ensuremath{\mbox{$\circ$}}\;\Varid{inr}))){}\<[E]%
 \\[\blanklineskip]%
-\>[B]{}\Conid{T}_{Fin}\;\in\;\Conid{SPF}\;\top\;\Conid{ℕ}{}\<[E]%
+\>[B]{}\Conid{T}_{\Conid{Vec}}\;\in\;\Conid{SPF}\;\top\;\Conid{ℕ}{}\<[E]%
 \\
-\>[B]{}\Conid{T}_{Fin}\;\mathrel{=}\;{}\<[9]%
+\>[B]{}\Conid{T}_{\Conid{Vec}}\;\mathrel{=}\;{}\<[9]%
 \>[9]{}\mu^{\text{\tiny T}}\;{}\<[15]%
 \>[15]{}({}\<[21]%
 \>[21]{}\Sigma^{\text{\tiny T}}\;\{\mskip1.5mu \Conid{J}\;\mathrel{=}\;\top\mskip1.5mu\}\;(\lambda\;\anonymous \;\rightarrow\;\Varid{zero})\;(\lambda\;\anonymous \;\rightarrow\;\top^{\text{\tiny T}}){}\<[E]%
 \\
-\>[15]{}\Varid{+\char94 T*}\;{}\<[21]%
+\>[15]{}\mathbin{\uplus^{\text{\tiny T}}}\;{}\<[21]%
 \>[21]{}\Sigma^{\text{\tiny T}}\;\Varid{suc}\;(\lambda\;\Varid{n}\;\rightarrow\;\eta^{\text{\tiny T}}\;(\Varid{inl}\;\anonymous )\;\mathbin{\times^{\text{\tiny T}}}\;\eta^{\text{\tiny T}}\;(\Varid{inr}\;\Varid{n}))){}\<[E]%
 \\[\blanklineskip]%
-\>[B]{}\Conid{T}_{ScLam}\;\in\;\Conid{SPF}\;\bot\;\Conid{ℕ}{}\<[E]%
+\>[B]{}\Conid{T}_{\Conid{ScLam}}\;\in\;\Conid{SPF}\;\bot\;\Conid{ℕ}{}\<[E]%
 \\
-\>[B]{}\Conid{T}_{ScLam}\;\mathrel{=}\;\mu^{\text{\tiny T}}\;{}\<[15]%
+\>[B]{}\Conid{T}_{\Conid{ScLam}}\;\mathrel{=}\;\mu^{\text{\tiny T}}\;{}\<[15]%
 \>[15]{}({}\<[21]%
 \>[21]{}(\eta^{\text{\tiny T}}\;\ensuremath{\mbox{$\circ$}}\;\Varid{inr}){}\<[E]%
 \\
-\>[15]{}\Varid{+\char94 T*}\;{}\<[21]%
-\>[21]{}(((\eta^{\text{\tiny T}}\;\ensuremath{\mbox{$\circ$}}\;\Varid{inr})\;\Varid{×\char94 T*}\;(\eta^{\text{\tiny T}}\;\ensuremath{\mbox{$\circ$}}\;\Varid{inr})){}\<[E]%
+\>[15]{}\mathbin{\uplus^{\text{\tiny T}}}\;{}\<[21]%
+\>[21]{}(((\eta^{\text{\tiny T}}\;\ensuremath{\mbox{$\circ$}}\;\Varid{inr})\;\mathbin{\times^{\text{\tiny T}}}\;(\eta^{\text{\tiny T}}\;\ensuremath{\mbox{$\circ$}}\;\Varid{inr})){}\<[E]%
 \\
-\>[15]{}\Varid{+\char94 T*}\;{}\<[21]%
+\>[15]{}\mathbin{\uplus^{\text{\tiny T}}}\;{}\<[21]%
 \>[21]{}\Delta^{\text{\tiny T}}\;\Varid{suc}\;(\eta^{\text{\tiny T}}\;\ensuremath{\mbox{$\circ$}}\;\Varid{inr}))){}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
