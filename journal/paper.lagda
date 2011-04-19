@@ -1,6 +1,10 @@
 %if style == newcode
 
+\begin{code}
+
 module paper where
+
+\end{code}
 
 %endif
 
@@ -18,7 +22,6 @@ module paper where
 
 %include lhs2TeX.fmt
 %include agda.fmt
-
 
 %include lib.fmt
 
@@ -57,7 +60,8 @@ Blah
 \end{abstract}
 
 
-\section{Introduction}
+%%Introduction
+%include introduction.lagda
 
 \section{Background}
 
@@ -81,7 +85,8 @@ Blah
 %include wifromw.lagda
 %include mfromw.lagda
 
-\section{Strictly Positive Types}
+%%Strictly Positive Families
+%include spf.lagda
 
 \section{Conclusions}
 

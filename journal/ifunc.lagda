@@ -14,7 +14,7 @@ open import Data.Bool hiding (_≟_)
 open import Data.Sum
 open import Data.Product as Prod
 open import Function
-open import Relation.Binary.PropositionalEquality
+open import Relation.Binary.HeterogeneousEquality
 open import Coinduction
 open import Data.Nat hiding (_⊔_)
 open import Relation.Nullary
@@ -96,7 +96,7 @@ indexed functors is a natural transormation:
 
 \begin{code}
 _⇒^F_ : ∀ {I} → (F G : IFunc I) → Set₁
-F ⇒^F G = ∫ A ** (IFunc.obj F A → IFunc.obj G A)
+F ⇒^F G =  ∫ A ** IFunc.obj F A ->> IFunc.obj G A
 \end{code}
 
 \noindent
@@ -115,8 +115,8 @@ F ⇒^F G = ∫ A ** (IFunc.obj F A → IFunc.obj G A)
 η^F : ∀ {I} → I → IFunc I
 η^F i = record { obj = λ A → A i; mor = λ f → f i }
 
-_>>=^F_ : ∀ {I J} → (I → IFunc J) → IFunc I → IFunc J
-H >>=^F F = 
+_>>=^F_ : ∀ {I J} → IFunc I → (I → IFunc J) → IFunc J
+F >>=^F H = 
    record  {  obj  =  λ A  → IFunc.obj F (λ i  → IFunc.obj  (H i)  A  )
            ;  mor  =  λ f  → IFunc.mor F (λ i  → IFunc.mor  (H i)  f  ) }
 
@@ -144,9 +144,9 @@ Agda's $\beta\eta$-equality, and our postulate |ext|.
 
 For |F : IFunc I|, |G : I → IFunc J|, |H : J → IFunc K|:
 \begin{align}
-|H i|                 &\quad& \equiv &&\quad& |H >>=^F (η^F i)|               \\
-|F|                   && \equiv &&& |η^F >>=^F F|                 \\
-|H >>=^F (G >>=^F F)| && \equiv &&& |(λ i → H >>=^F (G i)) >>=^F F| 
+|H i|                 &\quad& \equiv &&\quad& |(η^F i) >>=^F H|               \\
+|F|                   && \equiv &&& |F >>=^F η^F|                 \\
+|(F >>=^F G) >>=^F F| && \equiv &&& |F >>=^F (λ i → (G i) >>=^F H)| 
 \end{align}
 
 \end{proof}
@@ -191,7 +191,7 @@ setting, too:
 \begin{code}
 
 _=*=>^F_ : ∀ {I J} → (F G : IFunc* I J) → Set₁
-F =*=>^F G = ∫ A ** obj* F A -*-> obj* G A
+F =*=>^F G = ∫ A ** obj* F A -*-> obj* G A 
 
 \end{code}
 
@@ -215,17 +215,15 @@ we denote |Δ^F|:
 
 
 \noindent
-This construction is used, for instance, if we try to build an indexed functor
-whose fixed point is |Lam|; Concentranting only on the |abs| case we build a functor 
-|F′ n X = F (1+ n) X|. Or simply |F′ = Δ^F (1+) F|. In general this combinator 
-restricts the functor |F′| to the parts of |F| over indexes in the image of the
-function |F|.
+This construction is used, for instance, in building the pattern functor for |ScLam| as in the introduction; Concentranting only on the |abs| case we want to build  
+|FScLam′ X n = (X ∘ suc) n|. Or simply |LScLam′ X = Δ^F suc X|. In general this combinator 
+restricts the functor |X| to the indexes in the image of the
+function |f|.
 
 What if the restriction appears on the right of such an equation? As an example,
-consider the successor constructor for |Fin|; here we want to solve the 
-equation |F′ (1+ n) X = F n X|. To do this we observe that this is equivalent to
-the equation |F′ n X = Σ Nat λ m → n ≡ 1+ m × F m X|. We denote the general
-construction |Σ^F|, so the 2nd equation can be written |F′ = Σ^F (1+) F|:
+consider the successor constructor for |Fin|; here we want to build the pattern functor: |FFin′ X (1+ n) = F n X|. To do this we observe that this is equivalent to
+the equation |FFin′ X n = Σ Nat λ m → n ≡ 1+ m × X m|. We denote the general
+construction |Σ^F|, so the 2nd equation can be written |FFin′ X = Σ^F suc X|:
 
 \begin{code}
 
@@ -246,6 +244,7 @@ Perhaps unsuprisingly, |Σ^F| turns out to be the left adjoint to re-indexing
 Π^F {J} f F k = 
    record  {  obj  =  λ A → (j : J) → f j ≡ k → obj* F A j 
            ;  mor  =  λ m g j p → mor* F m j (g j p) }
+
 \end{code}
 
 \begin{proposition}
@@ -314,43 +313,31 @@ which is a simple proof.
 In abstracting over all possible values for the extra indexing information |Π^F|
 allows for the construction of infinitely branching trees, such as rose trees. 
 We also note that finite co-products and products can be derived from |Σ^F| and 
-|Π^F| respectively. First we construct:
+|Π^F| respectively:
 
-%format H0 = H "_{0}"
-%format H2 = H "_{2}"
 
 %format ⊥^F = ⊥ ^F
 %format ⊤^F = ⊤ ^F
 
-%format +^F = "\mathbin{" + ^F "}"
-%format _+^F_ = _ + ^F _
+%format +^F = "\mathbin{" ⊎ ^F "}"
+%format _+^F_ = _ ⊎^F _
 
 %format ×^F = "\mathbin{" × ^F "}"
 %format _×^F_ = _ ×^F _
 
-\begin{code}
-H0 : ∀ {I} → IFunc* I ⊥
-H0 ()
-
-H2 : ∀ {I} → (F G : IFunc I) → IFunc* I Bool
-H2 F G true   = F
-H2 F G false  = G
-\end{code}
-
-We can then obtain:
 
 \begin{code}
 ⊥^F : ∀ {I} → IFunc* I ⊤
-⊥^F = Σ^F  _ H0
+⊥^F = Σ^F  {J = ⊥} _ λ ()
 
 _+^F_ : ∀ {I} → (F G : IFunc I) → IFunc* I ⊤
-F +^F G = Σ^F _ (H2 F G) 
+F +^F G = Σ^F _ λ b → if b then F else G 
 
 ⊤^F : ∀ {I} → IFunc* I ⊤
-⊤^F = Π^F  _ H0
+⊤^F = Π^F  {J = ⊥} _ λ ()
 
 _×^F_ : ∀ {I} → (F G : IFunc I) → IFunc* I ⊤
-F ×^F G = Π^F _ (H2 F G) 
+F ×^F G = Π^F _ λ b → if b then F else G  
 \end{code}
 
 \noindent

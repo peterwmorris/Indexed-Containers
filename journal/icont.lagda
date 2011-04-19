@@ -14,7 +14,7 @@ open import Data.Bool hiding (_≟_)
 open import Data.Sum
 open import Data.Product as Prod
 open import Function
-open import Relation.Binary.PropositionalEquality
+open import Relation.Binary.HeterogeneousEquality
 open import Coinduction
 open import Data.Nat hiding (_⊔_)
 open import Relation.Nullary
@@ -164,8 +164,8 @@ transformations:
 
 \begin{code}
 
-⟦_⟧⇒ : ∀ {I} {C D : ICont I} (m : C ⇒ D)  → 
-              ∫ A ** (IFunc.obj ⟦ C ⟧ A  → IFunc.obj ⟦ D ⟧ A)
+⟦_⟧⇒ : ∀ {I}  {C D : ICont I} (m : C ⇒ D)  → 
+              ∫ A ** IFunc.obj ⟦ C ⟧ A  ->> IFunc.obj ⟦ D ⟧ A
 ⟦ f ◁ r ⟧⇒ (s , g) = f s , g ⊚ r s
 
 \end{code}
@@ -218,10 +218,14 @@ record _⇒*_ {I J} (C D : ICont* I J) : Set₁ where
 %format projr  = "\!." r
 %format projf*  = "\!." f 
 %format projr*  = "\!." r 
+%format un*  = "\!"  
 
 %if style == code 
 
 \begin{code}
+
+un* : ∀ {I J} → ICont* I J → J → ICont I
+un* (S ◁* P) j = S j ◁ P j
 
 _projf :  ∀ {I} {C D : ICont I} (m : C ⇒ D) → C projS → D projS
 _projf = _⇒_.f
@@ -250,8 +254,8 @@ As with |IFunc|, we can equip |ICont| with a relative monadic structure:
 η^C : ∀ {I} → I → ICont I
 η^C i = ⊤ ◁ λ _ i′ → i ≡ i′
 
-_>>=^C_ : ∀ {I J} → ICont* J I → ICont I → ICont J
-_>>=^C_ {I} (T ◁* Q) (S ◁ P) =  
+_>>=^C_ : ∀ {I J} → ICont I → ICont* J I → ICont J
+_>>=^C_ {I} (S ◁ P) (T ◁* Q) =  
      (IFunc.obj ⟦ S ◁ P ⟧ T) 
   ◁  split s & f tilps j !* ↦ Σ  (Σ I (P s)) (split i & p tilps ↦ Q i (f i p) j !m !s) !m !s  
 
@@ -362,26 +366,26 @@ define their partial application.
 
 \begin{code}
 
-_⟨_⟩C : ∀ {I J} → ICont (I ⊎ J) → ICont* J I → ICont J
+_⟨_⟩C : ∀ {I J} → ICont (I ⊎ J) → ICont* I J → ICont I
 _⟨_⟩C {I} {J} (S ◁ P) (T ◁* Q) = 
   let  PI  : S  → I  → Set            ;  PI  s  i  = P s (inj₁ i) 
        PJ  : S  → J  → Set            ;  PJ  s  j  = P s (inj₂ j) 
-  in   IFunc.obj ⟦ S ◁ PI ⟧ T ◁     (split s & f tilps j !* ↦ PJ s j 
-                                 ⊎  (Σ I λ i → Σ (PI s i) λ p → Q i (f i p) j) !m !s)
+  in   IFunc.obj ⟦ S ◁ PJ ⟧ T ◁     (split s & f tilps i !* ↦ PI s i 
+                                 ⊎  (Σ J λ j → Σ (PJ s j) λ p → Q j (f j p) i) !m !s)
 
 \end{code}
 
 \noindent
 The composite container has shapes given by a shape |s : S| and an assigment of |T| 
-shapes to |PI s| positions. Positions are then a choice between 
-a |J|-indexed position, or a pair of an |I|-indexed position, and a |Q| position
+shapes to |PJ s| positions. Positions are then a choice between 
+a |I|-indexed position, or a pair of an |J|-indexed position, and a |Q| position
 \emph{underneath} the appropriate |T| shape. 
 
 %if style==code
 
 \begin{code}
 
-_⟨_⟩C* : ∀ {I J K} → ICont* (I ⊎ J) K → ICont* J I →  ICont* J K
+_⟨_⟩C* : ∀ {I J K} → ICont* (I ⊎ J) K → ICont* I J →  ICont* I K
 _⟨_⟩C* C D = λ* λ k → (C $* k) ⟨ D ⟩C
 
 \end{code}
@@ -394,11 +398,11 @@ argument, and lifts container morphisms in this way:
 
 \begin{code}
 
-_⟨_⟩CM :  ∀  {I J} (C : ICont (I ⊎ J)) {D E : ICont* J I} → 
+_⟨_⟩CM :  ∀  {I J} (C : ICont (I ⊎ J)) {D E : ICont* I J} → 
                     D      ⇒*        E        
              → C ⟨  D ⟩C   ⇒    C ⟨  E ⟩C  
 C ⟨ γ ⟩CM = 
-  (  split s & f tilps ↦ (s , λ i p → γ projf* $$ i $$ (f i p)) !m !s) ◁ 
-     split s & f tilps j !* ↦ [ inj₁ , (split i & p & q tilps ↦ inj₂ (i , p , γ projr* $$ i $$ (f i p) $$ j $$ q) !m !s) ] !m !s 
+  (  split s & f tilps ↦ (s , λ j p → γ projf* $$ j $$ (f j p)) !m !s) ◁ 
+     split s & f tilps i !* ↦ [ inj₁ , (split j & p & q tilps ↦ inj₂ (j , p , γ projr* $$ j $$ (f j p) $$ i $$ q) !m !s) ] !m !s 
 
 \end{code}

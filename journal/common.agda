@@ -9,7 +9,7 @@ open import Data.Bool hiding (_≟_)
 open import Data.Sum
 open import Data.Product as Prod
 open import Function
-open import Relation.Binary.PropositionalEquality
+open import Relation.Binary.HeterogeneousEquality
 open import Coinduction
 open import Data.Nat hiding (_⊔_)
 open import Relation.Nullary
@@ -51,3 +51,11 @@ f $$ x = f x
 
 _-**->_ : {I : Set} -> (A B : I -> Set) -> Set
 _-**->_ {I} A B = {i : I} -> A i -> B i
+
+
+subst₂′ : ∀ {a b p} {A : Set a} {B : A → Set b} (P : (a : A) → B a → Set p) →
+          ∀ {x₁ x₂ y₁ y₂} → x₁ ≅ x₂ → y₁ ≅ y₂ → P x₁ y₁ → P x₂ y₂
+subst₂′ P refl refl p = p
+
+_->>_ : ∀ {l l'} → (A : Set l) (B : Set l') -> Set (l ⊔ l')
+_->>_ A B = A  -> B 

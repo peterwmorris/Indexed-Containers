@@ -14,7 +14,7 @@ open import Data.Bool hiding (_≟_)
 open import Data.Sum
 open import Data.Product as Prod
 open import Function
-open import Relation.Binary.PropositionalEquality
+open import Relation.Binary.HeterogeneousEquality
 open import Coinduction
 open import Data.Nat hiding (_⊔_)
 open import Relation.Nullary
@@ -22,12 +22,13 @@ open import Relation.Nullary
 open import common
 open import tt
 open import cont
+open import func
 
 \end{code}
 
 %endif
 
-\subsubsection{|M| from |W|}
+\subsection{|M| from |W|}
 Since we have shown that both |WI| and |MI| types can be reduced to their 
 non-indexed counterparts, it only remains to show that |M| types can be, reduced
 to |W| types. This is a result from \cite{C-CSPTs}, though in the setting of 
@@ -66,34 +67,33 @@ all the small triangles commute:
 
 \[
 \xymatrix{
-|A|_{0} &
-\ar[l]_{|a|_{0}}
+|A|_{|0|} &
+\ar[l]_{|a|_{|0|}}
 |A|_{1} &
-\ar[l]_{|a|_{1}}
+\ar[l]_{|a|_{|1|}}
 |A|_{2} &
 \cdots &
-|A|_{n-1} &
+|A|_{n-|1|} &
 \ar[l]_{|a|_{n-1}} 
 |A|_{n} &
 \ar[l]_{|a|_{n}} 
-|A|_{n+1} &
+|A|_{n+|1|} &
 \cdots
 \\
 \\
 & & & & 
 |X|
-\ar[uullll]_{\pi_{0}}
-\ar[uulll]_{\pi_{1}}
-\ar[uull]_{\pi_{2}}
-\ar[uu]_{\pi_{n-1}}
+\ar[uullll]_{\pi_{|0|}}
+\ar[uulll]_{\pi_{|1|}}
+\ar[uull]_{\pi_{|2|}}
+\ar[uu]_{\pi_{n - |1|}}
 \ar[uur]_{\pi_{n}}
-\ar[uurr]_{\pi_{n+1}}
+\ar[uurr]_{\pi_{n + |1|}}
 &&&\\
 } 
 \]
 
-It is also required that the limit is the least object with these properties 
-(or cone). 
+It is also required that the limit is the least such cone. 
 Again, we can encode the limit of a chain, its projections, and this universal 
 property in type theory:
 
@@ -117,48 +117,119 @@ univ pro com x = (λ n → pro n x) , (λ n → com n x)
 
 \end{code}
 
-Given a functor $|F|$, we can build a chain:
+Given a functor |F|, we can build a chain:
 
 \[
 \xymatrix{
 |⊤| &
-\ar[l]_{}
+\ar[l]_{|!|}
 |F| |⊤| &
 \ar[l]_{|F| |!|}
-|F|^{2} |⊥| &
-\ar[l]_{|F|^{2} |!|}
-|F|^{3} &
+|F|^{|2|} |⊤| &
+\ar[l]_{|F|^{|2|} |!|}
+|F|^{|3|} |⊤| &
 \cdots &
 } 
 \]
 
-We know from Asperti and Longo \cite{AspertiLongo} that if |F| is 
-$\omega$-continuous, \emph{i.e.} that for any chain $(A, a)$:
-
-| F (LIM (A, a)) ≅ LIM ((F ∘ A), (F ∘ a) |
+%format om = "\!^{\omega}"
+%format _om = _ om 
+%format en = "\!^{" n "}"
+%format sen = "\!^{" suc n "}"
 
 \noindent
-then the limit of the chain above will be the terminal co-algebra of |F|. We 
+For the moment denote this chain |F om = ((λ n → F en ⊤) , λ n → F en !)|. 
+We know from Asperti and Longo \cite{AspertiLongo} that if |F| is 
+$\omega$-continuous, \emph{i.e.} that for any chain |(A , a)|:
+
+| F (LIM (A, a)) ≅ LIM ((F ∘ A), (F ∘ a)) |
+
+\noindent
+then the limit of |Fo| will be the terminal co-algebra of |F|. 
+
+To see this we first observe that there exists an isomorphism between 
+|LIM (A , a)| and |LIM (A ∘ suc , a ∘ suc)|:
+
+\begin{code}
+
+tailC : (c : Chain) → LIM c → LIM (proj₁ c ∘ suc , proj₂ c ∘ suc)
+tailC (A , a) (f , p) = f ∘ suc , p ∘ suc
+
+tailC⁻¹ : (c : Chain) → LIM (proj₁ c ∘ suc , proj₂ c ∘ suc) → LIM c
+tailC⁻¹ (A , a) (f , p) = f′ , p′ 
+  where f′ : (n : ℕ) → A n
+        f′ zero = a _ (f zero)
+        f′ (suc n) = f n
+        p′ : (n : ℕ) → a _ (f n) ≅ f′ n
+        p′ zero = refl
+        p′ (suc n) = p n
+ 
+\end{code}
+
+\noindent 
+this allows us to construct the isomorphism between |F (LIM F om)| and 
+|LIM F om|:
+
+\begin{align*}
+&&& |F (LIM F om)| & \\
+&\cong&& | LIM (F ∘ (λ n → F en ⊤) , F ∘ (λ n → F en !)) | & \{\mbox{|F| is $\omega$-continuous}\} \\
+&\equiv&& | LIM ((λ n → F sen ⊤) , (λ n → F sen !)) | & \{\mbox{definition}\}\\
+&\cong&& | LIM F om | & \{\mbox{ |tailC | }\} \\
+\end{align*}
+
+
+This isomorphism is witnessed from right to left by the co-algebra map |out|.
+To show that the co-algebra is terminal, we employ the universal property of
+|LIM|. Given a co-algebra for |α : X → F X| we construct an |F om| cone:
+
+\[
+\xymatrix{
+|⊤| &
+\ar[l]_{|!|}
+|F| |⊤| &
+\ar[l]_{|F| |!|}
+|F|^{2} |⊤| &
+\ar[l]_{|F|^{|2|} |!|}
+|F|^{3} |⊤| &
+\cdots & \\
+|X| 
+\ar[u]_{|!|}
+\ar[r]_{|f|} &
+|F| |X| 
+\ar[u]_{|F| |!|}
+\ar[r]_{|F| |f|} &
+|F|^{2} |X|
+\ar[u]_{|F|^{|2|} |!|} 
+\ar[r]_{|F|^{|2|} |f|} &
+|F|^{3} |X|
+\ar[u]_{|F|^{|3|} |!|} 
+ &
+\cdots \\
+}
+\]
+
+We 
 want to build |M|-types, which we know to be the terminal co-algebras of 
-container functors. In order, then to build |M|-types, we must construct 
+container functors. In order to do this, we must construct 
 iteration of container functors (to build the chain) and show that all container
 functors are $\omega$ continuous.
 
 Since we only need to build iterations of container functors applied to the 
-initial object |⊤|, we build that directly. We define the following variation 
+terminal object |⊤|, we build that directly. We define the following variation 
 of |W|, cut off at a know depth:
 
 \begin{code}
 
 data WM (S : Set) (P : S → Set) : ℕ → Set where
   wm⊤ : WM S P zero
-  sup : ∀ {n} → ⟦ S ◁ P ⟧ (WM S P n) → WM S P (suc n)
+  sup : ∀ {n} → Func.obj ⟦ S ◁ P ⟧ (WM S P n) → WM S P (suc n)
 
 \end{code}
 
 \noindent
-It should be obvious that |WM zero| is indeed initial in |Set| and that |⟦ S ◁ P ⟧ (WM S P n) ≅ WM S P (suc n)|, so this is the thing we want.  
-
+It should be obvious that |WM zero| is indeed terminal in |Set| and that 
+|⟦ S ◁ P ⟧ (WM S P n) ≅ WM S P (suc n)|, so upto to isomorphism, this just the 
+thing we need to construct |⟦ S ◁ P ⟧|$^{\omega}$.
 
 Note that |WM| is itself encodable as an indexed |WI| type, and by the result 
 above, a |W| type:
@@ -228,10 +299,10 @@ $\omega$-limits.
 
 \begin{proof}
 We want to build the isomorphism 
-| F (LIM (A, a)) ≅ LIM ((F ∘ A), F ∘ a | in the case that |F|
+| F (LIM (A, a)) ≅ LIM ((F ∘ A), F ∘ a) | in the case that |F|
 is a container functor. However, the function from left to right is uniquely 
 given by the universal property of |LIM| for all functors |F : Set → Set|. 
-To show this we build the cone for |F (LIM (A , a))|:
+To show this we build the cone for the chain |((F ∘ A), F ∘ a)|:
 
 
 \[
@@ -286,8 +357,7 @@ module imp (S : Set) (P : S → Set) (A : ℕ → Set) (a : (n : ℕ) → A (suc
 \end{code}
 
 Note that the shape picked at every point along the chain must be the same, in 
-order to make the diagrams commute, thus although it seems like there is an 
-infinite choice of shapes, they must all be the same. This is the key insight
+order to make the diagrams commute. This is the key insight
 into constructing this function.
 
 %if style == newcode
