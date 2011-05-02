@@ -12,7 +12,7 @@ open import Data.Empty
 open import Data.Unit hiding (_≟_)
 open import Data.Bool hiding (_≟_)
 open import Data.Sum
-open import Data.Product as Prod
+open import Product as Prod
 open import Function
 open import Relation.Binary.HeterogeneousEquality
 open import Coinduction
@@ -28,13 +28,13 @@ open import func
 
 %endif
 
-\subsection{|M| from |W|}
+\subsection*{|M| from |W|}
 Since we have shown that both |WI| and |MI| types can be reduced to their 
 non-indexed counterparts, it only remains to show that |M| types can be, reduced
 to |W| types. This is a result from \cite{C-CSPTs}, though in the setting of 
 indexed |WI| types, we can give a better intuition.
 
-In category therory, an $\omega$-chain, is an infinite diagram:
+In category theory, an $\omega$-chain, is an infinite diagram:
 
 \[
 \xymatrix{
@@ -57,7 +57,7 @@ In type-theroy, we can represent such a chain, as a pair of functions:
 \begin{code}
 
 Chain : Set₁
-Chain = Σ (ℕ → Set) λ A → (n : ℕ) → A (suc n) → A n
+Chain = Σ* A ∶ (ℕ → Set) *Σ ((n : ℕ) → A (suc n) → A n)
 
 \end{code}
 
@@ -93,7 +93,7 @@ all the small triangles commute:
 } 
 \]
 
-It is also required that the limit is the least such cone. 
+It is also required that the limit is the terminal cone with this property. 
 Again, we can encode the limit of a chain, its projections, and this universal 
 property in type theory:
 
@@ -102,7 +102,7 @@ property in type theory:
 \begin{code}
 
 LIM : Chain → Set
-LIM (A , a) = Σ ((n : ℕ) → A n) λ f → ((n : ℕ) → a n (f (suc n)) ≡ f n)
+LIM (A , a) = Σ* f ∶ ((n : ℕ) → A n) *Σ ((n : ℕ) → a n (f (suc n)) ≡ f n)
 
 π : {c : Chain} → (n : ℕ) → LIM c → proj₁ c n
 π n (f , p) = f n
@@ -145,7 +145,7 @@ $\omega$-continuous, \emph{i.e.} that for any chain |(A , a)|:
 | F (LIM (A, a)) ≅ LIM ((F ∘ A), (F ∘ a)) |
 
 \noindent
-then the limit of |Fo| will be the terminal co-algebra of |F|. 
+then the limit of |F om| will be the terminal co-algebra of |F|. 
 
 To see this we first observe that there exists an isomorphism between 
 |LIM (A , a)| and |LIM (A ∘ suc , a ∘ suc)|:
@@ -350,10 +350,10 @@ module imp (S : Set) (P : S → Set) (A : ℕ → Set) (a : (n : ℕ) → A (suc
 %format ω-cont = "\omega" -cont
 
 \begin{code} 
-  ω-cont :  LIM  (  (  λ n → Σ S λ s → P s → A n)
+  ω-cont :  LIM  (  (  λ n → Σ* s ∶ S *Σ (P s → A n))
                  ,     λ n → split s & f tilps ↦  (s , a n ∘ f) !m !s
                  ) 
-          → (Σ S λ s → P s → (LIM (A , a)))
+          → Σ* s ∶ S *Σ (P s → (LIM (A , a)))
 \end{code}
 
 Note that the shape picked at every point along the chain must be the same, in 

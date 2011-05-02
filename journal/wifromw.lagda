@@ -12,7 +12,7 @@ open import Data.Empty
 open import Data.Unit hiding (_≟_)
 open import Data.Bool hiding (_≟_)
 open import Data.Sum
-open import Data.Product as Prod
+open import Product as Prod
 open import Function
 open import Relation.Binary.HeterogeneousEquality
 open import Coinduction
@@ -23,11 +23,11 @@ open import common
 open import tt
 
 sup₁≡ : ∀  {S P} → {s s' : S} {f : P s → W S P} {f' : P s' → W S P} → 
-           (sup s f) ≡ (sup s' f') → s ≡ s'
+           (sup (s , f)) ≡ (sup (s' , f')) → s ≡ s'
 sup₁≡ refl = refl
 
 sup₂≡ : ∀  {S P} → {s s' : S} {f : P s → W S P} {f' : P s' → W S P} → 
-           (sup s f) ≡ (sup s' f') → f ≅ f'
+           (sup (s , f)) ≡ (sup (s' , f')) → f ≅ f'
 sup₂≡ refl = refl
 
 
@@ -41,14 +41,15 @@ proj₁≡ refl = refl
 
 %format proj₁≡ = proj₁ ≡
 
-\subsubsection{|WI| from |W|}
+\subsection*{|WI| from |W|}
 
 How, then, can we build |WI| from |W|? The initial step is to create a type of \emph{pre}-|WI| trees, with nodes containing a shape \emph{and} its index, and branching over positions \emph{and their} indicies:
 
 \begin{code}
 
-WI′ : {I : Set} (S : I → Set) (P : (i : I) (s : S i) → I → Set) → Set
-WI′ {I} S P = W (Σ I S) (split i & s tilps ↦ Σ I (P i s) !m !s)
+WI′ :  {I : Set} (S : I → Set) 
+       (P : (i : I) (s : S i) → I → Set) → Set
+WI′ {I} S P = W (Σ* i ∶ I *Σ S i) (split i & s tilps ↦ Σ* i′ ∶ I *Σ P i s i′ !m !s)
 
 \end{code}
 
@@ -56,8 +57,9 @@ Given such a tree we want to express the property that the subtrees of such a pr
 
 \begin{code}
 
-WIl : {I : Set} (S : I → Set) (P : (i : I) (s : S i) → I → Set) → Set
-WIl {I} S P = W (I × (Σ I S)) (split i′ & i & s tilps ↦ Σ I (P i s) !m !s)
+WIl :  {I : Set} (S : I → Set) 
+       (P : (i : I) (s : S i) → I → Set) → Set
+WIl {I} S P = W (I × (Σ* i ∶ I *Σ S i)) (split i′ & i & s tilps ↦ Σ* i′ ∶ I *Σ P i s i′ !m !s)
 
 \end{code}
 
@@ -76,10 +78,10 @@ module label {I : Set} {S : I → Set} {P : (i : I) → S i → I → Set} where
 \begin{code}
 
   lup : WI′ S P → WIl S P 
-  lup (sup (i , s) f) = sup (i , (i , s)) (λ p → lup (f p))
+  lup (sup ((i , s) , f)) = sup ((i , (i , s)) , (λ p → lup (f p)))
 
   ldown : I → WI′ S P → WIl S P 
-  ldown i (sup s f) = sup (i , s) split i′ & p tilps ↦ ldown i′ (f (i′ , p)) !m !s
+  ldown i (sup (s , f)) = sup ((i , s) , split i′ & p tilps ↦ ldown i′ (f (i′ , p)) !m !s)
 
 \end{code} 
 
@@ -97,7 +99,8 @@ The property of a pre-tree being type correct can be stated as its two possible 
 
 \begin{code}
 
-WI : {I : Set} (S : I → Set) (P : (i : I) (s : S i) → I → Set) → I → Set
+WI :  {I : Set} (S : I → Set) 
+      (P : (i : I) (s : S i) → I → Set) → I → Set
 WI S P i = Σ (WI′ S P) λ x → lup {_} {S} {P} x ≡ ldown {_} {S} {P} i x 
 
 \end{code}
@@ -116,17 +119,26 @@ module supm {I : Set} {S : I → Set} {P : (i : I) (s : S i) → I → Set} wher
 
 We rely on function extensionality to define the constructor |supi|:
 
+%if style == newcode
+
 \begin{code}
+
   open import ifunc
   open import icont
 
+\end{code}
+
+%endif
+
+\begin{code}
+
   supi : obj* ⟦ S ◁* P ⟧* (WI S P)  -**-> WI S P
-  supi (s , f) =  (  sup (_ , s) (split i & p tilps ↦ proj₁ (f i p) !m !s)) 
-                  ,  cong (sup (_ , _ , s)) (ext split i & p tilps ↦ proj₂ (f i p) !m !s)
+  supi (s , f) =  (  sup ((_ , s) , split i & p tilps ↦ proj₁ (f i p) !m !s)) 
+                  ,  cong (λ x → sup ((_ , _ , s) , x)) (ext split i & p tilps ↦ proj₂ (f i p) !m !s)
 
 \end{code}
 
-The recursion principle inevitably then relies on the uniqueness of identity 
+The recursion principle then relies on the uniqueness of identity 
 proofs. It's also the case that in its form below |wirec| does not pass Agda's termination checker. The direct encoding via |wrec| would avoid this problem, at the expense of being even more verbose:
 
 \begin{code}
@@ -135,15 +147,15 @@ proofs. It's also the case that in its form below |wirec| does not pass Agda's t
           (m :  {i : I} (s : S i) (f : P i s -*-> WI S P)
                 (h : {i′ : I} (p : P i s i′) → Q (f i′ p)) → Q {i} (supi (s , f)))
           → Q x
-  wirec {i} (sup (i′ , s) f , ok) Q m with proj₁≡ (sup₁≡ ok)
-  wirec {i} (sup (.i , s) f , ok) Q m | refl = 
-    subst Q (cong {B = λ _ → WI S P i} (λ x → sup (i , s) f , x) UIP) 
+  wirec {i} (sup ((i′ , s) , f) , ok) Q m with proj₁≡ (sup₁≡ ok)
+  wirec {i} (sup ((.i , s) , f) , ok) Q m | refl = 
+    subst Q (cong {B = λ _ → WI S P i} (λ x → sup ((i , s) , f) , x) UIP) 
       (m s (λ i p → f (i , p) , ext⁻¹ (sup₂≡ ok) (i , p)) 
            (λ {i′} p → wirec (f (i′ , p) , ext⁻¹ (sup₂≡ ok) (i′ , p)) Q m))
 
 \end{code}
 
-It's then straight forward but labourious to prove the $\beta$ law for |wirec|, which would have this type:
+It's then straight forward but labourious to prove the $\beta$ law for |wirec|, which would has type:
 
 %if style == newcode
 
@@ -181,31 +193,39 @@ It's then straight forward but labourious to prove the $\beta$ law for |wirec|, 
 We can use this proof that |WI|-types can be encoded by |W| to explain where 
 |Path| fits in, since it is straight forwardly encoded as a |WI|:
 
+%if style == newcode
+
 \begin{code}
 
-Path :  {I J : Set} (S : I → Set)  
-        (PI  : (i : I) → S i → I  → Set) 
-        (PJ  : (i : I) → S i → J  → Set) 
-        (i : I) → WI S PI i → J → Set 
-Pathk {I} {J} {S} {PI} {PJ} i w = WI PathS PathP (i , w) 
-  where PathS : Σ I (WI S PI) → Set
-        PathS (i , sup (s , f)) = PJ i s j ⊎ Σ I (PI i s)
-        PathP : (iw : Σ I (WI S PI)) (s : PathS iw) → Σ I (WI S PI) → Set
-        PathP (i , sup (s , f)) (inj₁ p) (i′ , w′) = ⊥
-        PathP (i , sup (s , f)) (inj₂ (i′′ , p)) (i′ , w′) = 
-          (i′′ ≡ i′) × (f i′′ p ≅ w′)
-
-path :  {I J : Set} {S : I → Set}  
-        {PI  : (i : I) → S i → I  → Set} 
-        {PJ  : (i : I) → S i → J  → Set} 
-        {i : I} → {s : S i} {f : PI i s -*-> WI S PI} → {j : J} 
-        →  PJ i s j  ⊎  (Σ I λ i′ → Σ (PI i s i′) λ p → Pathk S PI PJ i′ (f i′ p) j)        
-        →  Pathk S PI PJ i (sup (s , f)) j 
-pathk (inj₁ p) = sup (inj₁ p , λ i ())
-pathk {I} {J} {S} {PI} {PJ} {i} {s} {f} {j} (inj₂ (i′′ , (q , r))) = sup ((inj₂ (i′′ , q)) , sub) 
-  where sub : (iw : Σ I (WI S PI)) →
-                 (i′′ ≡ proj₁ iw) × (f i′′ q ≅ proj₂ iw) → Pathk S PI PJ (proj₁ iw) (proj₂ iw) j 
-        sub (i′ , w′) (eqi , eqw) = subst (WI _ _) (cong₂ _,_ eqi eqw) r 
+{-
 
 \end{code}
+
+%endif
+
+\begin{code}
+
+Path :  {I J : Set} (S : J → Set)  
+        (PI  : (j : J) → S j → I  → Set) 
+        (PJ  : (j : J) → S j → J  → Set) 
+        (j : J) → WI S PJ j → I → Set 
+Path {I} {J} S PI PJ j w i = WI PathS PathP (j , w) 
+  where PathS : Σ* j ∶ J *Σ WI S PJ j → Set
+        PathS (j , sup (s , f)) = PI j s i ⊎ Σ J (PJ j s)
+        PathP : (jw : Σ* j ∶ J *Σ WI S PJ j) (s : PathS jw) → Σ* j ∶ J *Σ WI S PJ j → Set
+        PathP (j , sup (s , f)) (inj₁ p) (j′ , w′) = ⊥
+        PathP (j , sup (s , f)) (inj₂ (j′′ , p)) (j′ , w′) = 
+          (j′′ ≡ j′) × (f j′′ p ≅ w′)
+
+\end{code}
+
+%if style == newcode
+
+\begin{code}
+
+-}
+
+\end{code}
+
+%endif
 

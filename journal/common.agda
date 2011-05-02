@@ -7,7 +7,7 @@ open import Data.Empty
 open import Data.Unit hiding (_≟_)
 open import Data.Bool hiding (_≟_)
 open import Data.Sum
-open import Data.Product as Prod
+open import Product as Prod
 open import Function
 open import Relation.Binary.HeterogeneousEquality
 open import Coinduction

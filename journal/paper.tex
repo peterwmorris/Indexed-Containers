@@ -617,7 +617,88 @@ Blah
 
 
 
-Our contructions are all developed in Agda, and so we adopt its syntax, but we will take certain liberties with it's type-theory. For, instance we need to work in a setting with extensional type-theory, so we extend the propositional equality with this extensionality axiom:
+
+Our contructions are all developed in Agda, and so we adopt its syntax, but we will take certain liberties with its type-theory. 
+
+We have $\Pi$-types, denoted \ensuremath{(\Varid{a}\;\in\;\Conid{A})\;\rightarrow\;\Conid{B}\;\Varid{a}} and $\Sigma$-types, which we denote in a non-standard way: \ensuremath{\Sigma(\!\;\Varid{a}\;\in\;\Conid{A}\;\!)\!\times\!\;\Conid{B}\;\Varid{a}}. In fact this is sugar for the record type:
+
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{5}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\Keyword{record}\;\Sigma\;(\Conid{A}\;\in\;\Conid{Set})\;(\Conid{B}\;\in\;\Conid{A}\;\rightarrow\;\Conid{Set})\;\in\;\Conid{Set}\;\Keyword{where}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\Keyword{constructor}\;\anonymous ,\anonymous {}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\Keyword{field}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\pi_0\;\in\;\Conid{A}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\pi_1\;\in\;\Conid{B}\;\pi_0{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+
+We will, however assume that the type-theory we work in has $\Sigma$-types as primative, and has no native support for data-types. 
+Instead, we only have \ensuremath{\Conid{W}}-types, the empty-type \ensuremath{\bot}, the unit type \ensuremath{\Varid{tt}\;\in\;\top} and the booleans \ensuremath{\Varid{true},\Varid{false}\;\in\;\Conid{Bool}}. 
+
+A type theory has \ensuremath{\Conid{W}} types if it has a type former \ensuremath{\Conid{W}\;\in\;(\Conid{S}\;\in\;\Conid{Set})\;(\Conid{P}\;\in\;\Conid{S}\;\rightarrow\;\Conid{Set})\;\rightarrow\;\Conid{Set}} with a constructor \ensuremath{\Varid{sup}} and an eliminator \ensuremath{\Varid{wrec}}:
+
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{9}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{15}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\Keyword{data}\;\Conid{W}\;(\Conid{S}\;\in\;\Conid{Set})\;(\Conid{P}\;\in\;\Conid{S}\;\rightarrow\;\Conid{Set})\;\in\;\Conid{Set}\;\Keyword{where}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\Varid{sup}\;\in\;\Sigma(\!\;\Varid{s}\;\in\;\Conid{S}\;\!)\!\times\!\;(\Conid{P}\;\Varid{s}\;\rightarrow\;\Conid{W}\;\Conid{S}\;\Conid{P})\;\rightarrow\;\Conid{W}\;\Conid{S}\;\Conid{P}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\Varid{wrec}\;\in\;{}\<[9]%
+\>[9]{}\{\mskip1.5mu \Conid{S}\;\in\;\Conid{Set}\mskip1.5mu\}\;\{\mskip1.5mu \Conid{P}\;\in\;\Conid{S}\;\rightarrow\;\Conid{Set}\mskip1.5mu\}\;(\Conid{Q}\;\in\;\Conid{W}\;\Conid{S}\;\Conid{P}\;\rightarrow\;\Conid{Set})\;{}\<[E]%
+\\
+\>[9]{}(\Varid{x}\;\in\;\Conid{W}\;\Conid{S}\;\Conid{P})\;{}\<[E]%
+\\
+\>[9]{}(\Varid{m}\;\in\;{}\<[15]%
+\>[15]{}(\Varid{s}\;\in\;\Conid{S})\;(\Varid{f}\;\in\;\Conid{P}\;\Varid{s}\;\rightarrow\;\Conid{W}\;\Conid{S}\;\Conid{P})\;{}\<[E]%
+\\
+\>[15]{}(\Varid{h}\;\in\;(\Varid{p}\;\in\;\Conid{P}\;\Varid{s})\;\rightarrow\;\Conid{Q}\;(\Varid{f}\;\Varid{p}))\;{}\<[E]%
+\\
+\>[15]{}\rightarrow\;\Conid{Q}\;(\Varid{sup}\;(\Varid{s},\Varid{f})))\;{}\<[E]%
+\\
+\>[9]{}\rightarrow\;\Conid{Q}\;\Varid{x}{}\<[E]%
+\\
+\>[B]{}\Varid{wrec}\;\Conid{Q}\;(\Varid{sup}\;(\Varid{s},\Varid{f}))\;\Varid{m}\;\mathrel{=}\;\Varid{m}\;\Varid{s}\;\Varid{f}\;(\lambda\;\Varid{p}\;\rightarrow\;\Varid{wrec}\;\Conid{Q}\;(\Varid{f}\;\Varid{p})\;\Varid{m}){}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+
+\noindent
+As a notational convenience, we will continue to define extra Agda data-types in the rest of the paper, but in the end we will show how each of these can be reduced to a theory that contains only \ensuremath{\Conid{W}}. For compactness, and readablity we will also define functions using Agda's pattern matching syntax, rather than encoding them using wrec, it is an unstated lemma that each of these definitions can be reduced to terms which only use \ensuremath{\Varid{wrec}}.
+
+We'll also require a notion of propositional equality, in Agda this is defined via a data-type:
+
+
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\Keyword{data}\;\Varid{\char95 ≅\char95 }\;\{\mskip1.5mu \Conid{A}\;\in\;\Conid{Set}\mskip1.5mu\}\;(\Varid{x}\;\in\;\Conid{A})\;\in\;\{\mskip1.5mu \Conid{B}\;\in\;\Conid{Set}\mskip1.5mu\}\;\rightarrow\;\Conid{B}\;\rightarrow\;\Conid{Set}\;\Keyword{where}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\Varid{refl}\;\in\;\Varid{x}\;\cong\;\Varid{x}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\Varid{subst}\;\in\;\{\mskip1.5mu \Conid{A}\;\in\;\Conid{Set}\mskip1.5mu\}\;(\Conid{P}\;\in\;\Conid{A}\;\rightarrow\;\Conid{Set})\;\{\mskip1.5mu \Varid{x}\;\Varid{y}\;\in\;\Conid{A}\mskip1.5mu\}\;\rightarrow\;\Varid{x}\;\cong\;\Varid{y}\;\rightarrow\;\Conid{P}\;\Varid{x}\;\rightarrow\;\Conid{P}\;\Varid{y}{}\<[E]%
+\\
+\>[B]{}\Varid{subst}\;\Conid{P}\;\Varid{refl}\;\Varid{p}\;\mathrel{=}\;\Varid{p}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+
+This is an intensioanl equality, but we want to work in a setting with extensional type-theory, so we extend the propositional equality with this extensionality axiom:
 
 
 \begin{hscode}\SaveRestoreHook
@@ -640,10 +721,8 @@ Our contructions are all developed in Agda, and so we adopt its syntax, but we w
 \ColumnHook
 \end{hscode}\resethooks
 
-This obviously creates non-canonical elements of \ensuremath{\Varid{\char95 ≅\char95 }}, but does not make our theory unsound.
+This creates non-canonical elements of \ensuremath{\Varid{\char95 ≅\char95 }}, \emph{i.e.} closed terms in equality types which are not \ensuremath{\Varid{refl}}. In order to deal with these non-canonical elements, we also rely on axiom \ensuremath{\Conid{K}}, or the uniqueness of idenity proofs:
 
-
-We also use the principle of uniqueness of identity types, to simplyfy some of our constructions:
 
 
 \begin{hscode}\SaveRestoreHook
@@ -656,40 +735,6 @@ We also use the principle of uniqueness of identity types, to simplyfy some of o
 \ColumnHook
 \end{hscode}\resethooks
 
-
-Instead of having all of Agda's data-types we assume that we only have \ensuremath{\Conid{W}}-types. A type theory has \ensuremath{\Conid{W}} types if it has a type former \ensuremath{\Conid{W}\;\in\;(\Conid{S}\;\in\;\Conid{Set})\;(\Conid{P}\;\in\;\Conid{S}\;\rightarrow\;\Conid{Set})\;\rightarrow\;\Conid{Set}} with a constructor \ensuremath{\Varid{sup}} and an eliminator \ensuremath{\Varid{wrec}}:
-
-\begin{hscode}\SaveRestoreHook
-\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{9}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{15}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
-\>[B]{}\Keyword{data}\;\Conid{W}\;(\Conid{S}\;\in\;\Conid{Set})\;(\Conid{P}\;\in\;\Conid{S}\;\rightarrow\;\Conid{Set})\;\in\;\Conid{Set}\;\Keyword{where}{}\<[E]%
-\\
-\>[B]{}\hsindent{3}{}\<[3]%
-\>[3]{}\Varid{sup}\;\in\;(\Sigma\;\Conid{S}\;\lambda\;\Varid{s}\;\rightarrow\;\Conid{P}\;\Varid{s}\;\rightarrow\;\Conid{W}\;\Conid{S}\;\Conid{P})\;\rightarrow\;\Conid{W}\;\Conid{S}\;\Conid{P}{}\<[E]%
-\\[\blanklineskip]%
-\>[B]{}\Varid{wrec}\;\in\;{}\<[9]%
-\>[9]{}\{\mskip1.5mu \Conid{S}\;\in\;\Conid{Set}\mskip1.5mu\}\;\{\mskip1.5mu \Conid{P}\;\in\;\Conid{S}\;\rightarrow\;\Conid{Set}\mskip1.5mu\}\;(\Conid{Q}\;\in\;\Conid{W}\;\Conid{S}\;\Conid{P}\;\rightarrow\;\Conid{Set})\;{}\<[E]%
-\\
-\>[9]{}(\Varid{x}\;\in\;\Conid{W}\;\Conid{S}\;\Conid{P})\;{}\<[E]%
-\\
-\>[9]{}(\Varid{m}\;\in\;{}\<[15]%
-\>[15]{}(\Varid{s}\;\in\;\Conid{S})\;(\Varid{f}\;\in\;\Conid{P}\;\Varid{s}\;\rightarrow\;\Conid{W}\;\Conid{S}\;\Conid{P})\;{}\<[E]%
-\\
-\>[15]{}(\Varid{h}\;\in\;(\Varid{p}\;\in\;\Conid{P}\;\Varid{s})\;\rightarrow\;\Conid{Q}\;(\Varid{f}\;\Varid{p}))\;{}\<[E]%
-\\
-\>[15]{}\rightarrow\;\Conid{Q}\;(\Varid{sup}\;(\Varid{s},\Varid{f})))\;{}\<[E]%
-\\
-\>[9]{}\rightarrow\;\Conid{Q}\;\Varid{x}{}\<[E]%
-\\
-\>[B]{}\Varid{wrec}\;\Conid{Q}\;(\Varid{sup}\;(\Varid{s},\Varid{f}))\;\Varid{m}\;\mathrel{=}\;\Varid{m}\;\Varid{s}\;\Varid{f}\;(\lambda\;\Varid{p}\;\rightarrow\;\Varid{wrec}\;\Conid{Q}\;(\Varid{f}\;\Varid{p})\;\Varid{m}){}\<[E]%
-\ColumnHook
-\end{hscode}\resethooks
-
-\noindent
-We will continue to define extra Agda data-types in the rest of the paper, but in the end we will show how each of these can be reduced to a theory that contains only \ensuremath{\Conid{W}}. For compactness, and readablity we will also define functions using Agda's pattern matching syntax, rather than encoding them using wrec, it is an unstated lemma that each of these definitions can be reduced to terms which only use \ensuremath{\Varid{wrec}},
 
 We are going to use type theory versions of certain category theoretic concepts 
 For instance, we use ends \ensuremath{\Conid{End}} to capture natural transformations.
@@ -704,7 +749,7 @@ The natural transformations between functors \ensuremath{\Conid{F}} and \ensurem
 ends \ensuremath{\prodd\;\Conid{X}\;.\;\Conid{F}\;\Conid{X}\;\rightarrow\;\Conid{G}\;\Conid{X}}. We will often ignore the presence of the proofs, and 
 use such ends directly as polymorphic functions.
 
-In this setting, the Yoneda lemma can be stated as follows, for any functor \ensuremath{\Conid{F}}:
+In this setting, the Yoneda lemma can be stated as follows, for any functor \ensuremath{\Conid{F}\;\in\;\Conid{Set}\;\rightarrow\;\Conid{Set}}:
 
 \[\mbox{\ensuremath{\Conid{F}\;\Conid{X}\;\cong\;\prodd\;\Conid{Y}\;.\;(\Conid{X}\;\rightarrow\;\Conid{Y})\;\rightarrow\;\Conid{F}\;\Conid{Y}}}\]
 
@@ -741,7 +786,7 @@ Finally, for readability we will elide certain artifacts in Agda's syntax, for i
 \\
 \>[B]{}\Varid{⟦}\;\Conid{S}\;\lhd\;\Conid{P}\;\Varid{⟧}\;\mathrel{=}\;\Keyword{record}\;{}\<[21]%
 \>[21]{}\{\mskip1.5mu \Varid{obj}\;{}\<[28]%
-\>[28]{}\mathrel{=}\;\lambda\;\Conid{A}\;\rightarrow\;\Sigma\;\Conid{S}\;\lambda\;\Varid{s}\;\rightarrow\;\Conid{P}\;\Varid{s}\;\rightarrow\;\Conid{A}{}\<[E]%
+\>[28]{}\mathrel{=}\;\lambda\;\Conid{A}\;\rightarrow\;\Sigma(\!\;\Varid{s}\;\in\;\Conid{S}\;\!)\!\times\!\;(\Conid{P}\;\Varid{s}\;\rightarrow\;\Conid{A}){}\<[E]%
 \\
 \>[21]{};\Varid{mor}\;{}\<[28]%
 \>[28]{}\mathrel{=}\;\lambda\;\Varid{m}\;\rightarrow\;\lambda (\!\;\Varid{s}\;\!,\!\;\Varid{f}\;\!\!)\;\rightarrow\;(\Varid{s},\Varid{m}\;\ensuremath{\mbox{$\circ$}}\;\Varid{f})\;{}\<[69]%
@@ -943,10 +988,10 @@ lifting functor \ensuremath{\uparrow\;\in\;\Conid{Set}_{i}\;\rightarrow\;\Conid{
 
 \begin{proof}
 To prove the structure is a relative 
-monad we observe that the following equlities hold up to 
+monad we observe that the following equalities hold up to 
 Agda's $\beta\eta$-equality, and our postulate \ensuremath{\Varid{ext}}.
 
-For \ensuremath{\Conid{F}\;\in\;\Conid{IFunc}\;\Conid{I}}, \ensuremath{\Conid{G}\;\in\;\Conid{I}\;\rightarrow\;\Conid{IFunc}\;\Conid{J}}, \ensuremath{\Conid{H}\;\in\;\Conid{J}\;\rightarrow\;\Conid{IFunc}\;\Conid{K}}:
+For \ensuremath{\Conid{F}\;\in\;\Conid{IFunc}\;\Conid{I}}, \ensuremath{\Conid{G}\;\in\;\Conid{IFunc*}\;\Conid{J}\;\Conid{I}}, \ensuremath{\Conid{H}\;\in\;\Conid{IFunc*}\;\Conid{K}\;\Conid{J}}:
 \begin{align}
 \ensuremath{\Conid{H}\;\Varid{i}}                 &\quad& \equiv &&\quad& \ensuremath{(\eta^{\text{\tiny F}}\;\Varid{i})\;\bind ^{\text{\tiny F}}\;\Conid{H}}               \\
 \ensuremath{\Conid{F}}                   && \equiv &&& \ensuremath{\Conid{F}\;\bind ^{\text{\tiny F}}\;\eta^{\text{\tiny F}}}                 \\
@@ -1019,12 +1064,12 @@ we denote \ensuremath{\Delta^{\text{\tiny F}}}:
 
 \noindent
 This construction is used, for instance, in building the pattern functor for \ensuremath{\Conid{ScLam}} as in the introduction; Concentranting only on the \ensuremath{\Varid{abs}} case we want to build  
-\ensuremath{\Conid{FScLam′}\;\Conid{X}\;\Varid{n}\;\mathrel{=}\;(\Conid{X}\;\ensuremath{\mbox{$\circ$}}\;\Varid{suc})\;\Varid{n}}. Or simply \ensuremath{\Conid{LScLam′}\;\Conid{X}\;\mathrel{=}\;\Delta^{\text{\tiny F}}\;\Varid{suc}\;\Conid{X}}. In general this combinator 
-restricts the functor \ensuremath{\Conid{X}} to the indexes in the image of the
+\ensuremath{\Conid{ScLam′}\;\Conid{X}\;\Varid{n}\;\mathrel{=}\;(\Conid{X}\;\ensuremath{\mbox{$\circ$}}\;\Varid{suc})\;\Varid{n}}. Or simply \ensuremath{\Conid{ScLam′}\;\Conid{X}\;\mathrel{=}\;\Delta^{\text{\tiny F}}\;\Varid{suc}\;\Conid{X}}. In general this combinator 
+restricts the functor \ensuremath{\Conid{X}} to the indicies in the image of the
 function \ensuremath{\Varid{f}}.
 
 What if the restriction appears on the right of such an equation? As an example,
-consider the successor constructor for \ensuremath{\Conid{Fin}}; here we want to build the pattern functor: \ensuremath{\Conid{FFin′}\;\Conid{X}\;(\Varid{1}\;\Varid{+}\;\Varid{n})\;\mathrel{=}\;\Conid{F}\;\Varid{n}\;\Conid{X}}. To do this we observe that this is equivalent to
+consider the successor constructor for \ensuremath{\Conid{Fin}}; here we want to build the pattern functor: \ensuremath{\Conid{FFin′}\;\Conid{X}\;(\Varid{1}\;\Varid{+}\;\Varid{n})\;\mathrel{=}\;\Conid{X}\;\Varid{n}}. To do this we observe that this is equivalent to
 the equation \ensuremath{\Conid{FFin′}\;\Conid{X}\;\Varid{n}\;\mathrel{=}\;\Sigma\;\Conid{Nat}\;\lambda\;\Varid{m}\;\rightarrow\;\Varid{n}\;\equiv\;\Varid{1}\;\Varid{+}\;\Varid{m}\;\times\;\Conid{X}\;\Varid{m}}. We denote the general
 construction \ensuremath{\Sigma^{\text{\tiny F}}}, so the 2nd equation can be written \ensuremath{\Conid{FFin′}\;\Conid{X}\;\mathrel{=}\;\Sigma^{\text{\tiny F}}\;\Varid{suc}\;\Conid{X}}:
 
@@ -1046,7 +1091,7 @@ construction \ensuremath{\Sigma^{\text{\tiny F}}}, so the 2nd equation can be wr
 \>[12]{}\{\mskip1.5mu {}\<[12E]%
 \>[15]{}\Varid{obj}\;{}\<[20]%
 \>[20]{}\mathrel{=}\;{}\<[23]%
-\>[23]{}\lambda\;\Conid{A}\;\rightarrow\;\Sigma\;\Conid{J}\;\lambda\;\Varid{j}\;\rightarrow\;\Varid{f}\;\Varid{j}\;\equiv\;\Varid{k}\;\times\;\;\Conid{F}\;\Conid{A}\;\Varid{j}{}\<[E]%
+\>[23]{}\lambda\;\Conid{A}\;\rightarrow\;\Sigma(\!\;\Varid{j}\;\in\;\Conid{J}\;\!)\!\times\!\;(\Varid{f}\;\Varid{j}\;\equiv\;\Varid{k}\;\times\;\;\Conid{F}\;\Conid{A}\;\Varid{j}){}\<[E]%
 \\
 \>[12]{};{}\<[12E]%
 \>[15]{}\Varid{mor}\;{}\<[20]%
@@ -1158,7 +1203,7 @@ We also note that finite co-products and products can be derived from \ensuremat
 \>[B]{}\bot^{\text{\tiny F}}\;\mathrel{=}\;\Sigma^{\text{\tiny F}}\;{}\<[12]%
 \>[12]{}\{\mskip1.5mu \Conid{J}\;\mathrel{=}\;\bot\mskip1.5mu\}\;\anonymous \;\lambda\;(){}\<[E]%
 \\[\blanklineskip]%
-\>[B]{}\anonymous \Varid{⊎\char94 F}\anonymous \;\in\;\forall{}\;\{\mskip1.5mu \Conid{I}\mskip1.5mu\}\;\rightarrow\;(\Conid{F}\;\Conid{G}\;\in\;\Conid{IFunc}\;\Conid{I})\;\rightarrow\;\Conid{IFunc}^{\star}\;\Conid{I}\;\top{}\<[E]%
+\>[B]{}\anonymous \uplus^{\text{\tiny F}}\anonymous \;\in\;\forall{}\;\{\mskip1.5mu \Conid{I}\mskip1.5mu\}\;\rightarrow\;(\Conid{F}\;\Conid{G}\;\in\;\Conid{IFunc}\;\Conid{I})\;\rightarrow\;\Conid{IFunc}^{\star}\;\Conid{I}\;\top{}\<[E]%
 \\
 \>[B]{}\Conid{F}\;\mathbin{\uplus^{\text{\tiny F}}}\;\Conid{G}\;\mathrel{=}\;\Sigma^{\text{\tiny F}}\;\anonymous \;\lambda\;\Varid{b}\;\rightarrow\;\Varid{if}\;\Varid{b}\;\Varid{then}\;\Conid{F}\;\Varid{else}\;\Conid{G}{}\<[E]%
 \\[\blanklineskip]%
@@ -1176,7 +1221,7 @@ We also note that finite co-products and products can be derived from \ensuremat
 \noindent
 Clearly these are simply the constantly \ensuremath{\top} and \ensuremath{\bot} valued functors, and the 
 point-wise product and co-product of functors, but this encoding allows us to 
-keep the number of constants in out vocabulary to a minimum.
+keep the number of constants in our vocabulary to a minimum.
 
 \subsection{Initial algebras of indexed functors}
 
@@ -1362,7 +1407,7 @@ will be the initial object in the category of parametrized \ensuremath{\Conid{F}
 
 The fact that the parametrized initial algebra construction can be iterated, 
 means that we can define nested and mutual families of data-types, such as the
-triple of terms, types and contexts outlined in the introduction. 
+tuple of neutral and normal \ensuremath{\lambda}-terms outlined in the introduction. 
 
 As before we know that not all \ensuremath{\Conid{IFunc}^{\star}\;(\Conid{I}\;\uplus\;\Conid{J})\;\Conid{I}} functors have initial 
 algebras. In the next section, however we spell out what it is for a functor to 
@@ -1418,7 +1463,7 @@ The extension of such a container is an \ensuremath{\Conid{IFunc}\;\Conid{I}}:
 \>[11]{}\{\mskip1.5mu {}\<[11E]%
 \>[14]{}\Varid{obj}\;{}\<[19]%
 \>[19]{}\mathrel{=}\;\lambda\;\Conid{A}\;{}\<[26]%
-\>[26]{}\rightarrow\;\Sigma\;\Conid{S}\;(\lambda\;\Varid{s}\;\rightarrow\;(\Varid{i}\;\in\;\Conid{I})\;\rightarrow\;\Conid{P}\;\Varid{s}\;\Varid{i}\;\rightarrow\;\Conid{A}\;\Varid{i}){}\<[E]%
+\>[26]{}\rightarrow\;\Sigma(\!\;\Varid{s}\;\in\;\Conid{S}\;\!)\!\times\!\;(\Conid{P}\;\Varid{s}\;\rightarrow^{\star}\;\Conid{A}){}\<[E]%
 \\
 \>[11]{};{}\<[11E]%
 \>[14]{}\Varid{mor}\;{}\<[19]%
@@ -1467,7 +1512,7 @@ the following derivation:
 
 \begin{align*}
                 & \ensuremath{\Varid{⟦}\;\Conid{S}\;\lhd\;\Conid{P}\;\Varid{⟧}\;\Rightarrow^{\text{\tiny F}}\;\Conid{F}} & \\
-  \equiv  \;    & \ensuremath{\prodd\;\Conid{X}\;.\;(\Sigma\;\Conid{S}\;\lambda\;\Varid{s}\;\rightarrow\;\Conid{P}\;\Varid{s}\;\rightarrow^{\star}\;\Conid{X})\;\rightarrow\;\Conid{F}\;\Conid{X}} & \{\mbox{by definition}\} \\
+  \equiv  \;    & \ensuremath{\prodd\;\Conid{X}\;.\;\Sigma(\!\;\Varid{s}\;\in\;\Conid{S}\;(\Conid{P}\;\Varid{s}\;\rightarrow^{\star}\;\Conid{X})\;\rightarrow\;\Conid{F}\;\Conid{X}} & \{\mbox{by definition}\} \\
   \equiv  \;    & \ensuremath{\prodd\;\Conid{X}\;.\;(\Varid{s}\;\in\;\Varid{s})\;\rightarrow\;(\Conid{P}\;\Varid{s}\;\rightarrow^{\star}\;\Conid{X})\;\rightarrow\;\Conid{F}\;\Conid{X}} & \{\mbox{currying}\} \\
   \cong   \;    & \ensuremath{(\Varid{s}\;\in\;\Conid{S})\;\rightarrow\;\prodd\;\Conid{X}\;.\;(\Conid{P}\;\Varid{s}\;\rightarrow^{\star}\;\Conid{X})\;\rightarrow\;\Conid{F}\;\Conid{X}} & \{\mbox{commuting end and pi} \} \\
   \cong   \;    & \ensuremath{(\Varid{s}\;\in\;\Conid{S})\;\rightarrow\;\Conid{F}\;(\Conid{P}\;\Varid{s})} & \{\mbox{Yoneda}\} \\
@@ -1478,8 +1523,8 @@ If \ensuremath{\Conid{F}} is also an indexed container \ensuremath{\Conid{T}\;\l
 
 \begin{align*}
            & \ensuremath{\Varid{⟦}\;\Conid{S}\;\lhd\;\Conid{P}\;\Varid{⟧}\;\Rightarrow^{\text{\tiny F}}\;\Varid{⟦}\;\Conid{T}\;\lhd\;\Conid{Q}\;\Varid{⟧}} \\
- \cong \;  & \ensuremath{(\Varid{s}\;\in\;\Conid{S})\;\rightarrow\;\Sigma\;\Conid{T}\;\lambda\;\Varid{t}\;\rightarrow\;\Conid{Q}\;\Varid{t}\;\rightarrow^{\star}\;\Conid{P}\;\Varid{s}} \\
- \cong \;  & \ensuremath{\Sigma\;(\Conid{S}\;\rightarrow\;\Conid{T})\;\lambda\;\Varid{f}\;\rightarrow\;(\Varid{s}\;\in\;\Conid{S})\;\rightarrow\;\Conid{Q}\;(\Varid{f}\;\Varid{s})\;\rightarrow^{\star}\;\Conid{P}\;\Varid{s}}
+ \cong \;  & \ensuremath{(\Varid{s}\;\in\;\Conid{S})\;\rightarrow\;\Sigma(\!\;\Varid{t}\;\in\;\Conid{T}\;^{\star}\;\!)\!\times\!\;(\Conid{Q}\;\Varid{t}\;\rightarrow^{\star}\;\Conid{P}\;\Varid{s})} \\
+ \cong \;  & \ensuremath{\Sigma(\!\;\Varid{f}\;\in\;\Conid{S}\;\rightarrow\;\Conid{T}\;\!)\!\times\!\;((\Varid{s}\;\in\;\Conid{S})\;\rightarrow\;\Conid{Q}\;(\Varid{f}\;\Varid{s})\;\rightarrow^{\star}\;\Conid{P}\;\Varid{s})}
 \end{align*}
  
 We will use this last line as the definition for container morphisms, captured by 
@@ -1612,7 +1657,7 @@ As with \ensuremath{\Conid{IFunc}}, we can equip \ensuremath{\Conid{ICont}} with
 \>[B]{}\hsindent{3}{}\<[3]%
 \>[3]{}\lhd\;{}\<[6]%
 \>[6]{}\lambda (\!\;\Varid{s}\;\!,\!\;\Varid{f}\;\!\!)\;\Varid{j}\;\!\;\rightarrow\;\Sigma\;{}\<[34]%
-\>[34]{}(\Sigma\;\Conid{I}\;(\Conid{P}\;\Varid{s}))\;(\lambda (\!\;\Varid{i}\;\!,\!\;\Varid{p}\;\!\!)\;\rightarrow\;\Conid{Q}\;\Varid{i}\;(\Varid{f}\;\Varid{i}\;\Varid{p})\;\Varid{j}\;\!\;\!)\;\!\;\!{}\<[E]%
+\>[34]{}(\Sigma(\!\;\Varid{i}\;\in\;\Conid{I}\;\!)\!\times\!\;\Conid{P}\;\Varid{s}\;\Varid{i})\;(\lambda (\!\;\Varid{i}\;\!,\!\;\Varid{p}\;\!\!)\;\rightarrow\;\Conid{Q}\;\Varid{i}\;(\Varid{f}\;\Varid{i}\;\Varid{p})\;\Varid{j}\;\!\;\!)\;\!\;\!{}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
 
@@ -1661,7 +1706,7 @@ has left and right adjoints \ensuremath{\Sigma^{\text{\tiny C}}} and \ensuremath
 \>[3]{}\Sigma^{\text{\tiny C}}\;\Varid{f}\;(\Conid{S}\;\lhd^{\star}\;\Conid{P})\;\mathrel{=}\;\!\!\;\lambda\;\Varid{k}\;\rightarrow\;{}\<[E]%
 \\
 \>[3]{}\hsindent{5}{}\<[8]%
-\>[8]{}(\Sigma\;\Conid{J}\;\lambda\;\Varid{j}\;\rightarrow\;\Varid{f}\;\Varid{j}\;\equiv\;\Varid{k}\;\times\;\Conid{S}\;\Varid{j})\;{}\<[E]%
+\>[8]{}(\Sigma(\!\;\Varid{j}\;\in\;\Conid{J}\;\!)\!\times\!\;(\Varid{f}\;\Varid{j}\;\equiv\;\Varid{k}\;\times\;\Conid{S}\;\Varid{j}))\;{}\<[E]%
 \\
 \>[3]{}\hsindent{2}{}\<[5]%
 \>[5]{}\lhd\;{}\<[8]%
@@ -1677,7 +1722,7 @@ has left and right adjoints \ensuremath{\Sigma^{\text{\tiny C}}} and \ensuremath
 \\
 \>[3]{}\hsindent{2}{}\<[5]%
 \>[5]{}\lhd\;{}\<[8]%
-\>[8]{}\lambda\;\Varid{s}\;\Varid{i}\;\rightarrow\;\Sigma\;\Conid{J}\;\lambda\;\Varid{j}\;\rightarrow\;\Sigma\;(\Varid{f}\;\Varid{j}\;\equiv\;\Varid{k})\;\lambda\;\Varid{eq}\;\rightarrow\;\Conid{P}\;\Varid{j}\;(\Varid{s}\;\Varid{j}\;\Varid{eq})\;\Varid{i}{}\<[E]%
+\>[8]{}\lambda\;\Varid{s}\;\Varid{i}\;\rightarrow\;\Sigma(\!\;\Varid{j}\;\in\;\Conid{J}\;\!)\!\times\!\;(\Sigma(\!\;\Varid{eq}\;\in\;\Varid{f}\;\Varid{j}\;\equiv\;\Varid{k}\;\!)\!\times\!\;\Conid{P}\;\Varid{j}\;(\Varid{s}\;\Varid{j}\;\Varid{eq})\;\Varid{i}){}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
 
@@ -1711,11 +1756,11 @@ define their partial application.
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{3}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{8}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{10}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{12}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{13}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{17}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{22}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{34}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{37}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{39}{@{}>{\hspre}c<{\hspost}@{}}%
 \column{39E}{@{}l@{}}%
 \column{42}{@{}>{\hspre}l<{\hspost}@{}}%
@@ -1751,12 +1796,14 @@ define their partial application.
 \\
 \>[B]{}\hsindent{3}{}\<[3]%
 \>[3]{}\Keyword{in}\;{}\<[8]%
-\>[8]{}\!\;\Varid{⟦}\;\Conid{S}\;\lhd\;\Conid{P}^{\Conid{J}}\;\Varid{⟧}\;\Conid{T}\;\lhd\;{}\<[37]%
-\>[37]{}(\lambda (\!\;\Varid{s}\;\!,\!\;\Varid{f}\;\!\!)\;\Varid{i}\;\!\;\rightarrow\;\Conid{P}^{\Conid{I}}\;\Varid{s}\;\Varid{i}{}\<[E]%
+\>[8]{}\!\;\Varid{⟦}\;\Conid{S}\;\lhd\;\Conid{P}^{\Conid{J}}\;\Varid{⟧}\;\Conid{T}\;\lhd\;{}\<[E]%
 \\
-\>[8]{}\hsindent{26}{}\<[34]%
-\>[34]{}\uplus\;{}\<[37]%
-\>[37]{}(\Sigma\;\Conid{J}\;\lambda\;\Varid{j}\;\rightarrow\;\Sigma\;(\Conid{P}^{\Conid{J}}\;\Varid{s}\;\Varid{j})\;\lambda\;\Varid{p}\;\rightarrow\;\Conid{Q}\;\Varid{j}\;(\Varid{f}\;\Varid{j}\;\Varid{p})\;\Varid{i})\;\!\;\!){}\<[E]%
+\>[8]{}\hsindent{5}{}\<[13]%
+\>[13]{}(\lambda (\!\;\Varid{s}\;\!,\!\;\Varid{f}\;\!\!)\;\Varid{i}\;\!\;\rightarrow\;\Conid{P}^{\Conid{I}}\;\Varid{s}\;\Varid{i}{}\<[E]%
+\\
+\>[8]{}\hsindent{2}{}\<[10]%
+\>[10]{}\uplus\;{}\<[13]%
+\>[13]{}(\Sigma(\!\;\Varid{j}\;\in\;\Conid{J}\;\!)\!\times\!\;(\Sigma(\!\;\Varid{p}\;\in\;\Conid{P}^{\Conid{J}}\;\Varid{s}\;\Varid{j}\;\!)\!\times\!\;\Conid{Q}\;\Varid{j}\;(\Varid{f}\;\Varid{j}\;\Varid{p})\;\Varid{i}))\;\!\;\!){}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
 
@@ -1813,8 +1860,7 @@ argument, and lifts container morphisms in this way:
 
 \section{Initial Algebras of Indexed Containers}
 
-We will now examine how to construct the initial algebra of a container of the form \ensuremath{\Conid{F}\;\in\;\Conid{ICont}^{\star}\;(\Conid{I}\;\uplus\;\Conid{J})\;\Conid{J}}. The shapes of such a container are an \ensuremath{\Conid{J}}-indexed family of \ensuremath{\Conid{Set}}s and the positions are in \ensuremath{(\Varid{j}\;\in\;\Conid{J})\;\rightarrow\;\Conid{S}\;\Varid{j}\;\rightarrow\;\Conid{I}\;\uplus\;\Conid{J}\;\rightarrow\;\Conid{Set}}; we will treat these position as two separate entities, those positions indexed by \ensuremath{\Conid{I}} (\ensuremath{\Conid{P}^{\Conid{I}}\;\in\;(\Varid{j}\;\in\;\Conid{J})\;\rightarrow\;\Conid{S}\;\Varid{j}\;\rightarrow\;\Conid{I}\;\rightarrow\;\Conid{Set}}) -- the recusive positions -- and those by \ensuremath{\Conid{J}} 
-(\ensuremath{\Conid{P}^{\Conid{J}}\;\in\;(\Varid{j}\;\in\;\Conid{J})\;\rightarrow\;\Conid{S}\;\Varid{i}\;\rightarrow\;\Conid{J}\;\rightarrow\;\Conid{Set}}) -- the payload positions.
+We will now examine how to construct the initial algebra of a container of the form \ensuremath{\Conid{F}\;\in\;\Conid{ICont}^{\star}\;(\Conid{I}\;\uplus\;\Conid{J})\;\Conid{J}}. The shapes of such a container are an \ensuremath{\Conid{J}}-indexed family of \ensuremath{\Conid{Set}}s and the positions are indexed by \ensuremath{\Conid{I}\;\uplus\;\Conid{J}}; we will treat these position as two separate entities, those positions indexed by \ensuremath{\Conid{I}} -- the recusive positions -- and those by \ensuremath{\Conid{J}} -- the payload positions.
 
 The shapes of initial algebra we are constructing will be trees with S shapes at the nodes and which branch over the recursive \ensuremath{\Conid{P}^{\Conid{I}}} positions. We call these trees \emph{indexed} \ensuremath{\Conid{W}}-types, denoted \ensuremath{\Conid{WI}} and they are the initial algebra of the functor \ensuremath{\Varid{⟦}\;\Conid{S}\;\lhd\;\Conid{P}^{\Conid{J}}\;\Varid{⟧}^{\star}}:
 
@@ -1885,7 +1931,7 @@ Positions are given by paths through such a tree, terminated by a non-recursive 
 \>[16]{}\Conid{P}^{\Conid{I}}\;\Varid{j}\;\Varid{s}\;\Varid{i}\;{}\<[E]%
 \\
 \>[13]{}\uplus\;{}\<[16]%
-\>[16]{}(\Sigma\;\Conid{J}\;\lambda\;\Varid{j′}\;\rightarrow\;\Sigma\;(\Conid{P}^{\Conid{J}}\;\Varid{j}\;\Varid{s}\;\Varid{j′})\;\lambda\;\Varid{p}\;\rightarrow\;\Conid{Path}\;\Conid{S}\;\Conid{P}^{\Conid{I}}\;\Conid{P}^{\Conid{J}}\;\Varid{j′}\;(\Varid{f}\;\Varid{j′}\;\Varid{p})\;\Varid{i})\;{}\<[E]%
+\>[16]{}(\Sigma(\!\;\Varid{j′}\;\in\;\Conid{J}\;\!)\!\times\!\;(\Sigma(\!\;\Varid{p}\;\in\;\Conid{P}^{\Conid{J}}\;\Varid{j}\;\Varid{s}\;\Varid{j′}\;\!)\!\times\!\;\Conid{Path}\;\Conid{S}\;\Conid{P}^{\Conid{I}}\;\Conid{P}^{\Conid{J}}\;\Varid{j′}\;(\Varid{f}\;\Varid{j′}\;\Varid{p})\;\Varid{i}))\;{}\<[E]%
 \\
 \>[13]{}\rightarrow\;\Conid{Path}\;\Conid{S}\;\Conid{P}^{\Conid{I}}\;\Conid{P}^{\Conid{J}}\;\Varid{j}\;(\Varid{sup}\;(\Varid{s},\Varid{f}))\;\Varid{i}{}\<[E]%
 \ColumnHook
@@ -1942,20 +1988,23 @@ We can now give the object part of the patrametrized initial algebra of a contai
 \noindent
 The algebra map is a container morphism from the partial aplication of \ensuremath{\Conid{F}} and its parametrised initial algebra, to the initial algebra, given by the algebra map of \ensuremath{\Conid{WI}} (\ensuremath{\Varid{sup}}) and our mediation funtion \ensuremath{\Varid{path}}:
 
+
 \begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
 \>[B]{}\Varid{in}^{\text{\tiny C}}\;\in\;\forall{}\;\{\mskip1.5mu \Conid{I}\;\Conid{J}\mskip1.5mu\}\;\rightarrow\;(\Conid{F}\;\in\;\Conid{ICont}^{\star}\;(\Conid{I}\;\uplus\;\Conid{J})\;\Conid{J})\;\rightarrow\;\Conid{F}\;[\mskip1.5mu \;\mu^{\text{\tiny C}}\;\Conid{F}\;\mskip1.5mu]^{\text{\tiny{C}}^{\star}}\;\Rightarrow^{\text{\tiny C}^{\star}}\;\mu^{\text{\tiny C}}\;\Conid{F}{}\<[E]%
 \\
-\>[B]{}\Varid{in}^{\text{\tiny C}}\;\Conid{F}\;\mathrel{=}\;(\lambda\;\anonymous \;\rightarrow\;\Varid{sup})\;\lhd^{\star}\;\lambda\;\anonymous \;\anonymous \;\Varid{p}\;\rightarrow\;\Varid{path}\Varid{⁻¹}\;\Varid{p}{}\<[E]%
+\>[B]{}\Varid{in}^{\text{\tiny C}}\;\Conid{F}\;\mathrel{=}\;(\lambda\;\anonymous \;\rightarrow\;\Varid{sup})\;\lhd^{\star}\;\lambda\;\anonymous \;\anonymous \;(\Varid{path}\;\Varid{p})\;\rightarrow\;\Varid{p}{}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
+
 
 \begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{5}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{12}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{13}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{14}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{16}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{19}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{21}{@{}>{\hspre}l<{\hspost}@{}}%
@@ -1994,18 +2043,26 @@ The algebra map is a container morphism from the partial aplication of \ensurema
 \>[12]{}\Varid{ffold}\;\mathrel{=}\;\Conid{WIfold}\;\Varid{f}{}\<[E]%
 \\
 \>[12]{}\Varid{rfold}\;\in\;{}\<[21]%
-\>[21]{}\{\mskip1.5mu \Varid{j}\;\in\;\Conid{J}\mskip1.5mu\}\;(\Varid{s}\;\in\;\Conid{WI}\;\Conid{S}\;\Conid{P}^{\Conid{J}}\;\Varid{j})\;(\Varid{i}\;\in\;\Conid{I})\;\rightarrow\;\Conid{Q}\;\Varid{j}\;(\Varid{ffold}\;\Varid{j}\;\Varid{s})\;\Varid{i}\;\rightarrow\;\Conid{Path}\;\Conid{S}\;\Conid{P}^{\Conid{I}}\;\Conid{P}^{\Conid{J}}\;\Varid{j}\;\Varid{s}\;\Varid{i}{}\<[E]%
+\>[21]{}\{\mskip1.5mu \Varid{j}\;\in\;\Conid{J}\mskip1.5mu\}\;(\Varid{s}\;\in\;\Conid{WI}\;\Conid{S}\;\Conid{P}^{\Conid{J}}\;\Varid{j})\;{}\<[E]%
+\\
+\>[21]{}(\Varid{i}\;\in\;\Conid{I})\;\rightarrow\;\Conid{Q}\;\Varid{j}\;(\Varid{ffold}\;\Varid{j}\;\Varid{s})\;\Varid{i}\;\rightarrow\;\Conid{Path}\;\Conid{S}\;\Conid{P}^{\Conid{I}}\;\Conid{P}^{\Conid{J}}\;\Varid{j}\;\Varid{s}\;\Varid{i}{}\<[E]%
 \\
 \>[12]{}\Varid{rfold}\;(\Varid{sup}\;(\Varid{s},\Varid{f}))\;\Varid{i}\;\Varid{p}\;{}\<[37]%
 \>[37]{}\Keyword{with}\;\Varid{r}\;(\Varid{s},\anonymous )\;\Varid{i}\;\Varid{p}{}\<[E]%
 \\
 \>[12]{}\Varid{rfold}\;(\Varid{sup}\;(\Varid{s},\Varid{f}))\;\Varid{i}\;\Varid{p}\;{}\<[37]%
 \>[37]{}\mid \;\Varid{inl}\;\Varid{x}\;{}\<[60]%
-\>[60]{}\mathrel{=}\;\Varid{path}\;(\Varid{inl}\;\Varid{x}){}\<[E]%
+\>[60]{}\mathrel{=}\;{}\<[E]%
+\\
+\>[12]{}\hsindent{2}{}\<[14]%
+\>[14]{}\Varid{path}\;(\Varid{inl}\;\Varid{x}){}\<[E]%
 \\
 \>[12]{}\Varid{rfold}\;(\Varid{sup}\;(\Varid{s},\Varid{f}))\;\Varid{i}\;\Varid{p}\;{}\<[37]%
 \>[37]{}\mid \;\Varid{inr}\;(\Varid{j′},(\Varid{q},\Varid{y}))\;{}\<[60]%
-\>[60]{}\mathrel{=}\;\Varid{path}\;(\Varid{inr}\;(\Varid{j′},(\Varid{q},\Varid{rfold}\;(\Varid{f}\;\Varid{j′}\;\Varid{q})\;\Varid{i}\;\Varid{y}))){}\<[E]%
+\>[60]{}\mathrel{=}\;{}\<[E]%
+\\
+\>[12]{}\hsindent{2}{}\<[14]%
+\>[14]{}\Varid{path}\;(\Varid{inr}\;(\Varid{j′},(\Varid{q},\Varid{rfold}\;(\Varid{f}\;\Varid{j′}\;\Varid{q})\;\Varid{i}\;\Varid{y}))){}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
 
@@ -2014,6 +2071,8 @@ The algebra map is a container morphism from the partial aplication of \ensurema
 
 
 \section{Terminal Co-Algebras of Indexed Containers}
+
+Dually to the initial algebra construction out-lined above, we can also show that indexed-containers are closed under parameterized terminal co-algebras. We proceed in much the same way as before, by first constructing the dual of the indexed \ensuremath{\Conid{W}}-type, which we refer to as an indexed \ensuremath{\Conid{M}}-type. As you might expect this is in fact the plain (as opposed to parametrized) terminal co-algebra of an indexed container functor:
 
 
 \begin{hscode}\SaveRestoreHook
@@ -2045,27 +2104,9 @@ The algebra map is a container morphism from the partial aplication of \ensurema
 
 \begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{5}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{7}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{8}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{10}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{12}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{13}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{14}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{15}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{16}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{17}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{19}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{23}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{33}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{38}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{42}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{46}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{47}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{51}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{54}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{59}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
 \>[B]{}\Conid{MIunfold}\;\in\;{}\<[13]%
 \>[13]{}\forall{}\;{}\<[16]%
@@ -2080,84 +2121,112 @@ The algebra map is a container morphism from the partial aplication of \ensurema
 \>[B]{}\Conid{MIunfold}\;\Varid{m}\;\Varid{i}\;\Varid{x}\;\Keyword{with}\;\Varid{m}\;\Varid{i}\;\Varid{x}{}\<[E]%
 \\
 \>[B]{}\Conid{MIunfold}\;\Varid{m}\;\Varid{i}\;\Varid{x}\;\mid \;\Varid{s},\Varid{f}\;\mathrel{=}\;\Varid{sup}\;(\Varid{s},(\lambda\;\Varid{i′}\;\Varid{p}\;\rightarrow\;\sharp\;\Conid{MIunfold}\;\Varid{m}\;\Varid{i′}\;(\Varid{f}\;\Varid{i′}\;\Varid{p}))){}\<[E]%
-\\[\blanklineskip]%
+\ColumnHook
+\end{hscode}\resethooks
+
+Here we employ Agda's approach to co-programming, where we mark (possibly) infinite subtrees with \ensuremath{\infty}, \ensuremath{\sharp\;\in\;\Conid{A}\;\rightarrow\;\infty\;\Conid{A}} and \ensuremath{\flat\;\in\;\infty\;\Conid{A}\;\rightarrow\;\Conid{A}} pack and unpack infinite objects respectively.
+
+The paths to positions in and indexed \ensuremath{\Conid{M}} tree, are always finite -- in fact modulo the use of \ensuremath{\flat}, this \ensuremath{\Conid{Path}} is the same as the definition for the initial algebra case.
+
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{12}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{13}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{16}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{17}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{38}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
 \>[B]{}\Keyword{data}\;\Conid{Path}\;{}\<[12]%
-\>[12]{}\{\mskip1.5mu \Conid{I}\;\Conid{J}\;\in\;\Conid{Set}\mskip1.5mu\}\;(\Conid{S}\;\in\;\Conid{I}\;\rightarrow\;\Conid{Set})\;{}\<[E]%
+\>[12]{}\{\mskip1.5mu \Conid{I}\;\Conid{J}\;\in\;\Conid{Set}\mskip1.5mu\}\;(\Conid{S}\;\in\;\Conid{J}\;\rightarrow\;\Conid{Set})\;{}\<[E]%
 \\
 \>[12]{}(\Conid{P}^{\Conid{I}}\;{}\<[17]%
-\>[17]{}\in\;(\Varid{i}\;\in\;\Conid{I})\;\rightarrow\;\Conid{S}\;\Varid{i}\;\rightarrow\;\Conid{I}\;{}\<[38]%
+\>[17]{}\in\;(\Varid{j}\;\in\;\Conid{J})\;\rightarrow\;\Conid{S}\;\Varid{j}\;\rightarrow\;\Conid{I}\;{}\<[38]%
 \>[38]{}\rightarrow\;\Conid{Set})\;{}\<[E]%
 \\
 \>[12]{}(\Conid{P}^{\Conid{J}}\;{}\<[17]%
-\>[17]{}\in\;(\Varid{i}\;\in\;\Conid{I})\;\rightarrow\;\Conid{S}\;\Varid{i}\;\rightarrow\;\Conid{J}\;{}\<[38]%
+\>[17]{}\in\;(\Varid{j}\;\in\;\Conid{J})\;\rightarrow\;\Conid{S}\;\Varid{j}\;\rightarrow\;\Conid{J}\;{}\<[38]%
 \>[38]{}\rightarrow\;\Conid{Set})\;{}\<[E]%
 \\
-\>[12]{}\in\;(\Varid{i}\;\in\;\Conid{I})\;\rightarrow\;\Conid{MI}\;\Conid{S}\;\Conid{P}^{\Conid{I}}\;\Varid{i}\;\rightarrow\;\Conid{J}\;\rightarrow\;\Conid{Set}\;\Keyword{where}{}\<[E]%
+\>[12]{}\in\;(\Varid{j}\;\in\;\Conid{J})\;\rightarrow\;\Conid{MI}\;\Conid{S}\;\Conid{P}^{\Conid{J}}\;\Varid{j}\;\rightarrow\;\Conid{I}\;\rightarrow\;\Conid{Set}\;\Keyword{where}{}\<[E]%
 \\
 \>[B]{}\hsindent{3}{}\<[3]%
 \>[3]{}\Varid{path}\;\in\;\forall{}\;{}\<[13]%
-\>[13]{}\{\mskip1.5mu \Varid{i}\;\Varid{s}\;\Varid{f}\;\Varid{j}\mskip1.5mu\}\;\rightarrow\;{}\<[E]%
+\>[13]{}\{\mskip1.5mu \Varid{j}\;\Varid{s}\;\Varid{f}\;\Varid{i}\mskip1.5mu\}\;\rightarrow\;{}\<[E]%
 \\
 \>[13]{}\hsindent{3}{}\<[16]%
-\>[16]{}\Conid{P}^{\Conid{J}}\;\Varid{i}\;\Varid{s}\;\Varid{j}\;{}\<[E]%
+\>[16]{}\Conid{P}^{\Conid{I}}\;\Varid{j}\;\Varid{s}\;\Varid{i}\;{}\<[E]%
 \\
 \>[13]{}\uplus\;{}\<[16]%
-\>[16]{}(\Sigma\;\Conid{I}\;\lambda\;\Varid{i′}\;\rightarrow\;\Sigma\;(\Conid{P}^{\Conid{I}}\;\Varid{i}\;\Varid{s}\;\Varid{i′})\;\lambda\;\Varid{p}\;\rightarrow\;\Conid{Path}\;\Conid{S}\;\Conid{P}^{\Conid{I}}\;\Conid{P}^{\Conid{J}}\;\Varid{i′}\;(\flat\;(\Varid{f}\;\Varid{i′}\;\Varid{p}))\;\Varid{j})\;{}\<[E]%
+\>[16]{}(\Sigma(\!\;\Varid{j′}\;\in\;\Conid{J}\;\!)\!\times\!\;(\Sigma(\!\;\Varid{p}\;\in\;\Conid{P}^{\Conid{J}}\;\Varid{j}\;\Varid{s}\;\Varid{j′}\;\!)\!\times\!\;\Conid{Path}\;\Conid{S}\;\Conid{P}^{\Conid{I}}\;\Conid{P}^{\Conid{J}}\;\Varid{j′}\;(\flat\;(\Varid{f}\;\Varid{j′}\;\Varid{p}))\;\Varid{i}))\;{}\<[E]%
 \\
-\>[13]{}\rightarrow\;\Conid{Path}\;\Conid{S}\;\Conid{P}^{\Conid{I}}\;\Conid{P}^{\Conid{J}}\;\Varid{i}\;(\Varid{sup}\;(\Varid{s},\Varid{f}))\;\Varid{j}{}\<[E]%
-\\[\blanklineskip]%
-\>[B]{}\nu^{\text{\tiny C}}\;\in\;\{\mskip1.5mu \Conid{I}\;\Conid{J}\;\in\;\Conid{Set}\mskip1.5mu\}\;\rightarrow\;\Conid{ICont}^{\star}\;(\Conid{I}\;\uplus\;\Conid{J})\;\Conid{I}\;\rightarrow\;\Conid{ICont}^{\star}\;\Conid{J}\;\Conid{I}{}\<[E]%
+\>[13]{}\rightarrow\;\Conid{Path}\;\Conid{S}\;\Conid{P}^{\Conid{I}}\;\Conid{P}^{\Conid{J}}\;\Varid{j}\;(\Varid{sup}\;(\Varid{s},\Varid{f}))\;\Varid{i}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+
+The parameterised terminal co-algebra of an indexed container is, then, given by a choice of \ensuremath{\Conid{MI}} shapes and positions given by \ensuremath{\Conid{Path}}.
+
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{8}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{12}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{33}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{42}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{46}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{54}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\nu^{\text{\tiny C}}\;\in\;\{\mskip1.5mu \Conid{I}\;\Conid{J}\;\in\;\Conid{Set}\mskip1.5mu\}\;\rightarrow\;\Conid{ICont}^{\star}\;(\Conid{I}\;\uplus\;\Conid{J})\;\Conid{J}\;\rightarrow\;\Conid{ICont}^{\star}\;\Conid{I}\;\Conid{J}{}\<[E]%
 \\
 \>[B]{}\nu^{\text{\tiny C}}\;\{\mskip1.5mu \Conid{I}\mskip1.5mu\}\;\{\mskip1.5mu \Conid{J}\mskip1.5mu\}\;(\Conid{S}\;\lhd^{\star}\;\Conid{P})\;\mathrel{=}{}\<[E]%
 \\
 \>[B]{}\hsindent{3}{}\<[3]%
 \>[3]{}\Keyword{let}\;{}\<[8]%
 \>[8]{}\Conid{P}^{\Conid{I}}\;{}\<[12]%
-\>[12]{}\in\;(\Varid{i}\;\in\;\Conid{I})\;\rightarrow\;\Conid{S}\;\Varid{i}\;\rightarrow\;\Conid{I}\;{}\<[33]%
+\>[12]{}\in\;(\Varid{j}\;\in\;\Conid{J})\;\rightarrow\;\Conid{S}\;\Varid{j}\;\rightarrow\;\Conid{I}\;{}\<[33]%
 \>[33]{}\rightarrow\;\Conid{Set};{}\<[42]%
 \>[42]{}\Conid{P}^{\Conid{I}}\;{}\<[46]%
-\>[46]{}\Varid{i}\;\Varid{s}\;\Varid{i′}\;{}\<[54]%
-\>[54]{}\mathrel{=}\;\Conid{P}\;\!\!\;\Varid{i}\;\!\!\;\Varid{s}\;\!\!\;(\Varid{inl}\;\Varid{i′}){}\<[E]%
+\>[46]{}\Varid{j}\;\Varid{s}\;\Varid{i}\;{}\<[54]%
+\>[54]{}\mathrel{=}\;\Conid{P}\;\!\!\;\Varid{j}\;\!\!\;\Varid{s}\;\!\!\;(\Varid{inl}\;\Varid{i}){}\<[E]%
 \\
 \>[8]{}\Conid{P}^{\Conid{J}}\;{}\<[12]%
-\>[12]{}\in\;(\Varid{i}\;\in\;\Conid{I})\;\rightarrow\;\Conid{S}\;\Varid{i}\;\rightarrow\;\Conid{J}\;{}\<[33]%
+\>[12]{}\in\;(\Varid{j}\;\in\;\Conid{J})\;\rightarrow\;\Conid{S}\;\Varid{j}\;\rightarrow\;\Conid{J}\;{}\<[33]%
 \>[33]{}\rightarrow\;\Conid{Set};{}\<[42]%
 \>[42]{}\Conid{P}^{\Conid{J}}\;{}\<[46]%
-\>[46]{}\Varid{i}\;\Varid{s}\;\Varid{j}\;{}\<[54]%
-\>[54]{}\mathrel{=}\;\Conid{P}\;\!\!\;\Varid{i}\;\!\!\;\Varid{s}\;\!\!\;(\Varid{inr}\;\Varid{j}){}\<[E]%
+\>[46]{}\Varid{j}\;\Varid{s}\;\Varid{j′}\;{}\<[54]%
+\>[54]{}\mathrel{=}\;\Conid{P}\;\!\!\;\Varid{j}\;\!\!\;\Varid{s}\;\!\!\;(\Varid{inr}\;\Varid{j′}){}\<[E]%
 \\
 \>[B]{}\hsindent{3}{}\<[3]%
 \>[3]{}\Keyword{in}\;{}\<[8]%
-\>[8]{}\Conid{MI}\;\Conid{S}\;\Conid{P}^{\Conid{I}}\;\lhd^{\star}\;\Conid{Path}\;\Conid{S}\;\Conid{P}^{\Conid{I}}\;\Conid{P}^{\Conid{J}}{}\<[E]%
-\\[\blanklineskip]%
-\>[B]{}\Varid{out}^{\text{\tiny C}}\;\in\;\forall{}\;\{\mskip1.5mu \Conid{I}\;\Conid{J}\mskip1.5mu\}\;\rightarrow\;(\Conid{F}\;\in\;\Conid{ICont}^{\star}\;(\Conid{I}\;\uplus\;\Conid{J})\;\Conid{I})\;\rightarrow\;\nu^{\text{\tiny C}}\;\Conid{F}\;\Rightarrow^{\text{\tiny C}^{\star}}\;\Conid{F}\;[\mskip1.5mu \;\nu^{\text{\tiny C}}\;\Conid{F}\;\mskip1.5mu]^{\text{\tiny{C}}^{\star}}{}\<[E]%
+\>[8]{}\Conid{MI}\;\Conid{S}\;\Conid{P}^{\Conid{J}}\;\lhd^{\star}\;\Conid{Path}\;\Conid{S}\;\Conid{P}^{\Conid{I}}\;\Conid{P}^{\Conid{J}}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+
+
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\Varid{out}^{\text{\tiny C}}\;\in\;\forall{}\;\{\mskip1.5mu \Conid{I}\;\Conid{J}\mskip1.5mu\}\;\rightarrow\;(\Conid{F}\;\in\;\Conid{ICont}^{\star}\;(\Conid{I}\;\uplus\;\Conid{J})\;\Conid{J})\;\rightarrow\;\nu^{\text{\tiny C}}\;\Conid{F}\;\Rightarrow^{\text{\tiny C}^{\star}}\;\Conid{F}\;[\mskip1.5mu \;\nu^{\text{\tiny C}}\;\Conid{F}\;\mskip1.5mu]^{\text{\tiny{C}}^{\star}}{}\<[E]%
 \\
-\>[B]{}\Varid{out}^{\text{\tiny C}}\;\{\mskip1.5mu \Conid{I}\mskip1.5mu\}\;\{\mskip1.5mu \Conid{J}\mskip1.5mu\}\;(\Conid{S}\;\lhd^{\star}\;\Conid{P})\;\mathrel{=}\;(\lambda\;\anonymous \;\rightarrow\;\Varid{sup⁻¹})\;\lhd^{\star}\;\Varid{unsup}\;\{\mskip1.5mu \anonymous \mskip1.5mu\}\;\{\mskip1.5mu \anonymous \mskip1.5mu\}\;\{\mskip1.5mu \anonymous \mskip1.5mu\}\;\{\mskip1.5mu \lambda\;\Varid{j}\;\Varid{s}\;\rightarrow\;(\Varid{i}\;\in\;\Conid{J})\;\rightarrow\;\Conid{P}\;\Varid{j}\;(\pi_{0}\;(\Varid{sup⁻¹}\;\Varid{s}))\;(\Varid{inr}\;\Varid{i})\;\uplus{}\<[E]%
-\\
-\>[B]{}\hsindent{7}{}\<[7]%
-\>[7]{}\Sigma\;\Conid{I}{}\<[E]%
-\\
-\>[B]{}\hsindent{7}{}\<[7]%
-\>[7]{}(\lambda\;\Varid{i'}\;\rightarrow\;{}\<[E]%
-\\
-\>[7]{}\hsindent{3}{}\<[10]%
-\>[10]{}\Sigma\;(\Conid{P}\;\Varid{j}\;(\pi_{0}\;(\Varid{sup⁻¹}\;\Varid{s}))\;(\Varid{inl}\;\Varid{i'}))\;{}\<[E]%
-\\
-\>[7]{}\hsindent{3}{}\<[10]%
-\>[10]{}(\lambda\;\Varid{p}\;\rightarrow\;{}\<[E]%
-\\
-\>[10]{}\hsindent{3}{}\<[13]%
-\>[13]{}\Conid{Path}\;\Conid{S}\;(\lambda\;\Varid{i0}\;\Varid{s'}\;\Varid{i′}\;\rightarrow\;\Conid{P}\;\Varid{i0}\;\Varid{s'}\;(\Varid{inl}\;\Varid{i′}))\;{}\<[E]%
-\\
-\>[10]{}\hsindent{3}{}\<[13]%
-\>[13]{}(\lambda\;\Varid{i0}\;\Varid{s'}\;\Varid{j'}\;\rightarrow\;\Conid{P}\;\Varid{i0}\;\Varid{s'}\;(\Varid{inr}\;\Varid{j'}))\;\Varid{i'}\;(\pi_{1}\;(\Varid{sup⁻¹}\;\Varid{s})\;\Varid{i'}\;\Varid{p})\;\Varid{i}))\;\rightarrow{}\<[E]%
-\\
-\>[B]{}\hsindent{7}{}\<[7]%
-\>[7]{}\Conid{Path}\;\Conid{S}\;(\lambda\;\Varid{i'}\;\Varid{s'}\;\Varid{i′}\;\rightarrow\;\Conid{P}\;\Varid{i'}\;\Varid{s'}\;(\Varid{inl}\;\Varid{i′})){}\<[E]%
-\\
-\>[B]{}\hsindent{7}{}\<[7]%
-\>[7]{}(\lambda\;\Varid{i'}\;\Varid{s'}\;\Varid{j'}\;\rightarrow\;\Conid{P}\;\Varid{i'}\;\Varid{s'}\;(\Varid{inr}\;\Varid{j'}))\;\Varid{j}\;\Varid{s}\;\Varid{i}\mskip1.5mu\}\;(\lambda\;\Varid{sf}\;\Varid{i′}\;\Varid{p}\;\rightarrow\;\Varid{path}\;\Varid{p}){}\<[E]%
-\\[\blanklineskip]%
+\>[B]{}\Varid{out}^{\text{\tiny C}}\;\{\mskip1.5mu \Conid{I}\mskip1.5mu\}\;\{\mskip1.5mu \Conid{J}\mskip1.5mu\}\;(\Conid{S}\;\lhd^{\star}\;\Conid{P})\;\mathrel{=}\;(\lambda\;\anonymous \;(\Varid{sup}\;\Varid{x})\;\rightarrow\;\Varid{x})\;\lhd^{\star}\;\lambda\;(\Varid{sup}\;\Varid{x})\;\Varid{i′}\;\Varid{p}\;\rightarrow\;\Varid{path}\;\Varid{p}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+
+
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{5}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{12}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{14}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{15}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{16}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{19}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{23}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{38}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{47}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{51}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{59}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
 \>[B]{}\Varid{unfold}^{\text{\tiny C}}\;\in\;\forall{}\;{}\<[15]%
 \>[15]{}\{\mskip1.5mu \Conid{I}\;\Conid{J}\mskip1.5mu\}\;\{\mskip1.5mu \Conid{F}\;\in\;\Conid{ICont}^{\star}\;(\Conid{I}\;\uplus\;\Conid{J})\;\Conid{I}\mskip1.5mu\}\;(\Conid{G}\;\in\;\Conid{ICont}^{\star}\;\Conid{J}\;\Conid{I})\;\rightarrow\;{}\<[E]%
 \\
@@ -2186,29 +2255,45 @@ The algebra map is a container morphism from the partial aplication of \ensurema
 \>[12]{}\Varid{funfold}\;\mathrel{=}\;\Conid{MIunfold}\;\Varid{f}{}\<[E]%
 \\
 \>[12]{}\Varid{runfold}\;\in\;{}\<[23]%
-\>[23]{}\{\mskip1.5mu \Varid{i}\;\in\;\Conid{I}\mskip1.5mu\}\;(\Varid{t}\;\in\;\Conid{T}\;\Varid{i})\;(\Varid{j}\;\in\;\Conid{J})\;\rightarrow\;\Conid{Path}\;\Conid{S}\;\Conid{P}^{\Conid{I}}\;\Conid{P}^{\Conid{J}}\;\Varid{i}\;(\Varid{funfold}\;\Varid{i}\;\Varid{t})\;\Varid{j}\;\rightarrow\;\Conid{Q}\;\Varid{i}\;\Varid{t}\;\Varid{j}{}\<[E]%
+\>[23]{}\{\mskip1.5mu \Varid{i}\;\in\;\Conid{I}\mskip1.5mu\}\;(\Varid{t}\;\in\;\Conid{T}\;\Varid{i})\;{}\<[E]%
 \\
-\>[12]{}\Varid{runfold}\;\Varid{t}\;\Varid{j}\;(\Varid{path}\;(\Varid{inl}\;\Varid{x}))\;\mathrel{=}\;\Varid{r}\;\Varid{t}\;\Varid{j}\;(\Varid{inl}\;\Varid{x}){}\<[E]%
+\>[23]{}(\Varid{j}\;\in\;\Conid{J})\;\rightarrow\;\Conid{Path}\;\Conid{S}\;\Conid{P}^{\Conid{I}}\;\Conid{P}^{\Conid{J}}\;\Varid{i}\;(\Varid{funfold}\;\Varid{i}\;\Varid{t})\;\Varid{j}\;\rightarrow\;\Conid{Q}\;\Varid{i}\;\Varid{t}\;\Varid{j}{}\<[E]%
 \\
-\>[12]{}\Varid{runfold}\;\Varid{t}\;\Varid{j}\;(\Varid{path}\;(\Varid{inr}\;(\Varid{i},(\Varid{p},\Varid{q}))))\;\mathrel{=}\;\Varid{r}\;\Varid{t}\;\Varid{j}\;(\Varid{inr}\;(\Varid{i},\Varid{p},\Varid{runfold}\;(\pi_{1}\;(\Varid{f}\;\anonymous \;\Varid{t})\;\Varid{i}\;\Varid{p})\;\Varid{j}\;\Varid{q})){}\<[E]%
+\>[12]{}\Varid{runfold}\;\Varid{t}\;\Varid{j}\;(\Varid{path}\;(\Varid{inl}\;\Varid{x}))\;\mathrel{=}\;{}\<[E]%
+\\
+\>[12]{}\hsindent{2}{}\<[14]%
+\>[14]{}\Varid{r}\;\Varid{t}\;\Varid{j}\;(\Varid{inl}\;\Varid{x}){}\<[E]%
+\\
+\>[12]{}\Varid{runfold}\;\Varid{t}\;\Varid{j}\;(\Varid{path}\;(\Varid{inr}\;(\Varid{i},(\Varid{p},\Varid{q}))))\;\mathrel{=}\;{}\<[E]%
+\\
+\>[12]{}\hsindent{2}{}\<[14]%
+\>[14]{}\Varid{r}\;\Varid{t}\;\Varid{j}\;(\Varid{inr}\;(\Varid{i},\Varid{p},\Varid{runfold}\;(\pi_{1}\;(\Varid{f}\;\anonymous \;\Varid{t})\;\Varid{i}\;\Varid{p})\;\Varid{j}\;\Varid{q})){}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\Varid{-}\mskip1.5mu\}{}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
+
+
 
 \section{W is still enough}
 
 
 
 
-\subsubsection{\ensuremath{\Conid{WI}} from \ensuremath{\Conid{W}}}
+\subsection*{\ensuremath{\Conid{WI}} from \ensuremath{\Conid{W}}}
 
 How, then, can we build \ensuremath{\Conid{WI}} from \ensuremath{\Conid{W}}? The initial step is to create a type of \emph{pre}-\ensuremath{\Conid{WI}} trees, with nodes containing a shape \emph{and} its index, and branching over positions \emph{and their} indicies:
 
 \begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{8}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
-\>[B]{}\Conid{WI′}\;\in\;\{\mskip1.5mu \Conid{I}\;\in\;\Conid{Set}\mskip1.5mu\}\;(\Conid{S}\;\in\;\Conid{I}\;\rightarrow\;\Conid{Set})\;(\Conid{P}\;\in\;(\Varid{i}\;\in\;\Conid{I})\;(\Varid{s}\;\in\;\Conid{S}\;\Varid{i})\;\rightarrow\;\Conid{I}\;\rightarrow\;\Conid{Set})\;\rightarrow\;\Conid{Set}{}\<[E]%
+\>[B]{}\Conid{WI′}\;\in\;{}\<[8]%
+\>[8]{}\{\mskip1.5mu \Conid{I}\;\in\;\Conid{Set}\mskip1.5mu\}\;(\Conid{S}\;\in\;\Conid{I}\;\rightarrow\;\Conid{Set})\;{}\<[E]%
 \\
-\>[B]{}\Conid{WI′}\;\{\mskip1.5mu \Conid{I}\mskip1.5mu\}\;\Conid{S}\;\Conid{P}\;\mathrel{=}\;\Conid{W}\;(\Sigma\;\Conid{I}\;\Conid{S})\;(\lambda (\!\;\Varid{i}\;\!,\!\;\Varid{s}\;\!\!)\;\rightarrow\;\Sigma\;\Conid{I}\;(\Conid{P}\;\Varid{i}\;\Varid{s})\;\!\;\!){}\<[E]%
+\>[8]{}(\Conid{P}\;\in\;(\Varid{i}\;\in\;\Conid{I})\;(\Varid{s}\;\in\;\Conid{S}\;\Varid{i})\;\rightarrow\;\Conid{I}\;\rightarrow\;\Conid{Set})\;\rightarrow\;\Conid{Set}{}\<[E]%
+\\
+\>[B]{}\Conid{WI′}\;\{\mskip1.5mu \Conid{I}\mskip1.5mu\}\;\Conid{S}\;\Conid{P}\;\mathrel{=}\;\Conid{W}\;(\Sigma(\!\;\Varid{i}\;\in\;\Conid{I}\;\!)\!\times\!\;\Conid{S}\;\Varid{i})\;(\lambda (\!\;\Varid{i}\;\!,\!\;\Varid{s}\;\!\!)\;\rightarrow\;\Sigma(\!\;\Varid{i′}\;\in\;\Conid{I}\;\!)\!\times\!\;\Conid{P}\;\Varid{i}\;\Varid{s}\;\Varid{i′}\;\!\;\!){}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
 
@@ -2216,10 +2301,14 @@ Given such a tree we want to express the property that the subtrees of such a pr
 
 \begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{8}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
-\>[B]{}\Conid{WIl}\;\in\;\{\mskip1.5mu \Conid{I}\;\in\;\Conid{Set}\mskip1.5mu\}\;(\Conid{S}\;\in\;\Conid{I}\;\rightarrow\;\Conid{Set})\;(\Conid{P}\;\in\;(\Varid{i}\;\in\;\Conid{I})\;(\Varid{s}\;\in\;\Conid{S}\;\Varid{i})\;\rightarrow\;\Conid{I}\;\rightarrow\;\Conid{Set})\;\rightarrow\;\Conid{Set}{}\<[E]%
+\>[B]{}\Conid{WIl}\;\in\;{}\<[8]%
+\>[8]{}\{\mskip1.5mu \Conid{I}\;\in\;\Conid{Set}\mskip1.5mu\}\;(\Conid{S}\;\in\;\Conid{I}\;\rightarrow\;\Conid{Set})\;{}\<[E]%
 \\
-\>[B]{}\Conid{WIl}\;\{\mskip1.5mu \Conid{I}\mskip1.5mu\}\;\Conid{S}\;\Conid{P}\;\mathrel{=}\;\Conid{W}\;(\Conid{I}\;\times\;(\Sigma\;\Conid{I}\;\Conid{S}))\;(\lambda (\!\;\Varid{i′}\;\!,\!\;\Varid{i}\;\!,\!\;\Varid{s}\;\!\!)\;\rightarrow\;\Sigma\;\Conid{I}\;(\Conid{P}\;\Varid{i}\;\Varid{s})\;\!\;\!){}\<[E]%
+\>[8]{}(\Conid{P}\;\in\;(\Varid{i}\;\in\;\Conid{I})\;(\Varid{s}\;\in\;\Conid{S}\;\Varid{i})\;\rightarrow\;\Conid{I}\;\rightarrow\;\Conid{Set})\;\rightarrow\;\Conid{Set}{}\<[E]%
+\\
+\>[B]{}\Conid{WIl}\;\{\mskip1.5mu \Conid{I}\mskip1.5mu\}\;\Conid{S}\;\Conid{P}\;\mathrel{=}\;\Conid{W}\;(\Conid{I}\;\times\;(\Sigma(\!\;\Varid{i}\;\in\;\Conid{I}\;\!)\!\times\!\;\Conid{S}\;\Varid{i}))\;(\lambda (\!\;\Varid{i′}\;\!,\!\;\Varid{i}\;\!,\!\;\Varid{s}\;\!\!)\;\rightarrow\;\Sigma(\!\;\Varid{i′}\;\in\;\Conid{I}\;\!)\!\times\!\;\Conid{P}\;\Varid{i}\;\Varid{s}\;\Varid{i′}\;\!\;\!){}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
 
@@ -2232,11 +2321,11 @@ There are two possible completions of this extra indexing information, either we
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
 \>[3]{}\Varid{lup}\;\in\;\Conid{WI′}\;\Conid{S}\;\Conid{P}\;\rightarrow\;\Conid{WIl}\;\Conid{S}\;\Conid{P}{}\<[E]%
 \\
-\>[3]{}\Varid{lup}\;(\Varid{sup}\;(\Varid{i},\Varid{s})\;\Varid{f})\;\mathrel{=}\;\Varid{sup}\;(\Varid{i},(\Varid{i},\Varid{s}))\;(\lambda\;\Varid{p}\;\rightarrow\;\Varid{lup}\;(\Varid{f}\;\Varid{p})){}\<[E]%
+\>[3]{}\Varid{lup}\;(\Varid{sup}\;((\Varid{i},\Varid{s}),\Varid{f}))\;\mathrel{=}\;\Varid{sup}\;((\Varid{i},(\Varid{i},\Varid{s})),(\lambda\;\Varid{p}\;\rightarrow\;\Varid{lup}\;(\Varid{f}\;\Varid{p}))){}\<[E]%
 \\[\blanklineskip]%
 \>[3]{}\Varid{ldown}\;\in\;\Conid{I}\;\rightarrow\;\Conid{WI′}\;\Conid{S}\;\Conid{P}\;\rightarrow\;\Conid{WIl}\;\Conid{S}\;\Conid{P}{}\<[E]%
 \\
-\>[3]{}\Varid{ldown}\;\Varid{i}\;(\Varid{sup}\;\Varid{s}\;\Varid{f})\;\mathrel{=}\;\Varid{sup}\;(\Varid{i},\Varid{s})\;\lambda (\!\;\Varid{i′}\;\!,\!\;\Varid{p}\;\!\!)\;\rightarrow\;\Varid{ldown}\;\Varid{i′}\;(\Varid{f}\;(\Varid{i′},\Varid{p}))\;\!\;\!{}\<[E]%
+\>[3]{}\Varid{ldown}\;\Varid{i}\;(\Varid{sup}\;(\Varid{s},\Varid{f}))\;\mathrel{=}\;\Varid{sup}\;((\Varid{i},\Varid{s}),\lambda (\!\;\Varid{i′}\;\!,\!\;\Varid{p}\;\!\!)\;\rightarrow\;\Varid{ldown}\;\Varid{i′}\;(\Varid{f}\;(\Varid{i′},\Varid{p}))\;\!\;\!){}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
 
@@ -2245,8 +2334,12 @@ The property of a pre-tree being type correct can be stated as its two possible 
 
 \begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{7}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
-\>[B]{}\Conid{WI}\;\in\;\{\mskip1.5mu \Conid{I}\;\in\;\Conid{Set}\mskip1.5mu\}\;(\Conid{S}\;\in\;\Conid{I}\;\rightarrow\;\Conid{Set})\;(\Conid{P}\;\in\;(\Varid{i}\;\in\;\Conid{I})\;(\Varid{s}\;\in\;\Conid{S}\;\Varid{i})\;\rightarrow\;\Conid{I}\;\rightarrow\;\Conid{Set})\;\rightarrow\;\Conid{I}\;\rightarrow\;\Conid{Set}{}\<[E]%
+\>[B]{}\Conid{WI}\;\in\;{}\<[7]%
+\>[7]{}\{\mskip1.5mu \Conid{I}\;\in\;\Conid{Set}\mskip1.5mu\}\;(\Conid{S}\;\in\;\Conid{I}\;\rightarrow\;\Conid{Set})\;{}\<[E]%
+\\
+\>[7]{}(\Conid{P}\;\in\;(\Varid{i}\;\in\;\Conid{I})\;(\Varid{s}\;\in\;\Conid{S}\;\Varid{i})\;\rightarrow\;\Conid{I}\;\rightarrow\;\Conid{Set})\;\rightarrow\;\Conid{I}\;\rightarrow\;\Conid{Set}{}\<[E]%
 \\
 \>[B]{}\Conid{WI}\;\Conid{S}\;\Conid{P}\;\Varid{i}\;\mathrel{=}\;\Sigma\;(\Conid{WI′}\;\Conid{S}\;\Conid{P})\;\lambda\;\Varid{x}\;\rightarrow\;\Varid{lup}\;\{\mskip1.5mu \anonymous \mskip1.5mu\}\;\{\mskip1.5mu \Conid{S}\mskip1.5mu\}\;\{\mskip1.5mu \Conid{P}\mskip1.5mu\}\;\Varid{x}\;\equiv\;\Varid{ldown}\;\{\mskip1.5mu \anonymous \mskip1.5mu\}\;\{\mskip1.5mu \Conid{S}\mskip1.5mu\}\;\{\mskip1.5mu \Conid{P}\mskip1.5mu\}\;\Varid{i}\;\Varid{x}{}\<[E]%
 \ColumnHook
@@ -2256,6 +2349,7 @@ The property of a pre-tree being type correct can be stated as its two possible 
 
 We rely on function extensionality to define the constructor \ensuremath{\Varid{sup}}:
 
+
 \begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{3}{@{}>{\hspre}l<{\hspost}@{}}%
@@ -2264,23 +2358,19 @@ We rely on function extensionality to define the constructor \ensuremath{\Varid{
 \column{22}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{37}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
-\>[3]{}\Keyword{open}\;\Keyword{import}\;\Varid{ifunc}{}\<[E]%
-\\
-\>[3]{}\Keyword{open}\;\Keyword{import}\;\Varid{icont}{}\<[E]%
-\\[\blanklineskip]%
 \>[3]{}\Varid{sup}\;\in\;\;\Varid{⟦}\;\Conid{S}\;\lhd^{\star}\;\Conid{P}\;\Varid{⟧}^{\star}\;(\Conid{WI}\;\Conid{S}\;\Conid{P})\;{}\<[37]%
 \>[37]{}\rightarrow^{\star}\;\Conid{WI}\;\Conid{S}\;\Conid{P}{}\<[E]%
 \\
 \>[3]{}\Varid{sup}\;(\Varid{s},\Varid{f})\;\mathrel{=}\;{}\<[19]%
 \>[19]{}({}\<[19E]%
-\>[22]{}\Varid{sup}\;(\anonymous ,\Varid{s})\;(\lambda (\!\;\Varid{i}\;\!,\!\;\Varid{p}\;\!\!)\;\rightarrow\;\pi_{0}\;(\Varid{f}\;\Varid{i}\;\Varid{p})\;\!\;\!)){}\<[E]%
+\>[22]{}\Varid{sup}\;((\anonymous ,\Varid{s}),\lambda (\!\;\Varid{i}\;\!,\!\;\Varid{p}\;\!\!)\;\rightarrow\;\pi_{0}\;(\Varid{f}\;\Varid{i}\;\Varid{p})\;\!\;\!)){}\<[E]%
 \\
 \>[19]{},{}\<[19E]%
-\>[22]{}\Varid{cong}\;(\Varid{sup}\;(\anonymous ,\anonymous ,\Varid{s}))\;(\Varid{ext}\;\lambda (\!\;\Varid{i}\;\!,\!\;\Varid{p}\;\!\!)\;\rightarrow\;\pi_{1}\;(\Varid{f}\;\Varid{i}\;\Varid{p})\;\!\;\!){}\<[E]%
+\>[22]{}\Varid{cong}\;(\lambda\;\Varid{x}\;\rightarrow\;\Varid{sup}\;((\anonymous ,\anonymous ,\Varid{s}),\Varid{x}))\;(\Varid{ext}\;\lambda (\!\;\Varid{i}\;\!,\!\;\Varid{p}\;\!\!)\;\rightarrow\;\pi_{1}\;(\Varid{f}\;\Varid{i}\;\Varid{p})\;\!\;\!){}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
 
-The recursion principle inevitably then relies on the uniqueness of identity 
+The recursion principle then relies on the uniqueness of identity 
 proofs. It's also the case that in its form below \ensuremath{\Varid{wirec}} does not pass Agda's termination checker. The direct encoding via \ensuremath{\Varid{wrec}} would avoid this problem, at the expense of being even more verbose:
 
 \begin{hscode}\SaveRestoreHook
@@ -2303,12 +2393,12 @@ proofs. It's also the case that in its form below \ensuremath{\Varid{wirec}} doe
 \>[3]{}\hsindent{8}{}\<[11]%
 \>[11]{}\rightarrow\;\Conid{Q}\;\Varid{x}{}\<[E]%
 \\
-\>[3]{}\Varid{wirec}\;\{\mskip1.5mu \Varid{i}\mskip1.5mu\}\;(\Varid{sup}\;(\Varid{i′},\Varid{s})\;\Varid{f},\Varid{ok})\;\Conid{Q}\;\Varid{m}\;\Keyword{with}\;\pi_{0}\equiv\;(\Varid{sup₁≡}\;\Varid{ok}){}\<[E]%
+\>[3]{}\Varid{wirec}\;\{\mskip1.5mu \Varid{i}\mskip1.5mu\}\;(\Varid{sup}\;((\Varid{i′},\Varid{s}),\Varid{f}),\Varid{ok})\;\Conid{Q}\;\Varid{m}\;\Keyword{with}\;\pi_{0}\equiv\;(\Varid{sup₁≡}\;\Varid{ok}){}\<[E]%
 \\
-\>[3]{}\Varid{wirec}\;\{\mskip1.5mu \Varid{i}\mskip1.5mu\}\;(\Varid{sup}\;(\Varid{.i},\Varid{s})\;\Varid{f},\Varid{ok})\;\Conid{Q}\;\Varid{m}\;\mid \;\Varid{refl}\;\mathrel{=}\;{}\<[E]%
+\>[3]{}\Varid{wirec}\;\{\mskip1.5mu \Varid{i}\mskip1.5mu\}\;(\Varid{sup}\;((\Varid{.i},\Varid{s}),\Varid{f}),\Varid{ok})\;\Conid{Q}\;\Varid{m}\;\mid \;\Varid{refl}\;\mathrel{=}\;{}\<[E]%
 \\
 \>[3]{}\hsindent{2}{}\<[5]%
-\>[5]{}\Varid{subst}\;\Conid{Q}\;(\Varid{cong}\;\{\mskip1.5mu \Conid{B}\;\mathrel{=}\;\lambda\;\anonymous \;\rightarrow\;\Conid{WI}\;\Conid{S}\;\Conid{P}\;\Varid{i}\mskip1.5mu\}\;(\lambda\;\Varid{x}\;\rightarrow\;\Varid{sup}\;(\Varid{i},\Varid{s})\;\Varid{f},\Varid{x})\;\Conid{UIP})\;{}\<[E]%
+\>[5]{}\Varid{subst}\;\Conid{Q}\;(\Varid{cong}\;\{\mskip1.5mu \Conid{B}\;\mathrel{=}\;\lambda\;\anonymous \;\rightarrow\;\Conid{WI}\;\Conid{S}\;\Conid{P}\;\Varid{i}\mskip1.5mu\}\;(\lambda\;\Varid{x}\;\rightarrow\;\Varid{sup}\;((\Varid{i},\Varid{s}),\Varid{f}),\Varid{x})\;\Conid{UIP})\;{}\<[E]%
 \\
 \>[5]{}\hsindent{2}{}\<[7]%
 \>[7]{}(\Varid{m}\;\Varid{s}\;(\lambda\;\Varid{i}\;\Varid{p}\;\rightarrow\;\Varid{f}\;(\Varid{i},\Varid{p}),\Varid{ext⁻¹}\;(\Varid{sup₂≡}\;\Varid{ok})\;(\Varid{i},\Varid{p}))\;{}\<[E]%
@@ -2318,7 +2408,7 @@ proofs. It's also the case that in its form below \ensuremath{\Varid{wirec}} doe
 \ColumnHook
 \end{hscode}\resethooks
 
-It's then straight forward but labourious to prove the $\beta$ law for \ensuremath{\Varid{wirec}}, which would have this type:
+It's then straight forward but labourious to prove the $\beta$ law for \ensuremath{\Varid{wirec}}, which would has type:
 
 
 
@@ -2351,96 +2441,60 @@ It's then straight forward but labourious to prove the $\beta$ law for \ensurema
 We can use this proof that \ensuremath{\Conid{WI}}-types can be encoded by \ensuremath{\Conid{W}} to explain where 
 \ensuremath{\Conid{Path}} fits in, since it is straight forwardly encoded as a \ensuremath{\Conid{WI}}:
 
+
 \begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{3}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{9}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{11}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{12}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{14}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{18}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{22}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{25}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{35}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
 \>[B]{}\Conid{Path}\;\in\;{}\<[9]%
-\>[9]{}\{\mskip1.5mu \Conid{I}\;\Conid{J}\;\in\;\Conid{Set}\mskip1.5mu\}\;(\Conid{S}\;\in\;\Conid{I}\;\rightarrow\;\Conid{Set})\;{}\<[E]%
+\>[9]{}\{\mskip1.5mu \Conid{I}\;\Conid{J}\;\in\;\Conid{Set}\mskip1.5mu\}\;(\Conid{S}\;\in\;\Conid{J}\;\rightarrow\;\Conid{Set})\;{}\<[E]%
 \\
 \>[9]{}(\Conid{P}^{\Conid{I}}\;{}\<[14]%
-\>[14]{}\in\;(\Varid{i}\;\in\;\Conid{I})\;\rightarrow\;\Conid{S}\;\Varid{i}\;\rightarrow\;\Conid{I}\;{}\<[35]%
+\>[14]{}\in\;(\Varid{j}\;\in\;\Conid{J})\;\rightarrow\;\Conid{S}\;\Varid{j}\;\rightarrow\;\Conid{I}\;{}\<[35]%
 \>[35]{}\rightarrow\;\Conid{Set})\;{}\<[E]%
 \\
 \>[9]{}(\Conid{P}^{\Conid{J}}\;{}\<[14]%
-\>[14]{}\in\;(\Varid{i}\;\in\;\Conid{I})\;\rightarrow\;\Conid{S}\;\Varid{i}\;\rightarrow\;\Conid{J}\;{}\<[35]%
+\>[14]{}\in\;(\Varid{j}\;\in\;\Conid{J})\;\rightarrow\;\Conid{S}\;\Varid{j}\;\rightarrow\;\Conid{J}\;{}\<[35]%
 \>[35]{}\rightarrow\;\Conid{Set})\;{}\<[E]%
 \\
-\>[9]{}(\Varid{i}\;\in\;\Conid{I})\;\rightarrow\;\Conid{WI}\;\Conid{S}\;\Conid{P}^{\Conid{I}}\;\Varid{i}\;\rightarrow\;\Conid{J}\;\rightarrow\;\Conid{Set}{}\<[E]%
+\>[9]{}(\Varid{j}\;\in\;\Conid{J})\;\rightarrow\;\Conid{WI}\;\Conid{S}\;\Conid{P}^{\Conid{J}}\;\Varid{j}\;\rightarrow\;\Conid{I}\;\rightarrow\;\Conid{Set}{}\<[E]%
 \\
-\>[B]{}\Conid{Pathk}\;\{\mskip1.5mu \Conid{I}\mskip1.5mu\}\;\{\mskip1.5mu \Conid{J}\mskip1.5mu\}\;\{\mskip1.5mu \Conid{S}\mskip1.5mu\}\;\{\mskip1.5mu \Conid{P}^{\Conid{I}}\mskip1.5mu\}\;\{\mskip1.5mu \Conid{P}^{\Conid{J}}\mskip1.5mu\}\;\Varid{i}\;\Varid{w}\;\mathrel{=}\;\Conid{WI}\;\Conid{PathS}\;\Conid{PathP}\;(\Varid{i},\Varid{w}){}\<[E]%
+\>[B]{}\Conid{Path}\;\{\mskip1.5mu \Conid{I}\mskip1.5mu\}\;\{\mskip1.5mu \Conid{J}\mskip1.5mu\}\;\Conid{S}\;\Conid{P}^{\Conid{I}}\;\Conid{P}^{\Conid{J}}\;\Varid{j}\;\Varid{w}\;\Varid{i}\;\mathrel{=}\;\Conid{WI}\;\Conid{PathS}\;\Conid{PathP}\;(\Varid{j},\Varid{w}){}\<[E]%
 \\
 \>[B]{}\hsindent{3}{}\<[3]%
-\>[3]{}\Keyword{where}\;\Conid{PathS}\;\in\;\Sigma\;\Conid{I}\;(\Conid{WI}\;\Conid{S}\;\Conid{P}^{\Conid{I}})\;\rightarrow\;\Conid{Set}{}\<[E]%
+\>[3]{}\Keyword{where}\;\Conid{PathS}\;\in\;\Sigma(\!\;\Varid{j}\;\in\;\Conid{J}\;\!)\!\times\!\;\Conid{WI}\;\Conid{S}\;\Conid{P}^{\Conid{J}}\;\Varid{j}\;\rightarrow\;\Conid{Set}{}\<[E]%
 \\
 \>[3]{}\hsindent{6}{}\<[9]%
-\>[9]{}\Conid{PathS}\;(\Varid{i},\Varid{sup}\;(\Varid{s},\Varid{f}))\;\mathrel{=}\;\Conid{P}^{\Conid{J}}\;\Varid{i}\;\Varid{s}\;\Varid{j}\;\uplus\;\Sigma\;\Conid{I}\;(\Conid{P}^{\Conid{I}}\;\Varid{i}\;\Varid{s}){}\<[E]%
+\>[9]{}\Conid{PathS}\;(\Varid{j},\Varid{sup}\;(\Varid{s},\Varid{f}))\;\mathrel{=}\;\Conid{P}^{\Conid{I}}\;\Varid{j}\;\Varid{s}\;\Varid{i}\;\uplus\;\Sigma\;\Conid{J}\;(\Conid{P}^{\Conid{J}}\;\Varid{j}\;\Varid{s}){}\<[E]%
 \\
 \>[3]{}\hsindent{6}{}\<[9]%
-\>[9]{}\Conid{PathP}\;\in\;(\Varid{iw}\;\in\;\Sigma\;\Conid{I}\;(\Conid{WI}\;\Conid{S}\;\Conid{P}^{\Conid{I}}))\;(\Varid{s}\;\in\;\Conid{PathS}\;\Varid{iw})\;\rightarrow\;\Sigma\;\Conid{I}\;(\Conid{WI}\;\Conid{S}\;\Conid{P}^{\Conid{I}})\;\rightarrow\;\Conid{Set}{}\<[E]%
+\>[9]{}\Conid{PathP}\;\in\;(\Varid{jw}\;\in\;\Sigma(\!\;\Varid{j}\;\in\;\Conid{J}\;\!)\!\times\!\;\Conid{WI}\;\Conid{S}\;\Conid{P}^{\Conid{J}}\;\Varid{j})\;(\Varid{s}\;\in\;\Conid{PathS}\;\Varid{jw})\;\rightarrow\;\Sigma(\!\;\Varid{j}\;\in\;\Conid{J}\;\!)\!\times\!\;\Conid{WI}\;\Conid{S}\;\Conid{P}^{\Conid{J}}\;\Varid{j}\;\rightarrow\;\Conid{Set}{}\<[E]%
 \\
 \>[3]{}\hsindent{6}{}\<[9]%
-\>[9]{}\Conid{PathP}\;(\Varid{i},\Varid{sup}\;(\Varid{s},\Varid{f}))\;(\Varid{inl}\;\Varid{p})\;(\Varid{i′},\Varid{w′})\;\mathrel{=}\;\bot{}\<[E]%
+\>[9]{}\Conid{PathP}\;(\Varid{j},\Varid{sup}\;(\Varid{s},\Varid{f}))\;(\Varid{inl}\;\Varid{p})\;(\Varid{j′},\Varid{w′})\;\mathrel{=}\;\bot{}\<[E]%
 \\
 \>[3]{}\hsindent{6}{}\<[9]%
-\>[9]{}\Conid{PathP}\;(\Varid{i},\Varid{sup}\;(\Varid{s},\Varid{f}))\;(\Varid{inr}\;(\Varid{i′′},\Varid{p}))\;(\Varid{i′},\Varid{w′})\;\mathrel{=}\;{}\<[E]%
+\>[9]{}\Conid{PathP}\;(\Varid{j},\Varid{sup}\;(\Varid{s},\Varid{f}))\;(\Varid{inr}\;(\Varid{j′′},\Varid{p}))\;(\Varid{j′},\Varid{w′})\;\mathrel{=}\;{}\<[E]%
 \\
 \>[9]{}\hsindent{2}{}\<[11]%
-\>[11]{}(\Varid{i′′}\;\equiv\;\Varid{i′})\;\times\;(\Varid{f}\;\Varid{i′′}\;\Varid{p}\;\cong\;\Varid{w′}){}\<[E]%
-\\[\blanklineskip]%
-\>[B]{}\Varid{path}\;\in\;{}\<[9]%
-\>[9]{}\{\mskip1.5mu \Conid{I}\;\Conid{J}\;\in\;\Conid{Set}\mskip1.5mu\}\;\{\mskip1.5mu \Conid{S}\;\in\;\Conid{I}\;\rightarrow\;\Conid{Set}\mskip1.5mu\}\;{}\<[E]%
-\\
-\>[9]{}\{\mskip1.5mu \Conid{P}^{\Conid{I}}\;{}\<[14]%
-\>[14]{}\in\;(\Varid{i}\;\in\;\Conid{I})\;\rightarrow\;\Conid{S}\;\Varid{i}\;\rightarrow\;\Conid{I}\;{}\<[35]%
-\>[35]{}\rightarrow\;\Conid{Set}\mskip1.5mu\}\;{}\<[E]%
-\\
-\>[9]{}\{\mskip1.5mu \Conid{P}^{\Conid{J}}\;{}\<[14]%
-\>[14]{}\in\;(\Varid{i}\;\in\;\Conid{I})\;\rightarrow\;\Conid{S}\;\Varid{i}\;\rightarrow\;\Conid{J}\;{}\<[35]%
-\>[35]{}\rightarrow\;\Conid{Set}\mskip1.5mu\}\;{}\<[E]%
-\\
-\>[9]{}\{\mskip1.5mu \Varid{i}\;\in\;\Conid{I}\mskip1.5mu\}\;\rightarrow\;\{\mskip1.5mu \Varid{s}\;\in\;\Conid{S}\;\Varid{i}\mskip1.5mu\}\;\{\mskip1.5mu \Varid{f}\;\in\;\Conid{P}^{\Conid{I}}\;\Varid{i}\;\Varid{s}\;\rightarrow^{\star}\;\Conid{WI}\;\Conid{S}\;\Conid{P}^{\Conid{I}}\mskip1.5mu\}\;\rightarrow\;\{\mskip1.5mu \Varid{j}\;\in\;\Conid{J}\mskip1.5mu\}\;{}\<[E]%
-\\
-\>[9]{}\rightarrow\;{}\<[12]%
-\>[12]{}\Conid{P}^{\Conid{J}}\;\Varid{i}\;\Varid{s}\;\Varid{j}\;{}\<[22]%
-\>[22]{}\uplus\;{}\<[25]%
-\>[25]{}(\Sigma\;\Conid{I}\;\lambda\;\Varid{i′}\;\rightarrow\;\Sigma\;(\Conid{P}^{\Conid{I}}\;\Varid{i}\;\Varid{s}\;\Varid{i′})\;\lambda\;\Varid{p}\;\rightarrow\;\Conid{Pathk}\;\Conid{S}\;\Conid{P}^{\Conid{I}}\;\Conid{P}^{\Conid{J}}\;\Varid{i′}\;(\Varid{f}\;\Varid{i′}\;\Varid{p})\;\Varid{j})\;{}\<[E]%
-\\
-\>[9]{}\rightarrow\;{}\<[12]%
-\>[12]{}\Conid{Pathk}\;\Conid{S}\;\Conid{P}^{\Conid{I}}\;\Conid{P}^{\Conid{J}}\;\Varid{i}\;(\Varid{sup}\;(\Varid{s},\Varid{f}))\;\Varid{j}{}\<[E]%
-\\
-\>[B]{}\Varid{pathk}\;(\Varid{inl}\;\Varid{p})\;\mathrel{=}\;\Varid{sup}\;(\Varid{inl}\;\Varid{p},\lambda\;\Varid{i}\;()){}\<[E]%
-\\
-\>[B]{}\Varid{pathk}\;\{\mskip1.5mu \Conid{I}\mskip1.5mu\}\;\{\mskip1.5mu \Conid{J}\mskip1.5mu\}\;\{\mskip1.5mu \Conid{S}\mskip1.5mu\}\;\{\mskip1.5mu \Conid{P}^{\Conid{I}}\mskip1.5mu\}\;\{\mskip1.5mu \Conid{P}^{\Conid{J}}\mskip1.5mu\}\;\{\mskip1.5mu \Varid{i}\mskip1.5mu\}\;\{\mskip1.5mu \Varid{s}\mskip1.5mu\}\;\{\mskip1.5mu \Varid{f}\mskip1.5mu\}\;\{\mskip1.5mu \Varid{j}\mskip1.5mu\}\;(\Varid{inr}\;(\Varid{i′′},(\Varid{q},\Varid{r})))\;\mathrel{=}\;\Varid{sup}\;((\Varid{inr}\;(\Varid{i′′},\Varid{q})),\Varid{sub}){}\<[E]%
-\\
-\>[B]{}\hsindent{3}{}\<[3]%
-\>[3]{}\Keyword{where}\;\Varid{sub}\;\in\;(\Varid{iw}\;\in\;\Sigma\;\Conid{I}\;(\Conid{WI}\;\Conid{S}\;\Conid{P}^{\Conid{I}}))\;\rightarrow\;{}\<[E]%
-\\
-\>[3]{}\hsindent{15}{}\<[18]%
-\>[18]{}(\Varid{i′′}\;\equiv\;\pi_{0}\;\Varid{iw})\;\times\;(\Varid{f}\;\Varid{i′′}\;\Varid{q}\;\cong\;\pi_{1}\;\Varid{iw})\;\rightarrow\;\Conid{Pathk}\;\Conid{S}\;\Conid{P}^{\Conid{I}}\;\Conid{P}^{\Conid{J}}\;(\pi_{0}\;\Varid{iw})\;(\pi_{1}\;\Varid{iw})\;\Varid{j}{}\<[E]%
-\\
-\>[3]{}\hsindent{6}{}\<[9]%
-\>[9]{}\Varid{sub}\;(\Varid{i′},\Varid{w′})\;(\Varid{eqi},\Varid{eqw})\;\mathrel{=}\;\Varid{subst}\;(\Conid{WI}\;\anonymous \;\anonymous )\;(\Varid{cong₂}\;\anonymous ,\anonymous \;\Varid{eqi}\;\Varid{eqw})\;\Varid{r}{}\<[E]%
+\>[11]{}(\Varid{j′′}\;\equiv\;\Varid{j′})\;\times\;(\Varid{f}\;\Varid{j′′}\;\Varid{p}\;\cong\;\Varid{w′}){}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
 
 
 
-\subsection{\ensuremath{\Conid{M}} from \ensuremath{\Conid{W}}}
+
+\subsection*{\ensuremath{\Conid{M}} from \ensuremath{\Conid{W}}}
 Since we have shown that both \ensuremath{\Conid{WI}} and \ensuremath{\Conid{MI}} types can be reduced to their 
 non-indexed counterparts, it only remains to show that \ensuremath{\Conid{M}} types can be, reduced
 to \ensuremath{\Conid{W}} types. This is a result from \cite{C-CSPTs}, though in the setting of 
 indexed \ensuremath{\Conid{WI}} types, we can give a better intuition.
 
-In category therory, an $\omega$-chain, is an infinite diagram:
+In category theory, an $\omega$-chain, is an infinite diagram:
 
 \[
 \xymatrix{
@@ -2465,7 +2519,7 @@ In type-theroy, we can represent such a chain, as a pair of functions:
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
 \>[B]{}\Conid{Chain}\;\in\;\Conid{Set₁}{}\<[E]%
 \\
-\>[B]{}\Conid{Chain}\;\mathrel{=}\;\Sigma\;(\Conid{ℕ}\;\rightarrow\;\Conid{Set})\;\lambda\;\Conid{A}\;\rightarrow\;(\Varid{n}\;\in\;\Conid{ℕ})\;\rightarrow\;\Conid{A}\;(\Varid{suc}\;\Varid{n})\;\rightarrow\;\Conid{A}\;\Varid{n}{}\<[E]%
+\>[B]{}\Conid{Chain}\;\mathrel{=}\;\Sigma(\!\;\Conid{A}\;\in\;(\Conid{ℕ}\;\rightarrow\;\Conid{Set})\;\!)\!\times\!\;((\Varid{n}\;\in\;\Conid{ℕ})\;\rightarrow\;\Conid{A}\;(\Varid{suc}\;\Varid{n})\;\rightarrow\;\Conid{A}\;\Varid{n}){}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
 
@@ -2501,7 +2555,7 @@ all the small triangles commute:
 } 
 \]
 
-It is also required that the limit is the least such cone. 
+It is also required that the limit is the terminal cone with this property. 
 Again, we can encode the limit of a chain, its projections, and this universal 
 property in type theory:
 
@@ -2512,7 +2566,7 @@ property in type theory:
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
 \>[B]{}\Conid{LIM}\;\in\;\Conid{Chain}\;\rightarrow\;\Conid{Set}{}\<[E]%
 \\
-\>[B]{}\Conid{LIM}\;(\Conid{A},\Varid{a})\;\mathrel{=}\;\Sigma\;((\Varid{n}\;\in\;\Conid{ℕ})\;\rightarrow\;\Conid{A}\;\Varid{n})\;\lambda\;\Varid{f}\;\rightarrow\;((\Varid{n}\;\in\;\Conid{ℕ})\;\rightarrow\;\Varid{a}\;\Varid{n}\;(\Varid{f}\;(\Varid{suc}\;\Varid{n}))\;\equiv\;\Varid{f}\;\Varid{n}){}\<[E]%
+\>[B]{}\Conid{LIM}\;(\Conid{A},\Varid{a})\;\mathrel{=}\;\Sigma(\!\;\Varid{f}\;\in\;((\Varid{n}\;\in\;\Conid{ℕ})\;\rightarrow\;\Conid{A}\;\Varid{n})\;\!)\!\times\!\;((\Varid{n}\;\in\;\Conid{ℕ})\;\rightarrow\;\Varid{a}\;\Varid{n}\;(\Varid{f}\;(\Varid{suc}\;\Varid{n}))\;\equiv\;\Varid{f}\;\Varid{n}){}\<[E]%
 \\[\blanklineskip]%
 \>[B]{}\pi\;\in\;\{\mskip1.5mu \Varid{c}\;\in\;\Conid{Chain}\mskip1.5mu\}\;\rightarrow\;(\Varid{n}\;\in\;\Conid{ℕ})\;\rightarrow\;\Conid{LIM}\;\Varid{c}\;\rightarrow\;\pi_{0}\;\Varid{c}\;\Varid{n}{}\<[E]%
 \\
@@ -2558,7 +2612,7 @@ $\omega$-continuous, \emph{i.e.} that for any chain \ensuremath{(\Conid{A},\Vari
 \ensuremath{\Conid{F}\;(\Conid{LIM}\;(\Conid{A},\Varid{a}))\;\cong\;\Conid{LIM}\;((\Conid{F}\;\ensuremath{\mbox{$\circ$}}\;\Conid{A}),(\Conid{F}\;\ensuremath{\mbox{$\circ$}}\;\Varid{a}))}
 
 \noindent
-then the limit of \ensuremath{\Conid{Fo}} will be the terminal co-algebra of \ensuremath{\Conid{F}}. 
+then the limit of \ensuremath{\Conid{F}\;\!^{\omega}} will be the terminal co-algebra of \ensuremath{\Conid{F}}. 
 
 To see this we first observe that there exists an isomorphism between 
 \ensuremath{\Conid{LIM}\;(\Conid{A},\Varid{a})} and \ensuremath{\Conid{LIM}\;(\Conid{A}\;\ensuremath{\mbox{$\circ$}}\;\Varid{suc},\Varid{a}\;\ensuremath{\mbox{$\circ$}}\;\Varid{suc})}:
@@ -2799,7 +2853,7 @@ the case that \ensuremath{\Conid{F}\;\equiv\;\Varid{⟦}\;\Conid{S}\;\lhd\;\Coni
 \>[13]{}\Conid{LIM}\;{}\<[18]%
 \>[18]{}({}\<[21]%
 \>[21]{}({}\<[21E]%
-\>[24]{}\lambda\;\Varid{n}\;\rightarrow\;\Sigma\;\Conid{S}\;\lambda\;\Varid{s}\;\rightarrow\;\Conid{P}\;\Varid{s}\;\rightarrow\;\Conid{A}\;\Varid{n}){}\<[E]%
+\>[24]{}\lambda\;\Varid{n}\;\rightarrow\;\Sigma(\!\;\Varid{s}\;\in\;\Conid{S}\;\!)\!\times\!\;(\Conid{P}\;\Varid{s}\;\rightarrow\;\Conid{A}\;\Varid{n})){}\<[E]%
 \\
 \>[18]{},{}\<[24]%
 \>[24]{}\lambda\;\Varid{n}\;\rightarrow\;\lambda (\!\;\Varid{s}\;\!,\!\;\Varid{f}\;\!\!)\;\rightarrow\;{}\<[51]%
@@ -2808,7 +2862,7 @@ the case that \ensuremath{\Conid{F}\;\equiv\;\Varid{⟦}\;\Conid{S}\;\lhd\;\Coni
 \>[18]{})\;{}\<[E]%
 \\
 \>[3]{}\hsindent{8}{}\<[11]%
-\>[11]{}\rightarrow\;(\Sigma\;\Conid{S}\;\lambda\;\Varid{s}\;\rightarrow\;\Conid{P}\;\Varid{s}\;\rightarrow\;(\Conid{LIM}\;(\Conid{A},\Varid{a}))){}\<[E]%
+\>[11]{}\rightarrow\;\Sigma(\!\;\Varid{s}\;\in\;\Conid{S}\;\!)\!\times\!\;(\Conid{P}\;\Varid{s}\;\rightarrow\;(\Conid{LIM}\;(\Conid{A},\Varid{a}))){}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
 
@@ -2964,9 +3018,9 @@ For \ensuremath{\Conid{F}\;\in\;\Conid{ISPT}\;\Conid{K}}, \ensuremath{\Conid{G}\
 \ensuremath{(\Conid{F}\;\bind ^{\text{\tiny T}}\;\Conid{G})\;\bind ^{\text{\tiny T}}\;\Conid{F}} && \equiv &&& \ensuremath{\Conid{F}\;\bind ^{\text{\tiny T}}\;(\lambda\;\Varid{k}\;\rightarrow\;(\Conid{G}\;\Varid{k})\;\bind ^{\text{\tiny T}}\;\Conid{H})} 
 \end{align}
 
-The 1st is by definition, and the others follow by induction of \ensuremath{\Conid{F}}. 
-To show that the structure is preserved by \ensuremath{\Varid{⟦}\anonymous \Varid{⟧}^{\text{\tiny T}}} it is sufficient to suw that for are \ensuremath{\Conid{F}\;\in\;\Conid{ISPT}\;\Conid{J}} and \ensuremath{\Conid{G}\;\in\;\Conid{SPF}\;\Conid{I}\;\Conid{J}} there exist mutually inverse container 
-morphisms:
+The firstst is by definition, and the others follow by induction on \ensuremath{\Conid{F}}. 
+To show that the structure is preserved by \ensuremath{\Varid{⟦}\anonymous \Varid{⟧}^{\text{\tiny T}}} it is sufficient to show that for all \ensuremath{\Conid{F}\;\in\;\Conid{ISPT}\;\Conid{J}} and \ensuremath{\Conid{G}\;\in\;\Conid{SPF}\;\Conid{I}\;\Conid{J}} there exist mutually inverse container 
+morphisms \ensuremath{\Varid{bindpres}} and \ensuremath{\Varid{bindpres⁻¹}}:
 
 
 \begin{hscode}\SaveRestoreHook

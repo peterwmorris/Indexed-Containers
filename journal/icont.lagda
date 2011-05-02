@@ -12,7 +12,7 @@ open import Data.Empty
 open import Data.Unit hiding (_≟_)
 open import Data.Bool hiding (_≟_)
 open import Data.Sum
-open import Data.Product as Prod
+open import Product as Prod
 open import Function
 open import Relation.Binary.HeterogeneousEquality
 open import Coinduction
@@ -61,7 +61,7 @@ The extension of such a container is an |IFunc I|:
 
 ⟦_⟧ : ∀ {I} → ICont I → IFunc I
 ⟦_⟧ {I} (S ◁ P) = 
-  record  {  obj  = λ A  → Σ S (λ s → (i : I) → P s i → A i)
+  record  {  obj  = λ A  → Σ* s ∶ S *Σ (P s -*-> A)
           ;  mor  = λ m  → split s & f tilps ↦ (s , m ⊚ f) !m !s }
 
 \end{code}
@@ -130,7 +130,7 @@ the following derivation:
 
 \begin{align*}
                 & |⟦ S ◁ P ⟧ ⇒^F F| & \\
-  \equiv  \;    & |∫ X ** (Σ S λ s → P s -*-> X) → F X| & \{\mbox{by definition}\} \\
+  \equiv  \;    & |∫ X ** Σ* s ∶ S (P s -*-> X) → F X| & \{\mbox{by definition}\} \\
   \equiv  \;    & |∫ X ** (s : s) → (P s -*-> X) → F X| & \{\mbox{currying}\} \\
   \cong   \;    & |(s : S) → ∫ X ** (P s -*-> X) → F X| & \{\mbox{commuting end and pi} \} \\
   \cong   \;    & |(s : S) → F (P s)| & \{\mbox{Yoneda}\} \\
@@ -141,8 +141,8 @@ If |F| is also an indexed container |T ◁ Q| then we have:
 
 \begin{align*}
            & |⟦ S ◁ P ⟧ ⇒^F ⟦ T ◁ Q ⟧| \\
- \cong \;  & |(s : S) → Σ T λ t → Q t -*-> P s| \\
- \cong \;  & |Σ (S → T) λ f → (s : S) → Q (f s) -*-> P s|
+ \cong \;  & |(s : S) → Σ* t ∶ T * *Σ (Q t -*-> P s)| \\
+ \cong \;  & |Σ* f ∶ S → T *Σ ((s : S) → Q (f s) -*-> P s)|
 \end{align*}
  
 We will use this last line as the definition for container morphisms, captured by 
@@ -257,7 +257,7 @@ As with |IFunc|, we can equip |ICont| with a relative monadic structure:
 _>>=^C_ : ∀ {I J} → ICont I → ICont* J I → ICont J
 _>>=^C_ {I} (S ◁ P) (T ◁* Q) =  
      (IFunc.obj ⟦ S ◁ P ⟧ T) 
-  ◁  split s & f tilps j !* ↦ Σ  (Σ I (P s)) (split i & p tilps ↦ Q i (f i p) j !m !s) !m !s  
+  ◁  split s & f tilps j !* ↦ Σ  (Σ* i ∶ I *Σ P s i) (split i & p tilps ↦ Q i (f i p) j !m !s) !m !s  
 
 \end{code}
 
@@ -310,13 +310,13 @@ module DelSigPi {I J K : Set} where
 
   Σ^C : (J → K) → ICont* I J → ICont* I K
   Σ^C f (S ◁* P) = λ* λ k →  
-       (Σ J λ j → f j ≡ k × S j) 
+       (Σ* j ∶ J *Σ (f j ≡ k × S j)) 
     ◁  split j & eq & s tilps ↦ P j s !m !s
  
   Π^C : (J → K) → ICont* I J → ICont* I K
   Π^C f (S ◁* P) =  λ* λ k →  
        ((j : J) → f j ≡ k → S j)
-    ◁  λ s i → Σ J λ j → Σ (f j ≡ k) λ eq → P j (s j eq) i 
+    ◁  λ s i → Σ* j ∶ J *Σ (Σ* eq ∶ f j ≡ k *Σ P j (s j eq) i) 
 
 \end{code}
 
@@ -370,8 +370,9 @@ _⟨_⟩C : ∀ {I J} → ICont (I ⊎ J) → ICont* I J → ICont I
 _⟨_⟩C {I} {J} (S ◁ P) (T ◁* Q) = 
   let  PI  : S  → I  → Set            ;  PI  s  i  = P s (inj₁ i) 
        PJ  : S  → J  → Set            ;  PJ  s  j  = P s (inj₂ j) 
-  in   IFunc.obj ⟦ S ◁ PJ ⟧ T ◁     (split s & f tilps i !* ↦ PI s i 
-                                 ⊎  (Σ J λ j → Σ (PJ s j) λ p → Q j (f j p) i) !m !s)
+  in   IFunc.obj ⟦ S ◁ PJ ⟧ T ◁     
+            (split s & f tilps i !* ↦ PI s i 
+         ⊎  (Σ* j ∶ J *Σ (Σ* p ∶ PJ s j *Σ Q j (f j p) i)) !m !s)
 
 \end{code}
 

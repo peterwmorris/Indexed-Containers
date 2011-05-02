@@ -12,7 +12,7 @@ open import Data.Empty
 open import Data.Unit hiding (_≟_)
 open import Data.Bool hiding (_≟_)
 open import Data.Sum
-open import Data.Product as Prod
+open import Product as Prod
 open import Function
 open import Relation.Binary.HeterogeneousEquality
 open import Coinduction
@@ -139,10 +139,10 @@ lifting functor |↑ : Seti → Setsi|.
 
 \begin{proof}
 To prove the structure is a relative 
-monad we observe that the following equlities hold up to 
+monad we observe that the following equalities hold up to 
 Agda's $\beta\eta$-equality, and our postulate |ext|.
 
-For |F : IFunc I|, |G : I → IFunc J|, |H : J → IFunc K|:
+For |F : IFunc I|, |G : IFunc* J I|, |H : IFunc* K J|:
 \begin{align}
 |H i|                 &\quad& \equiv &&\quad& |(η^F i) >>=^F H|               \\
 |F|                   && \equiv &&& |F >>=^F η^F|                 \\
@@ -216,12 +216,12 @@ we denote |Δ^F|:
 
 \noindent
 This construction is used, for instance, in building the pattern functor for |ScLam| as in the introduction; Concentranting only on the |abs| case we want to build  
-|FScLam′ X n = (X ∘ suc) n|. Or simply |LScLam′ X = Δ^F suc X|. In general this combinator 
-restricts the functor |X| to the indexes in the image of the
+|ScLam′ X n = (X ∘ suc) n|. Or simply |ScLam′ X = Δ^F suc X|. In general this combinator 
+restricts the functor |X| to the indicies in the image of the
 function |f|.
 
 What if the restriction appears on the right of such an equation? As an example,
-consider the successor constructor for |Fin|; here we want to build the pattern functor: |FFin′ X (1+ n) = F n X|. To do this we observe that this is equivalent to
+consider the successor constructor for |Fin|; here we want to build the pattern functor: |FFin′ X (1+ n) = X n|. To do this we observe that this is equivalent to
 the equation |FFin′ X n = Σ Nat λ m → n ≡ 1+ m × X m|. We denote the general
 construction |Σ^F|, so the 2nd equation can be written |FFin′ X = Σ^F suc X|:
 
@@ -229,7 +229,7 @@ construction |Σ^F|, so the 2nd equation can be written |FFin′ X = Σ^F suc X|
 
 Σ^F : ∀ {J I K} → (J → K) → IFunc* I J → IFunc* I K
 Σ^F {J} f F k = 
-   record  {  obj  =  λ A → Σ J λ j → f j ≡ k × obj* F A j 
+   record  {  obj  =  λ A → Σ* j ∶ J *Σ (f j ≡ k × obj* F A j) 
            ;  mor  =  λ m → split j & p & x tilps ↦ (j , p , mor* F m j x) !m !s }
  
 \end{code}
@@ -320,7 +320,7 @@ We also note that finite co-products and products can be derived from |Σ^F| and
 %format ⊤^F = ⊤ ^F
 
 %format +^F = "\mathbin{" ⊎ ^F "}"
-%format _+^F_ = _ ⊎^F _
+%format _+^F_ = _ ⊎ ^F _
 
 %format ×^F = "\mathbin{" × ^F "}"
 %format _×^F_ = _ ×^F _
@@ -343,7 +343,7 @@ F ×^F G = Π^F _ λ b → if b then F else G
 \noindent
 Clearly these are simply the constantly |⊤| and |⊥| valued functors, and the 
 point-wise product and co-product of functors, but this encoding allows us to 
-keep the number of constants in out vocabulary to a minimum.
+keep the number of constants in our vocabulary to a minimum.
 
 \subsection{Initial algebras of indexed functors}
 
@@ -451,7 +451,7 @@ will be the initial object in the category of parametrized |F|-algebras.
 
 The fact that the parametrized initial algebra construction can be iterated, 
 means that we can define nested and mutual families of data-types, such as the
-triple of terms, types and contexts outlined in the introduction. 
+tuple of neutral and normal |λ|-terms outlined in the introduction. 
 
 As before we know that not all |IFunc* (I ⊎ J) I| functors have initial 
 algebras. In the next section, however we spell out what it is for a functor to 

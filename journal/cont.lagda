@@ -4,7 +4,7 @@
 
 module cont where
 
-open import Data.Product
+open import Product
 open import Function
 
 open import common
@@ -32,7 +32,7 @@ record Cont : Set₁ where
     P : S → Set
 
 ⟦_⟧ : Cont → Func
-⟦ S ◁ P ⟧ = record  { obj  = λ A → Σ S λ s → P s → A 
+⟦ S ◁ P ⟧ = record  { obj  = λ A → Σ* s ∶ S *Σ (P s → A)
                     ; mor  = λ m → split s & f tilps ↦ (s , m ∘ f)  !m !s 
                     }
 
