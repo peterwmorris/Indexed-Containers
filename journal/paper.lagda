@@ -104,6 +104,6 @@ module paper where
 
 
 \bibliographystyle{plain}
-\bibliography{paper}
+\bibliography{ic}
 
 \end{document}

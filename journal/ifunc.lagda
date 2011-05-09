@@ -134,7 +134,7 @@ elided the use of the lifting functor.
 %format ↑ = "\uparrow"
 
 \begin{proposition} 
-|(IFunc , η^F , _>>=^F_)| is a \emph{relative monad}\cite{relmonads} on the 
+|(IFunc , η^F , _>>=^F_)| is a \emph{relative monad}\cite{alti:relmonads} on the 
 lifting functor |↑ : Seti → Setsi|.
 \end{proposition}
 

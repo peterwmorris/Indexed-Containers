@@ -182,6 +182,7 @@ module Pathkk {I J : Set} (S : J → Set)
 
 open Pathkk
 
+{-
 
 pathk : {I J : Set} {S : J → Set}  
            {PI  : (j : J) → S j → I  → Set} 
@@ -194,7 +195,7 @@ pathk {I} {J} {S} {PI} {PJ} {j} {s} {f} {i} (inj₂ (j′′ , (q , r))) = sup (
                  (j′′ ≡ proj₁ jw) × (f j′′ q ≅ proj₂ jw) → Pathk S PI PJ i (proj₁ jw) (proj₂ jw) 
         sub (j′ , w′) (eqj , eqw) = subst (WI _ _) (cong₂ _,_ eqj eqw) r 
 
-
+-}
 
 \end{code}
 

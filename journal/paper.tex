@@ -1005,7 +1005,7 @@ For example the list functor is a container, its shapes are given by the natural
 \ColumnHook
 \end{hscode}\resethooks
 
-The category of containers is a full and faithful sub-category of the functor category. We have also shown that the category of containers is locally cartesian closed, and is closed under formation of co-products.
+The category of containers is a full and faithful sub-category of the functor category. We have also shown that the category of containers is cartesian closed, and is closed under formation of co-products.
 
 Container functors have initial algebras, indeed these are exactly the \ensuremath{\Conid{W}} types we know well from Type-Theory, which we can be equivalently defined to be:
 
@@ -1162,7 +1162,7 @@ elided the use of the lifting functor.
 
 
 \begin{proposition} 
-\ensuremath{(\Conid{IFunc},\eta^{\text{\tiny F}},\anonymous \bind ^{\text{\tiny F}}\anonymous )} is a \emph{relative monad}\cite{relmonads} on the 
+\ensuremath{(\Conid{IFunc},\eta^{\text{\tiny F}},\anonymous \bind ^{\text{\tiny F}}\anonymous )} is a \emph{relative monad}\cite{alti:relmonads} on the 
 lifting functor \ensuremath{\uparrow\;\in\;\Conid{Set}_{i}\;\rightarrow\;\Conid{Set}_{i+1}}.
 \end{proposition}
 
@@ -2678,7 +2678,7 @@ We can use this proof that \ensuremath{\Conid{WI}}-types can be encoded by \ensu
 
 Since we have shown that both \ensuremath{\Conid{WI}} and \ensuremath{\Conid{MI}} types can be reduced to their 
 non-indexed counterparts, it only remains to show that \ensuremath{\Conid{M}} types can be, reduced
-to \ensuremath{\Conid{W}} types. This is a result from \cite{C-CSPTs}, though in the setting of 
+to \ensuremath{\Conid{W}} types. This is a result from our previous work on containers~\cite{alti:cont-tcs}, though in the setting of 
 indexed \ensuremath{\Conid{WI}} types, we can give a better intuition.
 
 In category theory, an $\omega$-chain, is an infinite diagram:
@@ -2793,7 +2793,7 @@ Given a functor \ensuremath{\Conid{F}}, we can build a chain:
 
 \noindent
 For the moment denote this chain \ensuremath{\Conid{F}\;\!^{\omega}\;\mathrel{=}\;((\lambda\;\Varid{n}\;\rightarrow\;\Conid{F}\;\!^{\Varid{n}}\;\top),\lambda\;\Varid{n}\;\rightarrow\;\Conid{F}\;\!^{\Varid{n}}\;\mathbin{!})}. 
-We know from Asperti and Longo \cite{AspertiLongo} that if \ensuremath{\Conid{F}} is 
+We know from Asperti and Longo \cite{aspertilongo} that if \ensuremath{\Conid{F}} is 
 $\omega$-continuous, \emph{i.e.} that for any chain \ensuremath{(\Conid{A},\Varid{a})}:
 
 \ensuremath{\Conid{F}\;(\Conid{LIM}\;(\Conid{A},\Varid{a}))\;\cong\;\Conid{LIM}\;((\Conid{F}\;\ensuremath{\mbox{$\circ$}}\;\Conid{A}),(\Conid{F}\;\ensuremath{\mbox{$\circ$}}\;\Varid{a}))}
@@ -2801,21 +2801,24 @@ $\omega$-continuous, \emph{i.e.} that for any chain \ensuremath{(\Conid{A},\Vari
 \noindent
 then the limit of \ensuremath{\Conid{F}\;\!^{\omega}} will be the terminal co-algebra of \ensuremath{\Conid{F}}. 
 
-To see this we first observe that there exists an isomorphism between 
-\ensuremath{\Conid{LIM}\;(\Conid{A},\Varid{a})} and \ensuremath{\Conid{LIM}\;(\Conid{A}\;\ensuremath{\mbox{$\circ$}}\;\Varid{suc},\Varid{a}\;\ensuremath{\mbox{$\circ$}}\;\Varid{suc})}:
+To see this we first observe that we there is an isomorphism between the limit of a chain, and the limit of any of its \emph{tails}:
 
 \begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{3}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{9}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
-\>[B]{}\Varid{tailC}\;\in\;(\Varid{c}\;\in\;\Conid{Chain})\;\rightarrow\;\Conid{LIM}\;\Varid{c}\;\rightarrow\;\Conid{LIM}\;(\pi_{0}\;\Varid{c}\;\ensuremath{\mbox{$\circ$}}\;\Varid{suc},\pi_{1}\;\Varid{c}\;\ensuremath{\mbox{$\circ$}}\;\Varid{suc}){}\<[E]%
+\>[B]{}\Varid{tail}\;\in\;\Conid{Chain}\;\rightarrow\;\Conid{Chain}{}\<[E]%
 \\
-\>[B]{}\Varid{tailC}\;(\Conid{A},\Varid{a})\;(\Varid{f},\Varid{p})\;\mathrel{=}\;\Varid{f}\;\ensuremath{\mbox{$\circ$}}\;\Varid{suc},\Varid{p}\;\ensuremath{\mbox{$\circ$}}\;\Varid{suc}{}\<[E]%
+\>[B]{}\Varid{tail}\;(\Conid{A},\Varid{a})\;\mathrel{=}\;(\Conid{A}\;\ensuremath{\mbox{$\circ$}}\;\Varid{suc},\Varid{a}\;\ensuremath{\mbox{$\circ$}}\;\Varid{suc}){}\<[E]%
 \\[\blanklineskip]%
-\>[B]{}\Varid{tailC⁻¹}\;\in\;(\Varid{c}\;\in\;\Conid{Chain})\;\rightarrow\;\Conid{LIM}\;(\pi_{0}\;\Varid{c}\;\ensuremath{\mbox{$\circ$}}\;\Varid{suc},\pi_{1}\;\Varid{c}\;\ensuremath{\mbox{$\circ$}}\;\Varid{suc})\;\rightarrow\;\Conid{LIM}\;\Varid{c}{}\<[E]%
+\>[B]{}\Varid{tailLIM}\;\in\;(\Varid{c}\;\in\;\Conid{Chain})\;\rightarrow\;\Conid{LIM}\;\Varid{c}\;\rightarrow\;\Conid{LIM}\;(\Varid{tail}\;\Varid{c}){}\<[E]%
 \\
-\>[B]{}\Varid{tailC⁻¹}\;(\Conid{A},\Varid{a})\;(\Varid{f},\Varid{p})\;\mathrel{=}\;\Varid{f′},\Varid{p′}{}\<[E]%
+\>[B]{}\Varid{tailLIM}\;(\Conid{A},\Varid{a})\;(\Varid{f},\Varid{p})\;\mathrel{=}\;\Varid{f}\;\ensuremath{\mbox{$\circ$}}\;\Varid{suc},\Varid{p}\;\ensuremath{\mbox{$\circ$}}\;\Varid{suc}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\Varid{tailLIM⁻¹}\;\in\;(\Varid{c}\;\in\;\Conid{Chain})\;\rightarrow\;\Conid{LIM}\;(\Varid{tail}\;\Varid{c})\;\rightarrow\;\Conid{LIM}\;\Varid{c}{}\<[E]%
+\\
+\>[B]{}\Varid{tailLIM⁻¹}\;(\Conid{A},\Varid{a})\;(\Varid{f},\Varid{p})\;\mathrel{=}\;\Varid{f′},\Varid{p′}{}\<[E]%
 \\
 \>[B]{}\hsindent{3}{}\<[3]%
 \>[3]{}\Keyword{where}\;\Varid{f′}\;\in\;(\Varid{n}\;\in\;\Conid{ℕ})\;\rightarrow\;\Conid{A}\;\Varid{n}{}\<[E]%
@@ -2838,14 +2841,14 @@ To see this we first observe that there exists an isomorphism between
 \end{hscode}\resethooks
 
 \noindent 
-this allows us to construct the isomorphism between \ensuremath{\Conid{F}\;(\Conid{LIM}\;\Conid{F}\;\!^{\omega})} and 
+We also note that the tail of \ensuremath{\Conid{F}\;\!^{\omega}} is \ensuremath{((\lambda\;\Varid{n}\;\rightarrow\;\Conid{F}\;(\Conid{F}\;\!^{\Varid{n}}\;\top)),\lambda\;\Varid{n}\;\rightarrow\;\Conid{F}\;(\Conid{F}\;\!^{\Varid{n}}\;\mathbin{!}))}, which allows us to construct the isomorphism between \ensuremath{\Conid{F}\;(\Conid{LIM}\;\Conid{F}\;\!^{\omega})} and 
 \ensuremath{\Conid{LIM}\;\Conid{F}\;\!^{\omega}}:
 
 \begin{align*}
 &&& \ensuremath{\Conid{F}\;(\Conid{LIM}\;\Conid{F}\;\!^{\omega})} & \\
 &\cong&& \ensuremath{\Conid{LIM}\;(\Conid{F}\;\ensuremath{\mbox{$\circ$}}\;(\lambda\;\Varid{n}\;\rightarrow\;\Conid{F}\;\!^{\Varid{n}}\;\top),\Conid{F}\;\ensuremath{\mbox{$\circ$}}\;(\lambda\;\Varid{n}\;\rightarrow\;\Conid{F}\;\!^{\Varid{n}}\;\mathbin{!}))} & \{\mbox{\ensuremath{\Conid{F}} is $\omega$-continuous}\} \\
-&\equiv&& \ensuremath{\Conid{LIM}\;((\lambda\;\Varid{n}\;\rightarrow\;\Conid{F}\;\!^{\Varid{suc}\Varid{n}}\;\top),(\lambda\;\Varid{n}\;\rightarrow\;\Conid{F}\;\!^{\Varid{suc}\Varid{n}}\;\mathbin{!}))} & \{\mbox{definition}\}\\
-&\cong&& \ensuremath{\Conid{LIM}\;\Conid{F}\;\!^{\omega}} & \{\mbox{ \ensuremath{\Varid{tailC}} }\} \\
+&\equiv&& \ensuremath{\Conid{LIM}\;((\lambda\;\Varid{n}\;\rightarrow\;\Conid{F}\;(\Conid{F}\;\!^{\Varid{n}}\;\top)),(\lambda\;\Varid{n}\;\rightarrow\;\Conid{F}\;(\Conid{F}\;\!^{\Varid{n}}\;\mathbin{!})))} & \{\mbox{definition}\}\\
+&\cong&& \ensuremath{\Conid{LIM}\;\Conid{F}\;\!^{\omega}} & \{\mbox{ \ensuremath{\Varid{tailLIM}} }\} \\
 \end{align*}
 
 
@@ -3081,13 +3084,15 @@ We now entitled to derive \ensuremath{\Conid{M}} types from \ensuremath{\Conid{W
 
 
 
+
+
+We now give a syntax for defining indexed strictly positive types and strictly positive families:
+
 \begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{3}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{5}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{12}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{20}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{46}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{47}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
 \>[B]{}\Keyword{mutual}{}\<[E]%
@@ -3125,30 +3130,16 @@ We now entitled to derive \ensuremath{\Conid{M}} types from \ensuremath{\Conid{W
 \>[5]{}\mu^{\text{\tiny T}}\;\in\;\forall{}\;\{\mskip1.5mu \Conid{J}\mskip1.5mu\}\;{}\<[20]%
 \>[20]{}(\Conid{F}\;\in\;\Conid{SPF}\;(\Conid{I}\;\uplus\;\Conid{J})\;\Conid{J})\;{}\<[47]%
 \>[47]{}\rightarrow\;\Conid{SPF}\;\Conid{I}\;\Conid{J}{}\<[E]%
-\\[\blanklineskip]%
-\>[B]{}\anonymous \bind ^{\text{\tiny T}}\anonymous \;\in\;\forall{}\;\{\mskip1.5mu \Conid{I}\;\Conid{J}\mskip1.5mu\}\;\rightarrow\;\Conid{ISPT}\;\Conid{I}\;\rightarrow\;\Conid{SPF}\;\Conid{J}\;\Conid{I}\;\rightarrow\;\Conid{ISPT}\;\Conid{J}{}\<[E]%
 \\
-\>[B]{}\eta^{\text{\tiny T}}\;\Varid{i}\;{}\<[12]%
-\>[12]{}\bind ^{\text{\tiny T}}\;\Conid{F}\;\mathrel{=}\;\Conid{F}\;\Varid{i}{}\<[E]%
-\\
-\>[B]{}\Delta^{\text{\tiny T}}\;\Varid{f}\;\Conid{G}\;\Varid{j}\;{}\<[12]%
-\>[12]{}\bind ^{\text{\tiny T}}\;\Conid{F}\;\mathrel{=}\;\Delta^{\text{\tiny T}}\;\Varid{f}\;(\lambda\;\Varid{k}\;\rightarrow\;\Conid{G}\;\Varid{k}\;\bind ^{\text{\tiny T}}\;\Conid{F})\;\Varid{j}{}\<[E]%
-\\
-\>[B]{}\Sigma^{\text{\tiny T}}\;\Varid{f}\;\Conid{G}\;\Varid{k}\;{}\<[12]%
-\>[12]{}\bind ^{\text{\tiny T}}\;\Conid{F}\;\mathrel{=}\;\Sigma^{\text{\tiny T}}\;\Varid{f}\;(\lambda\;\Varid{j}\;\rightarrow\;\Conid{G}\;\Varid{j}\;\bind ^{\text{\tiny T}}\;\Conid{F})\;\Varid{k}{}\<[E]%
-\\
-\>[B]{}\Pi^{\text{\tiny T}}\;\Varid{f}\;\Conid{G}\;\Varid{k}\;{}\<[12]%
-\>[12]{}\bind ^{\text{\tiny T}}\;\Conid{F}\;\mathrel{=}\;\Pi^{\text{\tiny T}}\;\Varid{f}\;(\lambda\;\Varid{j}\;\rightarrow\;\Conid{G}\;\Varid{j}\;\bind ^{\text{\tiny T}}\;\Conid{F})\;\Varid{k}{}\<[E]%
-\\
-\>[B]{}\mu^{\text{\tiny T}}\;\Conid{G}\;\Varid{j}\;{}\<[12]%
-\>[12]{}\bind ^{\text{\tiny T}}\;\Conid{F}\;\mathrel{=}\;\mu^{\text{\tiny T}}\;(\lambda\;\Varid{k}\;\rightarrow\;\Conid{G}\;\Varid{k}\;\bind ^{\text{\tiny T}}\;[\mskip1.5mu {}\<[46]%
-\>[46]{}(\lambda\;\Varid{i}\;\rightarrow\;\Conid{F}\;\Varid{i}\;\bind ^{\text{\tiny T}}\;(\eta^{\text{\tiny T}}\;\ensuremath{\mbox{$\circ$}}\;\Varid{inl})),(\eta^{\text{\tiny T}}\;\ensuremath{\mbox{$\circ$}}\;\Varid{inr})\mskip1.5mu])\;\Varid{j}{}\<[E]%
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\nu^{\text{\tiny T}}\;\in\;\forall{}\;\{\mskip1.5mu \Conid{J}\mskip1.5mu\}\;{}\<[20]%
+\>[20]{}(\Conid{F}\;\in\;\Conid{SPF}\;(\Conid{I}\;\uplus\;\Conid{J})\;\Conid{J})\;{}\<[47]%
+\>[47]{}\rightarrow\;\Conid{SPF}\;\Conid{I}\;\Conid{J}{}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
 
 
-
-
+We intend to interpret terms in this syntax as indexed functors, in order to interpret \ensuremath{\mu^{\text{\tiny T}}} and \ensuremath{\nu^{\text{\tiny T}}} we need to go first via indexed containers, which we know to be closed under ther formation of these fixed-points:
 
 \begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
@@ -3185,8 +3176,62 @@ We now entitled to derive \ensuremath{\Conid{M}} types from \ensuremath{\Conid{W
 \>[B]{}\hsindent{3}{}\<[3]%
 \>[3]{}\Varid{⟦}\;\mu^{\text{\tiny T}}\;\Conid{F}\;\Varid{j}\;\Varid{⟧}^{\text{\tiny T}}\;{}\<[20]%
 \>[20]{}\mathrel{=}\;\!\;\!\!\;\mu^{\text{\tiny C}}\;\Varid{⟦}\;\Conid{F}\;\Varid{⟧}^{\text{\tiny T}\star}\;\!\!\;\Varid{j}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\Varid{⟦}\;\nu^{\text{\tiny T}}\;\Conid{F}\;\Varid{j}\;\Varid{⟧}^{\text{\tiny T}}\;{}\<[20]%
+\>[20]{}\mathrel{=}\;\!\;\!\!\;\nu^{\text{\tiny C}}\;\Varid{⟦}\;\Conid{F}\;\Varid{⟧}^{\text{\tiny T}\star}\;\!\!\;\Varid{j}{}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
+
+We can equip this syntax with a substitution operation, \ensuremath{\anonymous \bind ^{\text{\tiny T}}\anonymous }:
+
+
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{14}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{48}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\Keyword{mutual}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\Conid{ISPT}\;\in\;\forall{}\;\{\mskip1.5mu \Conid{I}\;\Conid{J}\mskip1.5mu\}\;\rightarrow\;(\Conid{I}\;\rightarrow\;\Conid{J})\;\rightarrow\;\Conid{ISPT}\;\Conid{I}\;\rightarrow\;\Conid{ISPT}\;\Conid{J}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\Conid{ISPT}\;\gamma\;\Varid{t}\;\mathrel{=}\;\Varid{t}\;\bind ^{\text{\tiny T}}\;(\eta^{\text{\tiny T}}\;\ensuremath{\mbox{$\circ$}}\;\gamma){}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\anonymous \bind ^{\text{\tiny T}}\anonymous \;\in\;\forall{}\;\{\mskip1.5mu \Conid{I}\;\Conid{J}\mskip1.5mu\}\;\rightarrow\;\Conid{ISPT}\;\Conid{I}\;\rightarrow\;\Conid{SPF}\;\Conid{J}\;\Conid{I}\;\rightarrow\;\Conid{ISPT}\;\Conid{J}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\eta^{\text{\tiny T}}\;\Varid{i}\;{}\<[14]%
+\>[14]{}\bind ^{\text{\tiny T}}\;\Conid{F}\;\mathrel{=}\;\Conid{F}\;\Varid{i}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\Delta^{\text{\tiny T}}\;\Varid{f}\;\Conid{G}\;\Varid{j}\;{}\<[14]%
+\>[14]{}\bind ^{\text{\tiny T}}\;\Conid{F}\;\mathrel{=}\;\Delta^{\text{\tiny T}}\;\Varid{f}\;(\lambda\;\Varid{k}\;\rightarrow\;\Conid{G}\;\Varid{k}\;\bind ^{\text{\tiny T}}\;\Conid{F})\;\Varid{j}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\Sigma^{\text{\tiny T}}\;\Varid{f}\;\Conid{G}\;\Varid{k}\;{}\<[14]%
+\>[14]{}\bind ^{\text{\tiny T}}\;\Conid{F}\;\mathrel{=}\;\Sigma^{\text{\tiny T}}\;\Varid{f}\;(\lambda\;\Varid{j}\;\rightarrow\;\Conid{G}\;\Varid{j}\;\bind ^{\text{\tiny T}}\;\Conid{F})\;\Varid{k}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\Pi^{\text{\tiny T}}\;\Varid{f}\;\Conid{G}\;\Varid{k}\;{}\<[14]%
+\>[14]{}\bind ^{\text{\tiny T}}\;\Conid{F}\;\mathrel{=}\;\Pi^{\text{\tiny T}}\;\Varid{f}\;(\lambda\;\Varid{j}\;\rightarrow\;\Conid{G}\;\Varid{j}\;\bind ^{\text{\tiny T}}\;\Conid{F})\;\Varid{k}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\mu^{\text{\tiny T}}\;\Conid{G}\;\Varid{j}\;{}\<[14]%
+\>[14]{}\bind ^{\text{\tiny T}}\;\Conid{F}\;\mathrel{=}\;\mu^{\text{\tiny T}}\;(\lambda\;\Varid{k}\;\rightarrow\;\Conid{G}\;\Varid{k}\;\bind ^{\text{\tiny T}}\;[\mskip1.5mu {}\<[48]%
+\>[48]{}(\Conid{ISPT}\;\Varid{inl}\;\ensuremath{\mbox{$\circ$}}\;\Conid{F}),(\eta^{\text{\tiny T}}\;\ensuremath{\mbox{$\circ$}}\;\Varid{inr})\mskip1.5mu])\;\Varid{j}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\nu^{\text{\tiny T}}\;\Conid{G}\;\Varid{j}\;{}\<[14]%
+\>[14]{}\bind ^{\text{\tiny T}}\;\Conid{F}\;\mathrel{=}\;\nu^{\text{\tiny T}}\;(\lambda\;\Varid{k}\;\rightarrow\;\Conid{G}\;\Varid{k}\;\bind ^{\text{\tiny T}}\;[\mskip1.5mu {}\<[48]%
+\>[48]{}(\Conid{ISPT}\;\Varid{inl}\;\ensuremath{\mbox{$\circ$}}\;\Conid{F}),(\eta^{\text{\tiny T}}\;\ensuremath{\mbox{$\circ$}}\;\Varid{inr})\mskip1.5mu])\;\Varid{j}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+
+As defined above this doesn't pass Agda's termination check, due to deriving the \ensuremath{\Conid{ISPT}} from the monad instance. If we define the map of the functor directly the whole thing obviously terminates, at the expense of having to show the two definitions of the map for \ensuremath{\Conid{ISPT}} agree.
 
 
 \begin{proposition} 
@@ -3205,7 +3250,7 @@ For \ensuremath{\Conid{F}\;\in\;\Conid{ISPT}\;\Conid{K}}, \ensuremath{\Conid{G}\
 \ensuremath{(\Conid{F}\;\bind ^{\text{\tiny T}}\;\Conid{G})\;\bind ^{\text{\tiny T}}\;\Conid{F}} && \equiv &&& \ensuremath{\Conid{F}\;\bind ^{\text{\tiny T}}\;(\lambda\;\Varid{k}\;\rightarrow\;(\Conid{G}\;\Varid{k})\;\bind ^{\text{\tiny T}}\;\Conid{H})} 
 \end{align}
 
-The firstst is by definition, and the others follow by induction on \ensuremath{\Conid{F}}. 
+The first is by definition, and the others follow by induction on \ensuremath{\Conid{F}}. 
 To show that the structure is preserved by \ensuremath{\Varid{⟦}\anonymous \Varid{⟧}^{\text{\tiny T}}} it is sufficient to show that for all \ensuremath{\Conid{F}\;\in\;\Conid{ISPT}\;\Conid{J}} and \ensuremath{\Conid{G}\;\in\;\Conid{SPF}\;\Conid{I}\;\Conid{J}} there exist mutually inverse container 
 morphisms \ensuremath{\Varid{bindpres}} and \ensuremath{\Varid{bindpres⁻¹}}:
 
@@ -3241,6 +3286,8 @@ morphisms \ensuremath{\Varid{bindpres}} and \ensuremath{\Varid{bindpres⁻¹}}:
 
 
 
+
+We define disjoint union and cartesian product just as we did in the functor and container universes:
 
 \begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
@@ -3303,6 +3350,6 @@ morphisms \ensuremath{\Varid{bindpres}} and \ensuremath{\Varid{bindpres⁻¹}}:
 
 
 \bibliographystyle{plain}
-\bibliography{paper}
+\bibliography{ic}
 
 \end{document}

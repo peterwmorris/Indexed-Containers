@@ -33,7 +33,7 @@ open import func
 
 Since we have shown that both |WI| and |MI| types can be reduced to their 
 non-indexed counterparts, it only remains to show that |M| types can be, reduced
-to |W| types. This is a result from \cite{C-CSPTs}, though in the setting of 
+to |W| types. This is a result from our previous work on containers~\cite{alti:cont-tcs}, though in the setting of 
 indexed |WI| types, we can give a better intuition.
 
 In category theory, an $\omega$-chain, is an infinite diagram:
@@ -141,7 +141,7 @@ Given a functor |F|, we can build a chain:
 
 \noindent
 For the moment denote this chain |F om = ((λ n → F en ⊤) , λ n → F en !)|. 
-We know from Asperti and Longo \cite{AspertiLongo} that if |F| is 
+We know from Asperti and Longo \cite{aspertilongo} that if |F| is 
 $\omega$-continuous, \emph{i.e.} that for any chain |(A , a)|:
 
 | F (LIM (A, a)) ≅ LIM ((F ∘ A), (F ∘ a)) |
@@ -149,16 +149,18 @@ $\omega$-continuous, \emph{i.e.} that for any chain |(A , a)|:
 \noindent
 then the limit of |F om| will be the terminal co-algebra of |F|. 
 
-To see this we first observe that there exists an isomorphism between 
-|LIM (A , a)| and |LIM (A ∘ suc , a ∘ suc)|:
+To see this we first observe that we there is an isomorphism between the limit of a chain, and the limit of any of its \emph{tails}:
 
 \begin{code}
 
-tailC : (c : Chain) → LIM c → LIM (proj₁ c ∘ suc , proj₂ c ∘ suc)
-tailC (A , a) (f , p) = f ∘ suc , p ∘ suc
+tail : Chain → Chain
+tail (A , a) = (A ∘ suc , a ∘ suc)
 
-tailC⁻¹ : (c : Chain) → LIM (proj₁ c ∘ suc , proj₂ c ∘ suc) → LIM c
-tailC⁻¹ (A , a) (f , p) = f′ , p′ 
+tailLIM : (c : Chain) → LIM c → LIM (tail c)
+tailLIM (A , a) (f , p) = f ∘ suc , p ∘ suc
+
+tailLIM⁻¹ : (c : Chain) → LIM (tail c) → LIM c
+tailLIM⁻¹ (A , a) (f , p) = f′ , p′ 
   where f′ : (n : ℕ) → A n
         f′ zero = a _ (f zero)
         f′ (suc n) = f n
@@ -169,14 +171,14 @@ tailC⁻¹ (A , a) (f , p) = f′ , p′
 \end{code}
 
 \noindent 
-this allows us to construct the isomorphism between |F (LIM F om)| and 
+We also note that the tail of |F om| is |((λ n → F (F en ⊤)) , λ n → F (F en !))|, which allows us to construct the isomorphism between |F (LIM F om)| and 
 |LIM F om|:
 
 \begin{align*}
 &&& |F (LIM F om)| & \\
 &\cong&& | LIM (F ∘ (λ n → F en ⊤) , F ∘ (λ n → F en !)) | & \{\mbox{|F| is $\omega$-continuous}\} \\
-&\equiv&& | LIM ((λ n → F sen ⊤) , (λ n → F sen !)) | & \{\mbox{definition}\}\\
-&\cong&& | LIM F om | & \{\mbox{ |tailC | }\} \\
+&\equiv&& | LIM ((λ n → F (F en ⊤)) , (λ n → F (F en !))) | & \{\mbox{definition}\}\\
+&\cong&& | LIM F om | & \{\mbox{ |tailLIM | }\} \\
 \end{align*}
 
 
