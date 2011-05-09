@@ -29,6 +29,8 @@ open import func
 %endif
 
 \subsection*{|M| from |W|}
+\label{sec:mfromw}
+
 Since we have shown that both |WI| and |MI| types can be reduced to their 
 non-indexed counterparts, it only remains to show that |M| types can be, reduced
 to |W| types. This is a result from \cite{C-CSPTs}, though in the setting of 

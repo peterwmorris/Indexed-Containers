@@ -23,6 +23,16 @@ open import tt
 
 \section{Introduction}
 
+
+
+
+\noindent Inductive datatypes are a central feature of modern Type Theory
+(e.g. COQ~\cite{CIC}) or functional programming (e.g. 
+Haskell\footnote{Here we shall view Haskell as an approximation of strong
+  functional programming as proposed by Turner \cite{sfp} and ignore
+non-termination.})
+
+Examples include the natural numbers al Peano:
 \begin{code}
 
 data ℕ : Set where
@@ -30,8 +40,7 @@ data ℕ : Set where
   suc   : (n : ℕ) → ℕ
 
 \end{code}
-
-
+the set of lists indexed by any given set:
 \begin{code}
 
 data List (A : Set) : Set where
@@ -39,7 +48,7 @@ data List (A : Set) : Set where
   _∷_  : A → List A →  List A
 
 \end{code}
-
+and the set of  de Bruijn $\lambda$-terms:
 \begin{code}
 
 data Lam : Set where
@@ -52,6 +61,10 @@ data Lam : Set where
 %format Fℕ = F "_{" ℕ "}"
 %format FList = F "_{" List "}"
 %format FLam = F "_{" Lam "}"
+
+\noindent An elegant way to formalize and reason about inductive types
+is to model them as the initial algebra of an endofunctor, we can
+define the siganture functors cirresponding to each of the examples above:
 
 \begin{code}
 
@@ -66,6 +79,25 @@ FLam X = ℕ ⊎ (X × X) ⊎ X
 
 \end{code}
 
+This perspective has been very
+successful in providing a generic approach to programming with and
+reasoning about inductive types, e.g. see the \emph{Algebra of
+Programming} \cite{BirdDeMoor:AlgProp}.
+
+While the theory of inductive types is well developed, we often want
+to have a finer, more expressive, notion of types, for example to
+ensure the absence of run time errors --- access to arrays out of
+range or access to an undefined variable in the previous example of
+$\lambda$-terms. 
+
+To model this we move to the notion of an inductive
+family in Type Theory. A family is a type indexed by another already
+given type. The first example is the family of finite sets |Fin| which
+assigns to any natural number |n| a set |Fin n| which has exactly
+|n|-elements. |Fin| can be used where in conventional reasoning we
+assume any finite set, e.g. when dealing with a finite address apce or
+a finite set of variables. The inductive definition of |Fin| refines
+the type of natural numbers:
 \begin{code}
 
 data Fin : ℕ → Set where
@@ -74,6 +106,10 @@ data Fin : ℕ → Set where
 
 \end{code}
 
+In the same fashion we can refine the type of lists to the type of
+vectors which are additionally indexed by a number indicating the
+length of the vector:
+
 \begin{code}
 
 data Vec (A : Set) : ℕ → Set where
@@ -81,6 +117,23 @@ data Vec (A : Set) : ℕ → Set where
   _∷_  : ∀ {n} (a : A) (as : Vec A n) →  Vec A (suc n)
 
 \end{code}
+
+Using |Fin| and |Vec| instead of |Nat| and |List| enables us to write
+a total projection function projecting the nth element out of vector:
+\begin{code}
+_!!_ : {A : Set} → List A → ℕ → Maybe A
+[] !! n            = nothing
+(a ∷ as) !! zero   = just a
+(a ∷ as) !! suc n  = as !! n  
+\end{code}
+Note, that a corresponding function |_!!_ : {A : Set} → List A → ℕ →
+A| is not definable in a total langauge like Agda.
+
+Finally we can define the notion of a well-scoped lambda term with
+|ScLam| which assigns to a natural number |n| the set of $\lambda$-terms
+with at most |n| free variables |ScLam n|. DeBruijn variables are now
+modelled by elements of |Fin n| replacing |Nat| in the previous,
+unindexed definition of $\lambda$-terms |Lam|.
 
 \begin{code}
 
@@ -91,23 +144,13 @@ data ScLam (n : ℕ) : Set where
 
 \end{code}
 
-%format FFin = F "_{" Fin "}"
-%format FVec = F "_{" Vec "}"
-%format FScLam = F "_{" ScLam "}"
-
-\begin{code}
-
-FFin : (ℕ → Set) → ℕ → Set
-FFin X n = Σ ℕ λ m → (n ≡ suc m) × (⊤ ⊎ X m)
-
-FVec : (A : Set) → (ℕ → Set) → ℕ → Set
-FVec A X n = n ≡ zero ⊎ Σ ℕ λ m → (n ≡ suc m) × (A × X m)
-
-FScLam : (ℕ → Set) → ℕ → Set
-FScLam X n = Fin n ⊎ (X n × X n) ⊎ (X ∘ suc) n
-
-\end{code}
-
+\noindent
+Importantly, the constructor
+|lam| reduces the number of \emph{free} variables by one --- by
+binding one. 
+Inductive families may be mutually defined, for example the scoped
+versions of  $\beta$ (|NfLam|)
+normal forms and neutral $\lambda$-terms (|NeLam|): 
 \begin{code}
 
 mutual
@@ -122,6 +165,44 @@ mutual
 
 \end{code}
 
+%format FFin = F "_{" Fin "}"
+%format FVec = F "_{" Vec "}"
+%format FScLam = F "_{" ScLam "}"
+
+The initial algebra semantics of inductive types can be extended to
+model inductive families by replacing functors on the category |Set|
+with functors on the category of families indexed by a given type - in
+the case of $\lambda$-terms this indexing type was |Nat|. The objects
+of the category of families indexed over a type |I : set| are
+|I|-indexed families, i.e. functions of type |I → Set|, and a
+morphism between |I|-indexed families |A, B : I → Set| is given by a
+family of maps |f : (i : I) -> A i -> B i|
+Indeed, this category
+is easily seen to be isomorphic to the slice category $|Set|/ |I|$ but
+the chosen representation is more convenient type-theoretically. Using
+$\Sigma$-types and equality types from Type Theory, we can define the
+following endofunctors |FFin, FVec| and |FLam|
+on the category of families
+over |Nat| whose initial algebras are |Fin| and |Lam|, respectively:
+
+\begin{code}
+
+FFin : (ℕ → Set) → ℕ → Set
+FFin X n = Σ ℕ λ m → (n ≡ suc m) × (⊤ ⊎ X m)
+
+FVec : (A : Set) → (ℕ → Set) → ℕ → Set
+FVec A X n = n ≡ zero ⊎ Σ ℕ λ m → (n ≡ suc m) × (A × X m)
+
+FScLam : (ℕ → Set) → ℕ → Set
+FScLam X n = Fin n ⊎ (X n × X n) ⊎ (X ∘ suc) n
+
+\end{code}
+
+The equality type expresses the focussed character of the
+constructors for |Fin|. 
+
+\todo{Discuss mutual case.}
+
 %format ι = "\iota"
 %format σ = "\sigma"
 %format τ = "\tau"
@@ -130,6 +211,9 @@ mutual
 %format ->- = "\Rightarrow"
 %format _->-_ = _ ->- _
 
+This approach extends uniformly to more complicated examples such as
+the family of typed $\lambda$-terms, using lists of types  to
+represent typing contexts:
 \begin{code}
 
 data Ty : Set where
@@ -147,3 +231,78 @@ data STLam (Γ : List Ty) : Ty → Set where
   lam  : ∀ {σ τ}  (t : STLam (σ ∷ Γ) τ)    → STLam Γ (σ ->- τ) 
 
 \end{code}
+
+\noindent
+Types like this can be used to implement a tag-free, terminating
+evaluator~\cite{bsn}. To obtain the corresponding functors
+is a laborious but straightforward exercise.
+
+\todo{Expand here?}
+
+\subsection{Overview over the paper}
+\label{sec:overview-over-paper}
+
+We develop our type theoretic and categorical background in section
+\ref{sec:background} and also summarize the basic definitions of
+non-indexed containers. In section \ref{sec:ifunc} we develop the
+concept of an indexed functor, showing that this is a relative monad
+and presenting basic constructions on indexed functors including the
+definition of a parametrized initial algebra. In section
+\ref{sec:icont} we devlop the basic theory of indexed containers and
+relate them to indexed functors. Subsequently in section
+\ref{sec:initalg} we construct initial algebras of indexed containers
+assuming the existence of indexed W-types, this can be dualized to
+showing the existence of terminal coalgebras from indexed M-types 
+\ref{sec:termcoalg}. Both requirements, indexed W-types and indexed
+M-types can be derived from ordinary W-types, this is shown in section
+\ref{sec:w-enough}. Finally, we define a syntax from strictly positive
+families and interpret this using indexed containers \ref{sec:spf}.
+
+\subsection{Related work}
+\label{sec:related-work}
+
+\noindent
+Inductive families are the backbone of
+dependently typed programming as present in Epigram or
+Agda~\cite{Agda}. Coq also supports the definition of inductive families
+but programming with them is rather hard --- a situation which has been
+improved by the new \texttt{Program} tactic~\cite{sozeau}. 
+More recently, the implementation of Generalized Algebraic Datatypes 
+(GADTs)~\cite{Hinze:GADT} 
+allows |Fin| and |Lam| to be encoded in Haskell:
+\begin{verbatim}
+data Fin a where 
+  FZero :: Fin (Maybe a)
+  FSucc :: Fin a -> Fin (Maybe a)
+
+data Lam a where 
+  Var :: Fin a -> Lam a
+  App :: Lam a -> Lam a -> Lam a
+  Abs :: Lam (Maybe a) -> Lam a
+\end{verbatim}
+Here \texttt{Fin} and \texttt{Lam} are indexed by types instead of
+natural numbers; The type constructor \texttt{Maybe} serves as a type level
+copy of the $\succ$ constructor for natural numbers.
+Note that \texttt{Lam} is actually just a nested datatype 
+\cite{alti:csl99} while \texttt{Fin} exploits the full power of
+GADTs because the range of the constructors is constrained.
+
+\todo{Rewrite and expand}
+
+The paper is an expanded and revised version of the LICS paper by the
+first and 3rd author \cite{lics}. In the present paper we have
+integrated the Agda formalisation in the main development, which in
+many instances required extending it. We have made explicit the use of
+relative monads which was only hinted at in the conference version
+based on the recent work on relative monads \cite{relmon}. We have
+also dualized the development to terminal coalgebras which requires a
+non-trivial change in the setup (section \ref{sec:termcoalg}).  We
+have also formalized the derivation of indexed W-types from ordinary
+W-types (section \ref{wifromw}. The derivation of M-types from W-types
+(section \ref{sec:mfromw})
+was already given in \cite{C-CSPTs} is revisited here exploiting the
+indexed W-type derived previously amd the development is formalized in
+Agda. 
+
+\todo{What did I miss?}
+

@@ -42,6 +42,7 @@ proj₁≡ refl = refl
 %format proj₁≡ = proj₁ ≡
 
 \subsection*{|WI| from |W|}
+\label{wifromw}
 
 How, then, can we build |WI| from |W|? The initial step is to create a type of \emph{pre}-|WI| trees, with nodes containing a shape \emph{and} its index, and branching over positions \emph{and their} indicies:
 

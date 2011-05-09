@@ -28,6 +28,7 @@ open import ifunc
 %endif
 
 \section{Indexed containers}
+\label{sec:icont}
 
 %format _◁_ = "\_\mbox{$\lhd$}\_"
 %format ICont* = ICont *

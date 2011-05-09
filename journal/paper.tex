@@ -8,8 +8,10 @@
 \usepackage{amssymb}
 \usepackage{amsmath}
 \usepackage{stmaryrd}
+\usepackage{color}
 
 \newcommand{\note}[1]{}
+\newcommand{\todo}[1]{\textcolor{red}{\textbf{Todo:~}#1}}
 
 %% ODER: format ==         = "\mathrel{==}"
 %% ODER: format /=         = "\neq "
@@ -337,7 +339,15 @@
 
 \begin{abstract}
 
-Blah
+  We show that the syntactically rich notion of inductive families can
+  be reduced to a core type theory with a fixed number of type
+  constructors exploiting the novel notion of indexed containers.
+  Indexed containers generalize simple containers, capturing strictly
+  positive families instead of just strictly positive types, without
+  having to extend the core type theory. Other applications of indexed
+  containers include datatype-generic programming and reasoning about
+  polymorphic functions. The construction presented here has been
+  formalized using the Agda system.
 
 \end{abstract}
 
@@ -346,6 +356,16 @@ Blah
 
 \section{Introduction}
 
+
+
+
+\noindent Inductive datatypes are a central feature of modern Type Theory
+(e.g. COQ~\cite{CIC}) or functional programming (e.g. 
+Haskell\footnote{Here we shall view Haskell as an approximation of strong
+  functional programming as proposed by Turner \cite{sfp} and ignore
+non-termination.})
+
+Examples include the natural numbers al Peano:
 \begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{3}{@{}>{\hspre}l<{\hspost}@{}}%
@@ -362,8 +382,7 @@ Blah
 \>[9]{}\in\;(\Varid{n}\;\in\;\Conid{ℕ})\;\rightarrow\;\Conid{ℕ}{}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
-
-
+the set of lists indexed by any given set:
 \begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{3}{@{}>{\hspre}l<{\hspost}@{}}%
@@ -383,7 +402,7 @@ Blah
 \>[24]{}\Conid{List}\;\Conid{A}{}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
-
+and the set of  de Bruijn $\lambda$-terms:
 \begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{3}{@{}>{\hspre}l<{\hspost}@{}}%
@@ -410,6 +429,10 @@ Blah
 \end{hscode}\resethooks
 
 
+\noindent An elegant way to formalize and reason about inductive types
+is to model them as the initial algebra of an endofunctor, we can
+define the siganture functors cirresponding to each of the examples above:
+
 \begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
@@ -427,6 +450,25 @@ Blah
 \ColumnHook
 \end{hscode}\resethooks
 
+This perspective has been very
+successful in providing a generic approach to programming with and
+reasoning about inductive types, e.g. see the \emph{Algebra of
+Programming} \cite{BirdDeMoor:AlgProp}.
+
+While the theory of inductive types is well developed, we often want
+to have a finer, more expressive, notion of types, for example to
+ensure the absence of run time errors --- access to arrays out of
+range or access to an undefined variable in the previous example of
+$\lambda$-terms. 
+
+To model this we move to the notion of an inductive
+family in Type Theory. A family is a type indexed by another already
+given type. The first example is the family of finite sets \ensuremath{\Conid{Fin}} which
+assigns to any natural number \ensuremath{\Varid{n}} a set \ensuremath{\Conid{Fin}\;\Varid{n}} which has exactly
+\ensuremath{\Varid{n}}-elements. \ensuremath{\Conid{Fin}} can be used where in conventional reasoning we
+assume any finite set, e.g. when dealing with a finite address apce or
+a finite set of variables. The inductive definition of \ensuremath{\Conid{Fin}} refines
+the type of natural numbers:
 \begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{3}{@{}>{\hspre}l<{\hspost}@{}}%
@@ -447,6 +489,10 @@ Blah
 \ColumnHook
 \end{hscode}\resethooks
 
+In the same fashion we can refine the type of lists to the type of
+vectors which are additionally indexed by a number indicating the
+length of the vector:
+
 \begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{3}{@{}>{\hspre}l<{\hspost}@{}}%
@@ -466,6 +512,32 @@ Blah
 \>[42]{}\Conid{Vec}\;\Conid{A}\;(\Varid{suc}\;\Varid{n}){}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
+
+Using \ensuremath{\Conid{Fin}} and \ensuremath{\Conid{Vec}} instead of \ensuremath{\Conid{Nat}} and \ensuremath{\Conid{List}} enables us to write
+a total projection function projecting the nth element out of vector:
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{20}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\Varid{\char95 !!\char95 }\;\in\;\{\mskip1.5mu \Conid{A}\;\in\;\Conid{Set}\mskip1.5mu\}\;\rightarrow\;\Conid{List}\;\Conid{A}\;\rightarrow\;\Conid{ℕ}\;\rightarrow\;\Conid{Maybe}\;\Conid{A}{}\<[E]%
+\\
+\>[B]{}[\mskip1.5mu \mskip1.5mu]\;\mathbin{!!}\;\Varid{n}\;{}\<[20]%
+\>[20]{}\mathrel{=}\;\Varid{nothing}{}\<[E]%
+\\
+\>[B]{}(\Varid{a}\;\Varid{∷}\;\Varid{as})\;\mathbin{!!}\;\Varid{zero}\;{}\<[20]%
+\>[20]{}\mathrel{=}\;\Varid{just}\;\Varid{a}{}\<[E]%
+\\
+\>[B]{}(\Varid{a}\;\Varid{∷}\;\Varid{as})\;\mathbin{!!}\;\Varid{suc}\;\Varid{n}\;{}\<[20]%
+\>[20]{}\mathrel{=}\;\Varid{as}\;\mathbin{!!}\;\Varid{n}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+Note, that a corresponding function \ensuremath{\Varid{\char95 !!\char95 }\;\in\;\{\mskip1.5mu \Conid{A}\;\in\;\Conid{Set}\mskip1.5mu\}\;\rightarrow\;\Conid{List}\;\Conid{A}\;\rightarrow\;\Conid{ℕ}\;\rightarrow\;\Conid{A}} is not definable in a total langauge like Agda.
+
+Finally we can define the notion of a well-scoped lambda term with
+\ensuremath{\Conid{ScLam}} which assigns to a natural number \ensuremath{\Varid{n}} the set of $\lambda$-terms
+with at most \ensuremath{\Varid{n}} free variables \ensuremath{\Conid{ScLam}\;\Varid{n}}. DeBruijn variables are now
+modelled by elements of \ensuremath{\Conid{Fin}\;\Varid{n}} replacing \ensuremath{\Conid{Nat}} in the previous,
+unindexed definition of $\lambda$-terms \ensuremath{\Conid{Lam}}.
 
 \begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
@@ -492,24 +564,13 @@ Blah
 \ColumnHook
 \end{hscode}\resethooks
 
-
-\begin{hscode}\SaveRestoreHook
-\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
-\>[B]{}\Conid{F}_{\Conid{Fin}}\;\in\;(\Conid{ℕ}\;\rightarrow\;\Conid{Set})\;\rightarrow\;\Conid{ℕ}\;\rightarrow\;\Conid{Set}{}\<[E]%
-\\
-\>[B]{}\Conid{F}_{\Conid{Fin}}\;\Conid{X}\;\Varid{n}\;\mathrel{=}\;\Sigma\;\Conid{ℕ}\;\lambda\;\Varid{m}\;\rightarrow\;(\Varid{n}\;\equiv\;\Varid{suc}\;\Varid{m})\;\times\;(\top\;\uplus\;\Conid{X}\;\Varid{m}){}\<[E]%
-\\[\blanklineskip]%
-\>[B]{}\Conid{F}_{\Conid{Vec}}\;\in\;(\Conid{A}\;\in\;\Conid{Set})\;\rightarrow\;(\Conid{ℕ}\;\rightarrow\;\Conid{Set})\;\rightarrow\;\Conid{ℕ}\;\rightarrow\;\Conid{Set}{}\<[E]%
-\\
-\>[B]{}\Conid{F}_{\Conid{Vec}}\;\Conid{A}\;\Conid{X}\;\Varid{n}\;\mathrel{=}\;\Varid{n}\;\equiv\;\Varid{zero}\;\uplus\;\Sigma\;\Conid{ℕ}\;\lambda\;\Varid{m}\;\rightarrow\;(\Varid{n}\;\equiv\;\Varid{suc}\;\Varid{m})\;\times\;(\Conid{A}\;\times\;\Conid{X}\;\Varid{m}){}\<[E]%
-\\[\blanklineskip]%
-\>[B]{}\Conid{F}_{\Conid{ScLam}}\;\in\;(\Conid{ℕ}\;\rightarrow\;\Conid{Set})\;\rightarrow\;\Conid{ℕ}\;\rightarrow\;\Conid{Set}{}\<[E]%
-\\
-\>[B]{}\Conid{F}_{\Conid{ScLam}}\;\Conid{X}\;\Varid{n}\;\mathrel{=}\;\Conid{Fin}\;\Varid{n}\;\uplus\;(\Conid{X}\;\Varid{n}\;\times\;\Conid{X}\;\Varid{n})\;\uplus\;(\Conid{X}\;\ensuremath{\mbox{$\circ$}}\;\Varid{suc})\;\Varid{n}{}\<[E]%
-\ColumnHook
-\end{hscode}\resethooks
-
+\noindent
+Importantly, the constructor
+\ensuremath{\Varid{lam}} reduces the number of \emph{free} variables by one --- by
+binding one. 
+Inductive families may be mutually defined, for example the scoped
+versions of  $\beta$ (\ensuremath{\Conid{NfLam}})
+normal forms and neutral $\lambda$-terms (\ensuremath{\Conid{NeLam}}): 
 \begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{3}{@{}>{\hspre}l<{\hspost}@{}}%
@@ -548,7 +609,49 @@ Blah
 \end{hscode}\resethooks
 
 
+The initial algebra semantics of inductive types can be extended to
+model inductive families by replacing functors on the category \ensuremath{\Conid{Set}}
+with functors on the category of families indexed by a given type - in
+the case of $\lambda$-terms this indexing type was \ensuremath{\Conid{Nat}}. The objects
+of the category of families indexed over a type \ensuremath{\Conid{I}\;\in\;\Varid{set}} are
+\ensuremath{\Conid{I}}-indexed families, i.e. functions of type \ensuremath{\Conid{I}\;\rightarrow\;\Conid{Set}}, and a
+morphism between \ensuremath{\Conid{I}}-indexed families \ensuremath{\Conid{A},\Conid{B}\;\in\;\Conid{I}\;\rightarrow\;\Conid{Set}} is given by a
+family of maps \ensuremath{\Varid{f}\;\in\;(\Varid{i}\;\in\;\Conid{I})\;\to \;\Conid{A}\;\Varid{i}\;\to \;\Conid{B}\;\Varid{i}}
+Indeed, this category
+is easily seen to be isomorphic to the slice category $\ensuremath{\Conid{Set}}/ \ensuremath{\Conid{I}}$ but
+the chosen representation is more convenient type-theoretically. Using
+$\Sigma$-types and equality types from Type Theory, we can define the
+following endofunctors \ensuremath{\Conid{F}_{\Conid{Fin}},\Conid{F}_{\Conid{Vec}}} and \ensuremath{\Conid{F}_{\Conid{Lam}}}
+on the category of families
+over \ensuremath{\Conid{Nat}} whose initial algebras are \ensuremath{\Conid{Fin}} and \ensuremath{\Conid{Lam}}, respectively:
 
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\Conid{F}_{\Conid{Fin}}\;\in\;(\Conid{ℕ}\;\rightarrow\;\Conid{Set})\;\rightarrow\;\Conid{ℕ}\;\rightarrow\;\Conid{Set}{}\<[E]%
+\\
+\>[B]{}\Conid{F}_{\Conid{Fin}}\;\Conid{X}\;\Varid{n}\;\mathrel{=}\;\Sigma\;\Conid{ℕ}\;\lambda\;\Varid{m}\;\rightarrow\;(\Varid{n}\;\equiv\;\Varid{suc}\;\Varid{m})\;\times\;(\top\;\uplus\;\Conid{X}\;\Varid{m}){}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\Conid{F}_{\Conid{Vec}}\;\in\;(\Conid{A}\;\in\;\Conid{Set})\;\rightarrow\;(\Conid{ℕ}\;\rightarrow\;\Conid{Set})\;\rightarrow\;\Conid{ℕ}\;\rightarrow\;\Conid{Set}{}\<[E]%
+\\
+\>[B]{}\Conid{F}_{\Conid{Vec}}\;\Conid{A}\;\Conid{X}\;\Varid{n}\;\mathrel{=}\;\Varid{n}\;\equiv\;\Varid{zero}\;\uplus\;\Sigma\;\Conid{ℕ}\;\lambda\;\Varid{m}\;\rightarrow\;(\Varid{n}\;\equiv\;\Varid{suc}\;\Varid{m})\;\times\;(\Conid{A}\;\times\;\Conid{X}\;\Varid{m}){}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\Conid{F}_{\Conid{ScLam}}\;\in\;(\Conid{ℕ}\;\rightarrow\;\Conid{Set})\;\rightarrow\;\Conid{ℕ}\;\rightarrow\;\Conid{Set}{}\<[E]%
+\\
+\>[B]{}\Conid{F}_{\Conid{ScLam}}\;\Conid{X}\;\Varid{n}\;\mathrel{=}\;\Conid{Fin}\;\Varid{n}\;\uplus\;(\Conid{X}\;\Varid{n}\;\times\;\Conid{X}\;\Varid{n})\;\uplus\;(\Conid{X}\;\ensuremath{\mbox{$\circ$}}\;\Varid{suc})\;\Varid{n}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+
+The equality type expresses the focussed character of the
+constructors for \ensuremath{\Conid{Fin}}. 
+
+\todo{Discuss mutual case.}
+
+
+
+This approach extends uniformly to more complicated examples such as
+the family of typed $\lambda$-terms, using lists of types  to
+represent typing contexts:
 \begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{3}{@{}>{\hspre}l<{\hspost}@{}}%
@@ -606,7 +709,83 @@ Blah
 \ColumnHook
 \end{hscode}\resethooks
 
+\noindent
+Types like this can be used to implement a tag-free, terminating
+evaluator~\cite{bsn}. To obtain the corresponding functors
+is a laborious but straightforward exercise.
+
+\todo{Expand here?}
+
+\subsection{Overview over the paper}
+\label{sec:overview-over-paper}
+
+We develop our type theoretic and categorical background in section
+\ref{sec:background} and also summarize the basic definitions of
+non-indexed containers. In section \ref{sec:ifunc} we develop the
+concept of an indexed functor, showing that this is a relative monad
+and presenting basic constructions on indexed functors including the
+definition of a parametrized initial algebra. In section
+\ref{sec:icont} we devlop the basic theory of indexed containers and
+relate them to indexed functors. Subsequently in section
+\ref{sec:initalg} we construct initial algebras of indexed containers
+assuming the existence of indexed W-types, this can be dualized to
+showing the existence of terminal coalgebras from indexed M-types 
+\ref{sec:termcoalg}. Both requirements, indexed W-types and indexed
+M-types can be derived from ordinary W-types, this is shown in section
+\ref{sec:w-enough}. Finally, we define a syntax from strictly positive
+families and interpret this using indexed containers \ref{sec:spf}.
+
+\subsection{Related work}
+\label{sec:related-work}
+
+\noindent
+Inductive families are the backbone of
+dependently typed programming as present in Epigram or
+Agda~\cite{Agda}. Coq also supports the definition of inductive families
+but programming with them is rather hard --- a situation which has been
+improved by the new \texttt{Program} tactic~\cite{sozeau}. 
+More recently, the implementation of Generalized Algebraic Datatypes 
+(GADTs)~\cite{Hinze:GADT} 
+allows \ensuremath{\Conid{Fin}} and \ensuremath{\Conid{Lam}} to be encoded in Haskell:
+\begin{tabbing}\tt
+~data~Fin~a~where~\\
+\tt ~~~FZero~\char58{}\char58{}~Fin~\char40{}Maybe~a\char41{}\\
+\tt ~~~FSucc~\char58{}\char58{}~Fin~a~\char45{}\char62{}~Fin~\char40{}Maybe~a\char41{}\\
+\tt ~\\
+\tt ~data~Lam~a~where~\\
+\tt ~~~Var~\char58{}\char58{}~Fin~a~\char45{}\char62{}~Lam~a\\
+\tt ~~~App~\char58{}\char58{}~Lam~a~\char45{}\char62{}~Lam~a~\char45{}\char62{}~Lam~a\\
+\tt ~~~Abs~\char58{}\char58{}~Lam~\char40{}Maybe~a\char41{}~\char45{}\char62{}~Lam~a
+\end{tabbing}
+Here \texttt{Fin} and \texttt{Lam} are indexed by types instead of
+natural numbers; The type constructor \texttt{Maybe} serves as a type level
+copy of the $\succ$ constructor for natural numbers.
+Note that \texttt{Lam} is actually just a nested datatype 
+\cite{alti:csl99} while \texttt{Fin} exploits the full power of
+GADTs because the range of the constructors is constrained.
+
+\todo{Rewrite and expand}
+
+The paper is an expanded and revised version of the LICS paper by the
+first and 3rd author \cite{lics}. In the present paper we have
+integrated the Agda formalisation in the main development, which in
+many instances required extending it. We have made explicit the use of
+relative monads which was only hinted at in the conference version
+based on the recent work on relative monads \cite{relmon}. We have
+also dualized the development to terminal coalgebras which requires a
+non-trivial change in the setup (section \ref{sec:termcoalg}).  We
+have also formalized the derivation of indexed W-types from ordinary
+W-types (section \ref{wifromw}. The derivation of M-types from W-types
+(section \ref{sec:mfromw})
+was already given in \cite{C-CSPTs} is revisited here exploiting the
+indexed W-type derived previously amd the development is formalized in
+Agda. 
+
+\todo{What did I miss?}
+
+
 \section{Background}
+\label{sec:background}
 
  
 
@@ -850,6 +1029,7 @@ However, we have also shown that for \ensuremath{\Varid{n}}-ary containers (cont
 
 
 \section{Indexed Functors}
+\label{sec:ifunc}
 
 
 Given \ensuremath{\Conid{I}\;\in\;\Conid{Set}} we consider the category of families over \ensuremath{\Conid{I}}. Its objects are
@@ -1418,6 +1598,7 @@ initial algebras.
 
 
 \section{Indexed containers}
+\label{sec:icont}
 
 
 An \ensuremath{\Conid{I}}-indexed container is given by a set of shapes, and an \ensuremath{\Conid{I}}-indexed \emph{family} of positions:
@@ -1859,6 +2040,7 @@ argument, and lifts container morphisms in this way:
 
 
 \section{Initial Algebras of Indexed Containers}
+\label{sec:initalg}
 
 We will now examine how to construct the initial algebra of a container of the form \ensuremath{\Conid{F}\;\in\;\Conid{ICont}^{\star}\;(\Conid{I}\;\uplus\;\Conid{J})\;\Conid{J}}. The shapes of such a container are an \ensuremath{\Conid{J}}-indexed family of \ensuremath{\Conid{Set}}s and the positions are indexed by \ensuremath{\Conid{I}\;\uplus\;\Conid{J}}; we will treat these position as two separate entities, those positions indexed by \ensuremath{\Conid{I}} -- the recusive positions -- and those by \ensuremath{\Conid{J}} -- the payload positions.
 
@@ -2071,6 +2253,7 @@ The algebra map is a container morphism from the partial aplication of \ensurema
 
 
 \section{Terminal Co-Algebras of Indexed Containers}
+\label{sec:termcoalg}
 
 Dually to the initial algebra construction out-lined above, we can also show that indexed-containers are closed under parameterized terminal co-algebras. We proceed in much the same way as before, by first constructing the dual of the indexed \ensuremath{\Conid{W}}-type, which we refer to as an indexed \ensuremath{\Conid{M}}-type. As you might expect this is in fact the plain (as opposed to parametrized) terminal co-algebra of an indexed container functor:
 
@@ -2276,11 +2459,13 @@ The parameterised terminal co-algebra of an indexed container is, then, given by
 
 
 \section{W is still enough}
+\label{sec:w-enough}
 
 
 
 
 \subsection*{\ensuremath{\Conid{WI}} from \ensuremath{\Conid{W}}}
+\label{wifromw}
 
 How, then, can we build \ensuremath{\Conid{WI}} from \ensuremath{\Conid{W}}? The initial step is to create a type of \emph{pre}-\ensuremath{\Conid{WI}} trees, with nodes containing a shape \emph{and} its index, and branching over positions \emph{and their} indicies:
 
@@ -2489,6 +2674,8 @@ We can use this proof that \ensuremath{\Conid{WI}}-types can be encoded by \ensu
 
 
 \subsection*{\ensuremath{\Conid{M}} from \ensuremath{\Conid{W}}}
+\label{sec:mfromw}
+
 Since we have shown that both \ensuremath{\Conid{WI}} and \ensuremath{\Conid{MI}} types can be reduced to their 
 non-indexed counterparts, it only remains to show that \ensuremath{\Conid{M}} types can be, reduced
 to \ensuremath{\Conid{W}} types. This is a result from \cite{C-CSPTs}, though in the setting of 

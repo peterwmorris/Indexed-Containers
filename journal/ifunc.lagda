@@ -27,6 +27,7 @@ open import tt
 %endif
 
 \section{Indexed Functors}
+\label{sec:ifunc}
 
 %format IFunc.obj = "\!"
 %format IFunc.mor = "\!"

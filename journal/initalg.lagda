@@ -29,6 +29,7 @@ open import icont
 %endif
 
 \section{Initial Algebras of Indexed Containers}
+\label{sec:initalg}
 
 We will now examine how to construct the initial algebra of a container of the form |F : ICont* (I ⊎ J) J|. The shapes of such a container are an |J|-indexed family of |Set|s and the positions are indexed by |I ⊎ J|; we will treat these position as two separate entities, those positions indexed by |I| -- the recusive positions -- and those by |J| -- the payload positions.
 

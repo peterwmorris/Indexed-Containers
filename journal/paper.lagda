@@ -17,8 +17,10 @@ module paper where
 \usepackage{amssymb}
 \usepackage{amsmath}
 \usepackage{stmaryrd}
+\usepackage{color}
 
 \newcommand{\note}[1]{}
+\newcommand{\todo}[1]{\textcolor{red}{\textbf{Todo:~}#1}}
 
 %include lhs2TeX.fmt
 %include agda.fmt
@@ -55,7 +57,15 @@ module paper where
 
 \begin{abstract}
 
-Blah
+  We show that the syntactically rich notion of inductive families can
+  be reduced to a core type theory with a fixed number of type
+  constructors exploiting the novel notion of indexed containers.
+  Indexed containers generalize simple containers, capturing strictly
+  positive families instead of just strictly positive types, without
+  having to extend the core type theory. Other applications of indexed
+  containers include datatype-generic programming and reasoning about
+  polymorphic functions. The construction presented here has been
+  formalized using the Agda system.
 
 \end{abstract}
 
@@ -64,6 +74,7 @@ Blah
 %include introduction.lagda
 
 \section{Background}
+\label{sec:background}
 
  %include tt.lagda
  %include cont.lagda
@@ -81,6 +92,7 @@ Blah
 %include termcoalg.lagda
 
 \section{W is still enough}
+\label{sec:w-enough}
 
 %include wifromw.lagda
 %include mfromw.lagda
