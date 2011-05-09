@@ -75,7 +75,7 @@ record _⇒_ (C D : Cont) : Set where
 
 \end{code}
 
-The category of containers is a full and faithful sub-category of the functor category. We have also shown that the category of containers is locally cartesian closed, and is closed under formation of co-products.
+The category of containers is a full and faithful sub-category of the functor category. We have also shown that the category of containers is cartesian closed, and is closed under formation of co-products.
 
 Container functors have initial algebras, indeed these are exactly the |W| types we know well from Type-Theory, which we can be equivalently defined to be:
 

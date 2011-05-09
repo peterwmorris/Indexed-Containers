@@ -12,7 +12,7 @@ open import Data.Empty
 open import Data.Unit hiding (_≟_)
 open import Data.Bool hiding (_≟_)
 open import Data.Sum as Sum
-open import Data.Product as Prod
+open import Product as Prod
 open import Function
 open import Relation.Binary.HeterogeneousEquality
 open import Coinduction
@@ -24,6 +24,7 @@ open import tt
 open import ifunc
 open import icont
 open import initalg
+open import termcoalg
 
 \end{code}
 
@@ -39,12 +40,22 @@ open import initalg
 %format Π^T = Π ^T
 %format Σ^T = Σ ^T
 %format μ^T = μ ^T
+%format ν^T = ν ^T
 
 %format SPFm = SPF
 %format ISPTm = ISPT
 
 %format >>=^T = >>= ^T
 %format _>>=^T_ = _ >>=^T _
+
+%format ⟦_⟧^T = ⟦ _ ⟧ ^T
+%format ⟧^T = ⟧ ^T
+%format ^T* = "^{\text{\tiny T}\star}"
+%format ⟦_⟧^T* = ⟦ _ ⟧ ^T*
+%format ⟧^T* = ⟧ ^T* 
+
+
+We now give a syntax for defining indexed strictly positive types and strictly positive families:
 
 \begin{code}
 
@@ -58,23 +69,9 @@ mutual
     Σ^T : ∀ {J K}  (f : J → K) (F : SPF I J)  → SPF I K
     Π^T : ∀ {J K}  (f : J → K) (F : SPF I J)  → SPF I K
     μ^T : ∀ {J}    (F : SPF (I ⊎ J) J)        → SPF I J 
-
-_>>=^T_ : ∀ {I J} → ISPT I → SPF J I → ISPT J
-η^T i      >>=^T F = F i
-Δ^T f G j  >>=^T F = Δ^T f (λ k → G k >>=^T F) j
-Σ^T f G k  >>=^T F = Σ^T f (λ j → G j >>=^T F) k
-Π^T f G k  >>=^T F = Π^T f (λ j → G j >>=^T F) k
-μ^T G j    >>=^T F = μ^T (λ k → G k >>=^T [  (λ i → F i >>=^T (η^T ∘ inj₁)) , (η^T ∘ inj₂) ]) j
+    ν^T : ∀ {J}    (F : SPF (I ⊎ J) J)        → SPF I J 
 
 \end{code}
-
-
-
-%format ⟦_⟧^T = ⟦ _ ⟧ ^T
-%format ⟧^T = ⟧ ^T
-%format ^T* = "^{\text{\tiny T}\star}"
-%format ⟦_⟧^T* = ⟦ _ ⟧ ^T*
-%format ⟧^T* = ⟧ ^T* 
 
 %if style == newcode 
 
@@ -85,6 +82,8 @@ open DelSigPi
 \end{code}
 
 %endif
+
+We intend to interpret terms in this syntax as indexed functors, in order to interpret |μ^T| and |ν^T| we need to go first via indexed containers, which we know to be closed under ther formation of these fixed-points:
 
 \begin{code}
 
@@ -98,8 +97,32 @@ mutual
   ⟦ Σ^T f F k ⟧^T  = un* $$ Σ^C f ⟦ F ⟧^T* $$ k
   ⟦ Π^T f F k ⟧^T  = un* $$ Π^C f ⟦ F ⟧^T* $$ k
   ⟦ μ^T F j ⟧^T    = un* $$ μ^C ⟦ F ⟧^T* $$ j 
+  ⟦ ν^T F j ⟧^T    = un* $$ ν^C ⟦ F ⟧^T* $$ j 
 
 \end{code}
+
+We can equip this syntax with a substitution operation, |_>>=^T_|:
+
+%format ISPTmap = ISPT
+
+\begin{code}
+
+mutual 
+
+  ISPTmap : ∀ {I J} → (I → J) → ISPT I → ISPT J
+  ISPTmap γ t = t >>=^T (η^T ∘ γ)
+
+  _>>=^T_ : ∀ {I J} → ISPT I → SPF J I → ISPT J
+  η^T i      >>=^T F = F i
+  Δ^T f G j  >>=^T F = Δ^T f (λ k → G k >>=^T F) j
+  Σ^T f G k  >>=^T F = Σ^T f (λ j → G j >>=^T F) k
+  Π^T f G k  >>=^T F = Π^T f (λ j → G j >>=^T F) k
+  μ^T G j    >>=^T F = μ^T (λ k → G k >>=^T [  (ISPTmap inj₁ ∘ F) , (η^T ∘ inj₂) ]) j
+  ν^T G j    >>=^T F = ν^T (λ k → G k >>=^T [  (ISPTmap inj₁ ∘ F) , (η^T ∘ inj₂) ]) j
+
+\end{code}
+
+As defined above this doesn't pass Agda's termination check, due to deriving the |ISPT| from the monad instance. If we define the map of the functor directly the whole thing obviously terminates, at the expense of having to show the two definitions of the map for |ISPT| agree.
 
 %if style == newcode
 
@@ -111,6 +134,7 @@ monadlaw1 (Δ^T f F j) = cong (λ F → Δ^T f F j)  (ext λ k → monadlaw1 (F 
 monadlaw1 (Σ^T f F k) = cong (λ F → Σ^T f F k)  (ext λ j → monadlaw1 (F j))
 monadlaw1 (Π^T f F k) = cong (λ F → Π^T f F k)  (ext λ j → monadlaw1 (F j))
 monadlaw1 (μ^T F j) = cong (λ F → μ^T F j) (ext (λ j → trans (monadlaw1 (F j)) (cong (λ G → F j >>=^T G) (ext [ (λ _ → refl) , (λ _ → refl) ]))))
+monadlaw1 (ν^T F j) = cong (λ F → ν^T F j) (ext (λ j → trans (monadlaw1 (F j)) (cong (λ G → F j >>=^T G) (ext [ (λ _ → refl) , (λ _ → refl) ]))))
 
 monadlaw2 :  ∀ {I J K} (F : ISPT I) (G : SPF J I) (H : SPF K J) →
              ((F >>=^T G) >>=^T H) ≡ (F >>=^T λ i → G i >>=^T H)
@@ -119,6 +143,7 @@ monadlaw2 (Δ^T f F j) G H = cong (λ F → Δ^T f F j) (ext (λ k → monadlaw2
 monadlaw2 (Σ^T f F k) G H = cong (λ F → Σ^T f F k) (ext (λ j → monadlaw2 (F j) G H))
 monadlaw2 (Π^T f F k) G H = cong (λ F → Π^T f F k) (ext (λ j → monadlaw2 (F j) G H))
 monadlaw2 (μ^T F j) G H = cong (λ F → μ^T F j) (ext (λ j → trans (monadlaw2 (F j) _ _) (cong (λ G → F j >>=^T G) (ext [ (λ i → trans (monadlaw2 (G i) _ _) (sym (monadlaw2 (G i) _ _))) , (λ _ → refl) ]))))
+monadlaw2 (ν^T F j) G H = cong (λ F → ν^T F j) (ext (λ j → trans (monadlaw2 (F j) _ _) (cong (λ G → F j >>=^T G) (ext [ (λ i → trans (monadlaw2 (G i) _ _) (sym (monadlaw2 (G i) _ _))) , (λ _ → refl) ]))))
 
 
 \end{code}
@@ -141,7 +166,7 @@ For |F : ISPT K|, |G : SPF J K|, |H : ISPT I J|:
 |(F >>=^T G) >>=^T F| && \equiv &&& |F >>=^T (λ k → (G k) >>=^T H)| 
 \end{align}
 
-The firstst is by definition, and the others follow by induction on |F|. 
+The first is by definition, and the others follow by induction on |F|. 
 To show that the structure is preserved by |⟦_⟧^T| it is sufficient to show that for all |F : ISPT J| and |G : SPF I J| there exist mutually inverse container 
 morphisms |bindpres| and |bindpres⁻¹|:
 
@@ -210,6 +235,8 @@ bindpres (μ^T F j) G = {!!}
 
 %format ×^T* = "\mathbin{" × ^T "}"
 %format _×^T*_ = _ × ^T _
+
+We define disjoint union and cartesian product just as we did in the functor and container universes:
 
 \begin{code}
 
