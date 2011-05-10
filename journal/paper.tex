@@ -515,18 +515,14 @@ Using \ensuremath{\Conid{Fin}} and \ensuremath{\Conid{Vec}} instead of \ensurema
 a total projection function projecting the nth element out of vector:
 \begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{20}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
-\>[B]{}\Varid{\char95 !!\char95 }\;\in\;\{\mskip1.5mu \Conid{A}\;\in\;\Conid{Set}\mskip1.5mu\}\;\rightarrow\;\Conid{List}\;\Conid{A}\;\rightarrow\;\Conid{ℕ}\;\rightarrow\;\Conid{Maybe}\;\Conid{A}{}\<[E]%
+\>[B]{}\Varid{\char95 !!\char95 }\;\in\;\{\mskip1.5mu \Conid{A}\;\in\;\Conid{Set}\mskip1.5mu\}\;\rightarrow\;\{\mskip1.5mu \Varid{n}\;\in\;\Conid{ℕ}\mskip1.5mu\}\;\rightarrow\;\Conid{Vec}\;\Conid{A}\;\Varid{n}\;\rightarrow\;\Conid{Fin}\;\Varid{n}\;\rightarrow\;\Conid{A}{}\<[E]%
 \\
-\>[B]{}[\mskip1.5mu \mskip1.5mu]\;\mathbin{!!}\;\Varid{n}\;{}\<[20]%
-\>[20]{}\mathrel{=}\;\Varid{nothing}{}\<[E]%
+\>[B]{}[\mskip1.5mu \mskip1.5mu]\;\mathbin{!!}\;(){}\<[E]%
 \\
-\>[B]{}(\Varid{a}\;\Varid{∷}\;\Varid{as})\;\mathbin{!!}\;\Varid{zero}\;{}\<[20]%
-\>[20]{}\mathrel{=}\;\Varid{just}\;\Varid{a}{}\<[E]%
+\>[B]{}(\Varid{a}\;\Varid{∷}\;\Varid{as})\;\mathbin{!!}\;\Varid{zero}\;\mathrel{=}\;\Varid{a}{}\<[E]%
 \\
-\>[B]{}(\Varid{a}\;\Varid{∷}\;\Varid{as})\;\mathbin{!!}\;\Varid{suc}\;\Varid{n}\;{}\<[20]%
-\>[20]{}\mathrel{=}\;\Varid{as}\;\mathbin{!!}\;\Varid{n}{}\<[E]%
+\>[B]{}(\Varid{a}\;\Varid{∷}\;\Varid{as})\;\mathbin{!!}\;\Varid{suc}\;\Varid{n}\;\mathrel{=}\;\Varid{as}\;\mathbin{!!}\;\Varid{n}{}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
 Note, that a corresponding function \ensuremath{\Varid{\char95 !!\char95 }\;\in\;\{\mskip1.5mu \Conid{A}\;\in\;\Conid{Set}\mskip1.5mu\}\;\rightarrow\;\Conid{List}\;\Conid{A}\;\rightarrow\;\Conid{ℕ}\;\rightarrow\;\Conid{A}} is not definable in a total language like Agda.
@@ -640,15 +636,16 @@ over \ensuremath{\Conid{Nat}} whose initial algebras are \ensuremath{\Conid{Fin}
 \ColumnHook
 \end{hscode}\resethooks
 
-The equality type expresses the focussed character of the
-constructors for \ensuremath{\Conid{Fin}}. 
+The equality type expresses the focussed character of the constructors
+for \ensuremath{\Conid{Fin}}. The mutual definition of \ensuremath{\Conid{NeLam}} and \ensuremath{\Conid{NfLam}} can be
+represented by two binary functors:
 
 \begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
 \>[B]{}\Conid{FNe}\;\in\;(\Conid{ℕ}\;\rightarrow\;\Conid{Set})\;\rightarrow\;(\Conid{ℕ}\;\rightarrow\;\Conid{Set})\;\rightarrow\;\Conid{ℕ}\;\rightarrow\;\Conid{Set}{}\<[E]%
 \\
-\>[B]{}\Conid{FNe}\;\Conid{X}\;\Conid{Y}\;\Varid{n}\;\mathrel{=}\;\Conid{Fin}\;\Varid{n}\;\uplus\;(\Conid{X}\;\Varid{n}\;\uplus\;\Conid{Y}\;\Varid{n}){}\<[E]%
+\>[B]{}\Conid{FNe}\;\Conid{X}\;\Conid{Y}\;\Varid{n}\;\mathrel{=}\;\Conid{Fin}\;\Varid{n}\;\uplus\;(\Conid{X}\;\Varid{n}\;\times\;\Conid{Y}\;\Varid{n}){}\<[E]%
 \\[\blanklineskip]%
 \>[B]{}\Conid{FNf}\;\in\;(\Conid{ℕ}\;\rightarrow\;\Conid{Set})\;\rightarrow\;(\Conid{ℕ}\;\rightarrow\;\Conid{Set})\;\rightarrow\;\Conid{ℕ}\;\rightarrow\;\Conid{Set}{}\<[E]%
 \\
@@ -656,7 +653,11 @@ constructors for \ensuremath{\Conid{Fin}}.
 \ColumnHook
 \end{hscode}\resethooks
 
-\todo{Discuss mutual case.}
+We can construct \ensuremath{\Conid{NeLam}} and \ensuremath{\Conid{NfLam}} by an elimination procedure:
+first we define a parametrized initial algebra \ensuremath{\Conid{NeLam'}\;\in\;(\Conid{ℕ}\;\rightarrow\;\Conid{Set})\;\rightarrow\;\Conid{ℕ}\;\rightarrow\;\Conid{Set}} so that \ensuremath{\Conid{NeLam'}\;\Conid{Y}} is the initial algebra of \ensuremath{\lambda\;\Conid{X}\;\rightarrow\;\Conid{FNe}\;\Conid{X}\;\Conid{Y}}
+and then \ensuremath{\Conid{NfLam}} is the initial algebra of \ensuremath{\lambda\;\Conid{Y}\;\rightarrow\;\Conid{FNf}\;(\Conid{NeLam'}\;\Conid{Y})\;\Conid{Y}}.
+Symmetrically we derive \ensuremath{\Conid{NeLam}} --- compare this with the encoding in
+section \ref{sec:spf}.
 
 
 
@@ -814,18 +815,18 @@ modelling imperative interfaces such as command-response interfaces in
 a number of publications. 
 
 This paper is an expanded and revised version of the LICS paper by the
-first and 3rd author \cite{lics}. In the present paper we have
+first and 3rd author \cite{alti:lics09}. In the present paper we have
 integrated the Agda formalisation in the main development, which in
 many instances required extending it. We have made explicit the use of
 relative monads which was only hinted at in the conference version
-based on the recent work on relative monads \cite{relmon}. We have
+based on the recent work on relative monads \cite{alti:fossacs10}. We have
 also dualized the development to terminal coalgebras which required
 the type of paths to be defined inductively instead of recursively as
 done in the conference paper (section \ref{sec:termcoalg}).  We
 have also formalized the derivation of indexed W-types from ordinary
 W-types (section \ref{wifromw}. The derivation of M-types from W-types
 (section \ref{sec:mfromw})
-was already given in \cite{C-CSPTs} is revisited here exploiting the
+was already given in \cite{alti:cont-tcs} is revisited here exploiting the
 indexed W-type derived previously. moreover the development is formalized in
 Agda. 
 
@@ -972,7 +973,7 @@ identity proofs:
 
 
 With these ingredients we obtain a theory which corresponds to
-extensional Type Theory \cite{hofmann-conservativity}.
+extensional Type Theory \cite{hofmann1996conservativity}.
 
 We are going to use type theory versions of certain category theoretic
 concepts For instance, we use ends \ensuremath{\Conid{End}} to capture natural transformations.
@@ -1090,7 +1091,7 @@ We define morphisms of containers, this can be derived from the specification th
 \ColumnHook
 \end{hscode}\resethooks
 
-The category of containers is a full and faithful sub-category of the functor category. We have also shown that the category of containers is cartesian closed (\cite{cie}, and is closed under formation of co-products.
+The category of containers is a full and faithful sub-category of the functor category. We have also shown that the category of containers is cartesian closed (\cite{txa:cie10}, and is closed under formation of co-products.
 
 Container functors have initial algebras, indeed these are exactly the \ensuremath{\Conid{W}} types we know well from Type-Theory, which we can be equivalently defined to be:
 
@@ -3557,7 +3558,7 @@ material readable.
 
 A more serious challenge are mutual inductively (or coinductively)
 defined families where one type depends on another
-\cite{setzer-forsberg-indind}. A typical example is the syntax of Type
+\cite{forsberg2010inductive}. A typical example is the syntax of Type
 Theory itself which, to simplify, can be encoded by mutually defining
 contexts containing terms, types in a given context and terms in a
 given type:
@@ -3571,7 +3572,7 @@ given type:
 \>[B]{}\Conid{Tm}\;\in\;(\Gamma\;\in\;\Conid{Con})\;\rightarrow\;\Conid{Ty}\;\Gamma\;\rightarrow\;\Conid{Set}{}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
-In recent work \cite{calco-indind} present a categorical semantics for
+In recent work \cite{txa:catind2} present a categorical semantics for
 this kind of definitions based on dialgebras. However, a presentation
 of strictly positive definitions in the spirit of contaienrs is not
 yet available.

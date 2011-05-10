@@ -181,7 +181,7 @@ open uip public
 %endif
 
 With these ingredients we obtain a theory which corresponds to
-extensional Type Theory \cite{hofmann-conservativity}.
+extensional Type Theory \cite{hofmann1996conservativity}.
 
 We are going to use type theory versions of certain category theoretic
 concepts For instance, we use ends |End| to capture natural transformations.

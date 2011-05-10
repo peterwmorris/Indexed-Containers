@@ -120,10 +120,10 @@ data Vec (A : Set) : ℕ → Set where
 Using |Fin| and |Vec| instead of |Nat| and |List| enables us to write
 a total projection function projecting the nth element out of vector:
 \begin{code}
-_!!_ : {A : Set} → List A → ℕ → Maybe A
-[] !! n            = nothing
-(a ∷ as) !! zero   = just a
-(a ∷ as) !! suc n  = as !! n  
+_!!_ : {A : Set} → {n : ℕ} → Vec A n → Fin n → A
+[] !! ()
+(a ∷ as) !! zero = a
+(a ∷ as) !! suc n = as !! n
 \end{code}
 Note, that a corresponding function |_!!_ : {A : Set} → List A → ℕ →
 A| is not definable in a total language like Agda.
@@ -197,20 +197,26 @@ FScLam X n = Fin n ⊎ (X n × X n) ⊎ (X ∘ suc) n
 
 \end{code}
 
-The equality type expresses the focussed character of the
-constructors for |Fin|. 
+The equality type expresses the focussed character of the constructors
+for |Fin|. The mutual definition of |NeLam| and |NfLam| can be
+represented by two binary functors:
 
 \begin{code}
 
 FNe : (ℕ → Set) → (ℕ → Set) → ℕ → Set
-FNe X Y n = Fin n ⊎ (X n ⊎ Y n)
+FNe X Y n = Fin n ⊎ (X n × Y n)
 
 FNf : (ℕ → Set) → (ℕ → Set) → ℕ → Set
 FNf X Y n = (Y ∘ suc) n ⊎ X n
 
 \end{code} 
 
-\todo{Discuss mutual case.}
+We can construct |NeLam| and |NfLam| by an elimination procedure:
+first we define a parametrized initial algebra |NeLam' : (ℕ → Set) → ℕ
+→ Set| so that |NeLam' Y| is the initial algebra of |λ X → FNe X Y|
+and then |NfLam| is the initial algebra of |λ Y → FNf (NeLam' Y) Y|.
+Symmetrically we derive |NeLam| --- compare this with the encoding in
+section \ref{sec:spf}.
 
 %format ι = "\iota"
 %format σ = "\sigma"
@@ -335,18 +341,18 @@ modelling imperative interfaces such as command-response interfaces in
 a number of publications. 
 
 This paper is an expanded and revised version of the LICS paper by the
-first and 3rd author \cite{lics}. In the present paper we have
+first and 3rd author \cite{alti:lics09}. In the present paper we have
 integrated the Agda formalisation in the main development, which in
 many instances required extending it. We have made explicit the use of
 relative monads which was only hinted at in the conference version
-based on the recent work on relative monads \cite{relmon}. We have
+based on the recent work on relative monads \cite{alti:fossacs10}. We have
 also dualized the development to terminal coalgebras which required
 the type of paths to be defined inductively instead of recursively as
 done in the conference paper (section \ref{sec:termcoalg}).  We
 have also formalized the derivation of indexed W-types from ordinary
 W-types (section \ref{wifromw}. The derivation of M-types from W-types
 (section \ref{sec:mfromw})
-was already given in \cite{C-CSPTs} is revisited here exploiting the
+was already given in \cite{alti:cont-tcs} is revisited here exploiting the
 indexed W-type derived previously. moreover the development is formalized in
 Agda. 
 
