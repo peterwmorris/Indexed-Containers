@@ -240,3 +240,4 @@ Path {I} {J} S PI PJ j w i = WI PathS PathP (j , w)
 
 %endif
 
+\todo{Derive MI from M or at least say so and hide the proof.}

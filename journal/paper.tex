@@ -363,9 +363,7 @@
 (e.g. COQ~\cite{CIC}) or functional programming (e.g. 
 Haskell\footnote{Here we shall view Haskell as an approximation of strong
   functional programming as proposed by Turner \cite{sfp} and ignore
-non-termination.})
-
-Examples include the natural numbers al Peano:
+non-termination.}). Examples include the natural numbers al Peano:
 \begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{3}{@{}>{\hspre}l<{\hspost}@{}}%
@@ -457,7 +455,7 @@ Programming} \cite{BirdDeMoor:AlgProp}.
 
 While the theory of inductive types is well developed, we often want
 to have a finer, more expressive, notion of types, for example to
-ensure the absence of run time errors --- access to arrays out of
+ensure the absence of runtime errors --- access to arrays out of
 range or access to an undefined variable in the previous example of
 $\lambda$-terms. 
 
@@ -531,7 +529,7 @@ a total projection function projecting the nth element out of vector:
 \>[20]{}\mathrel{=}\;\Varid{as}\;\mathbin{!!}\;\Varid{n}{}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
-Note, that a corresponding function \ensuremath{\Varid{\char95 !!\char95 }\;\in\;\{\mskip1.5mu \Conid{A}\;\in\;\Conid{Set}\mskip1.5mu\}\;\rightarrow\;\Conid{List}\;\Conid{A}\;\rightarrow\;\Conid{ℕ}\;\rightarrow\;\Conid{A}} is not definable in a total langauge like Agda.
+Note, that a corresponding function \ensuremath{\Varid{\char95 !!\char95 }\;\in\;\{\mskip1.5mu \Conid{A}\;\in\;\Conid{Set}\mskip1.5mu\}\;\rightarrow\;\Conid{List}\;\Conid{A}\;\rightarrow\;\Conid{ℕ}\;\rightarrow\;\Conid{A}} is not definable in a total language like Agda.
 
 Finally we can define the notion of a well-scoped lambda term with
 \ensuremath{\Conid{ScLam}} which assigns to a natural number \ensuremath{\Varid{n}} the set of $\lambda$-terms
@@ -612,7 +610,7 @@ normal forms and neutral $\lambda$-terms (\ensuremath{\Conid{NeLam}}):
 The initial algebra semantics of inductive types can be extended to
 model inductive families by replacing functors on the category \ensuremath{\Conid{Set}}
 with functors on the category of families indexed by a given type - in
-the case of $\lambda$-terms this indexing type was \ensuremath{\Conid{Nat}}. The objects
+the case of all our examples so far this indexing type was \ensuremath{\Conid{Nat}}. The objects
 of the category of families indexed over a type \ensuremath{\Conid{I}\;\in\;\Varid{set}} are
 \ensuremath{\Conid{I}}-indexed families, i.e. functions of type \ensuremath{\Conid{I}\;\rightarrow\;\Conid{Set}}, and a
 morphism between \ensuremath{\Conid{I}}-indexed families \ensuremath{\Conid{A},\Conid{B}\;\in\;\Conid{I}\;\rightarrow\;\Conid{Set}} is given by a
@@ -849,7 +847,7 @@ Agda.
 
 Our constructions are all developed in Agda, and so we adopt its syntax, but we will take certain liberties with its type-theory. 
 
-We have $\Pi$-types, denoted \ensuremath{(\Varid{a}\;\in\;\Conid{A})\;\rightarrow\;\Conid{B}\;\Varid{a}} and $\Sigma$-types, which we denote in a non-standard way: \ensuremath{\Sigma(\!\;\Varid{a}\;\in\;\Conid{A}\;\!)\!\times\!\;\Conid{B}\;\Varid{a}}. In fact this is sugar for the record type:
+We have $\Pi$-types, denoted \ensuremath{(\Varid{a}\;\in\;\Conid{A})\;\rightarrow\;\Conid{B}\;\Varid{a}} and $\Sigma$-types, which we write as: \ensuremath{\Sigma(\!\;\Varid{a}\;\in\;\Conid{A}\;\!)\!\times\!\;\Conid{B}\;\Varid{a}}. In fact this is sugar for the record type:
 
 \begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
@@ -973,7 +971,7 @@ identity proofs:
 \end{hscode}\resethooks
 
 
-With these assumptions we obtain a theory which corresponds to
+With these ingredients we obtain a theory which corresponds to
 extensional Type Theory \cite{hofmann-conservativity}.
 
 We are going to use type theory versions of certain category theoretic
@@ -998,6 +996,8 @@ Finally, for readability we will elide certain artifacts in Agda's syntax,
 for instance the quantification of implicit arguments when their types can be
 inferred from the context. The reader should be reassured that the paper is a
 literate agda file, available from the final author's webpage.
+
+\todo{Define Func.}
  
 \subsection{Containers}
 
@@ -2351,15 +2351,15 @@ algebra map of \ensuremath{\Conid{WI}} (\ensuremath{\Varid{sup}}) and our mediat
 %%Term Co-Alg ICont
 
 
-\section{Terminal Co-Algebras of Indexed Containers}
+\section{Terminal Coalgebras of Indexed Containers}
 \label{sec:termcoalg}
 
-Dually to the initial algebra construction out-lined above, we can also show
-that indexed-containers are closed under parameterised terminal co-algebras.
+Dually to the initial algebra construction outlined above, we can also show
+that indexed containers are closed under parameterised terminal coalgebras.
 We proceed in much the same way as before, by first constructing the dual of
 the indexed \ensuremath{\Conid{W}}-type, which we refer to as an indexed \ensuremath{\Conid{M}}-type. As you might
 expect this is in fact the plain (as opposed to parametrized) terminal
-co-algebra of an indexed container functor:
+coalgebra of an indexed container functor:
 
 
 \begin{hscode}\SaveRestoreHook
@@ -2411,7 +2411,7 @@ co-algebra of an indexed container functor:
 \ColumnHook
 \end{hscode}\resethooks
 
-Here we employ Agda's approach to co-programming, where we mark (possibly) infinite subtrees with \ensuremath{\infty}, \ensuremath{\sharp\;\in\;\Conid{A}\;\rightarrow\;\infty\;\Conid{A}} and \ensuremath{\flat\;\in\;\infty\;\Conid{A}\;\rightarrow\;\Conid{A}} pack and unpack infinite objects respectively.
+Here we employ Agda's approach to coprogramming (e.g. see \cite{txa:mpc2010g}), where we mark (possibly) infinite subtrees with \ensuremath{\infty}, \ensuremath{\sharp\;\in\;\Conid{A}\;\rightarrow\;\infty\;\Conid{A}} and \ensuremath{\flat\;\in\;\infty\;\Conid{A}\;\rightarrow\;\Conid{A}} pack and unpack infinite objects respectively.
 
 The paths to positions in and indexed \ensuremath{\Conid{M}} tree, are always finite -- in fact modulo the use of \ensuremath{\flat}, this \ensuremath{\Conid{Path}} is the same as the definition for the initial algebra case.
 
@@ -2783,6 +2783,7 @@ We can use this proof that \ensuremath{\Conid{WI}}-types can be encoded by \ensu
 \end{hscode}\resethooks
 
 
+\todo{Derive MI from M or at least say so and hide the proof.}
 
 
 \subsection*{\ensuremath{\Conid{M}} from \ensuremath{\Conid{W}}}
@@ -2793,7 +2794,7 @@ non-indexed counterparts, it only remains to show that \ensuremath{\Conid{M}} ty
 reduced
 to \ensuremath{\Conid{W}} types. This is a result from our previous work on
 containers~\cite{alti:cont-tcs}, though in the setting of indexed \ensuremath{\Conid{WI}} types,
-we can give a better intuition.
+we can give a better expalnation.
 
 In category theory, an $\omega$-chain, is an infinite diagram:
 
@@ -3191,6 +3192,7 @@ We now entitled to derive \ensuremath{\Conid{M}} types from \ensuremath{\Conid{W
 
 
 \section{Strictly Positive Families}
+\label{sec:spf}
 
 
 
@@ -3314,6 +3316,12 @@ We can equip this syntax with a substitution operation, \ensuremath{\anonymous \
 \>[3]{}\Conid{ISPT}\;\gamma\;\Varid{t}\;\mathrel{=}\;\Varid{t}\;\bind ^{\text{\tiny T}}\;(\eta^{\text{\tiny T}}\;\ensuremath{\mbox{$\circ$}}\;\gamma){}\<[E]%
 \\[\blanklineskip]%
 \>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\Conid{SPF}\;\in\;\forall{}\;\{\mskip1.5mu \Conid{I}\;\Conid{J}\;\Conid{K}\mskip1.5mu\}\;\rightarrow\;(\Conid{I}\;\rightarrow\;\Conid{J})\;\rightarrow\;\Conid{SPF}\;\Conid{I}\;\Conid{K}\;\rightarrow\;\Conid{SPF}\;\Conid{J}\;\Conid{K}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\Conid{SPF}\;\gamma\;\Varid{t}\;\Varid{k}\;\mathrel{=}\;\Conid{ISPT}\;\gamma\;(\Varid{t}\;\Varid{k}){}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\hsindent{3}{}\<[3]%
 \>[3]{}\anonymous \bind ^{\text{\tiny T}}\anonymous \;\in\;\forall{}\;\{\mskip1.5mu \Conid{I}\;\Conid{J}\mskip1.5mu\}\;\rightarrow\;\Conid{ISPT}\;\Conid{I}\;\rightarrow\;\Conid{SPF}\;\Conid{J}\;\Conid{I}\;\rightarrow\;\Conid{ISPT}\;\Conid{J}{}\<[E]%
 \\
 \>[B]{}\hsindent{3}{}\<[3]%
@@ -3335,12 +3343,12 @@ We can equip this syntax with a substitution operation, \ensuremath{\anonymous \
 \>[B]{}\hsindent{3}{}\<[3]%
 \>[3]{}\mu^{\text{\tiny T}}\;\Conid{G}\;\Varid{j}\;{}\<[14]%
 \>[14]{}\bind ^{\text{\tiny T}}\;\Conid{F}\;\mathrel{=}\;\mu^{\text{\tiny T}}\;(\lambda\;\Varid{k}\;\rightarrow\;\Conid{G}\;\Varid{k}\;\bind ^{\text{\tiny T}}\;[\mskip1.5mu {}\<[48]%
-\>[48]{}(\Conid{ISPT}\;\Varid{inl}\;\ensuremath{\mbox{$\circ$}}\;\Conid{F}),(\eta^{\text{\tiny T}}\;\ensuremath{\mbox{$\circ$}}\;\Varid{inr})\mskip1.5mu])\;\Varid{j}{}\<[E]%
+\>[48]{}(\Conid{SPF}\;\Varid{inl}\;\Conid{F}),(\eta^{\text{\tiny T}}\;\ensuremath{\mbox{$\circ$}}\;\Varid{inr})\mskip1.5mu])\;\Varid{j}{}\<[E]%
 \\
 \>[B]{}\hsindent{3}{}\<[3]%
 \>[3]{}\nu^{\text{\tiny T}}\;\Conid{G}\;\Varid{j}\;{}\<[14]%
 \>[14]{}\bind ^{\text{\tiny T}}\;\Conid{F}\;\mathrel{=}\;\nu^{\text{\tiny T}}\;(\lambda\;\Varid{k}\;\rightarrow\;\Conid{G}\;\Varid{k}\;\bind ^{\text{\tiny T}}\;[\mskip1.5mu {}\<[48]%
-\>[48]{}(\Conid{ISPT}\;\Varid{inl}\;\ensuremath{\mbox{$\circ$}}\;\Conid{F}),(\eta^{\text{\tiny T}}\;\ensuremath{\mbox{$\circ$}}\;\Varid{inr})\mskip1.5mu])\;\Varid{j}{}\<[E]%
+\>[48]{}(\Conid{SPF}\;\Varid{inl}\;\Conid{F}),(\eta^{\text{\tiny T}}\;\ensuremath{\mbox{$\circ$}}\;\Varid{inr})\mskip1.5mu])\;\Varid{j}{}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
 
@@ -3449,13 +3457,75 @@ We define disjoint union and cartesian product just as we did in the functor and
 \\
 \>[B]{}\Conid{T}_{\Conid{ScLam}}\;\mathrel{=}\;\mu^{\text{\tiny T}}\;{}\<[15]%
 \>[15]{}({}\<[21]%
-\>[21]{}(\eta^{\text{\tiny T}}\;\ensuremath{\mbox{$\circ$}}\;\Varid{inr}){}\<[E]%
+\>[21]{}\Conid{SPF}\;(\lambda\;())\;\Conid{T}_{\Conid{Fin}}{}\<[E]%
 \\
 \>[15]{}\mathbin{\uplus^{\text{\tiny T}}}\;{}\<[21]%
 \>[21]{}(((\eta^{\text{\tiny T}}\;\ensuremath{\mbox{$\circ$}}\;\Varid{inr})\;\mathbin{\times^{\text{\tiny T}}}\;(\eta^{\text{\tiny T}}\;\ensuremath{\mbox{$\circ$}}\;\Varid{inr})){}\<[E]%
 \\
 \>[15]{}\mathbin{\uplus^{\text{\tiny T}}}\;{}\<[21]%
 \>[21]{}\Delta^{\text{\tiny T}}\;\Varid{suc}\;(\eta^{\text{\tiny T}}\;\ensuremath{\mbox{$\circ$}}\;\Varid{inr}))){}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+
+Note that we have to weaken the reference to \ensuremath{\Conid{T}_{\Conid{Fin}}} in the definition of 
+\ensuremath{\Conid{T}_{\Conid{ScLam}}}, since under the \ensuremath{\mu^{\text{\tiny T}}} we can refer to the recursive \ensuremath{\Conid{TSCLam}} trees, 
+but \ensuremath{\Conid{T}_{\Conid{Fin}}} itself can refer to no variables.
+
+We can also define the mutual types, \ensuremath{\Conid{Ne}} and \ensuremath{\Conid{Nf}}. Here, a copy of the normal 
+forms is defined \emph{inside} the definition of the neutral terms, and vice
+versa:
+
+
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{10}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{11}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{12}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{17}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{18}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{23}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{29}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\Conid{T}_{\Conid{Ne}}\;\in\;\Conid{SPF}\;\bot\;\Conid{ℕ}{}\<[E]%
+\\
+\>[B]{}\Conid{T}_{\Conid{Ne}}\;\mathrel{=}\;\mu^{\text{\tiny T}}\;({}\<[17]%
+\>[17]{}\Conid{SPF}\;(\lambda\;())\;\Conid{T}_{\Conid{Fin}}{}\<[E]%
+\\
+\>[B]{}\hsindent{11}{}\<[11]%
+\>[11]{}\mathbin{\uplus^{\text{\tiny T}}}\;{}\<[17]%
+\>[17]{}((\eta^{\text{\tiny T}}\;\ensuremath{\mbox{$\circ$}}\;\Varid{inr})\;\mathbin{\times^{\text{\tiny T}}}\;\Conid{TNeNf})){}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\Keyword{where}\;{}\<[10]%
+\>[10]{}\Conid{TNeNf}\;\in\;\Conid{SPF}\;(\bot\;\uplus\;\Conid{ℕ})\;\Conid{ℕ}{}\<[E]%
+\\
+\>[10]{}\Conid{TNeNf}\;\mathrel{=}\;\mu^{\text{\tiny T}}\;{}\<[23]%
+\>[23]{}({}\<[29]%
+\>[29]{}(\Delta^{\text{\tiny T}}\;\Varid{suc}\;(\eta^{\text{\tiny T}}\;\ensuremath{\mbox{$\circ$}}\;\Varid{inr})){}\<[E]%
+\\
+\>[23]{}\mathbin{\uplus^{\text{\tiny T}}}\;{}\<[29]%
+\>[29]{}(\eta^{\text{\tiny T}}\;\ensuremath{\mbox{$\circ$}}\;(\Varid{inl}\;\ensuremath{\mbox{$\circ$}}\;\Varid{inr}))){}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\Conid{T}_{\Conid{Nf}}\;\in\;\Conid{SPF}\;\bot\;\Conid{ℕ}{}\<[E]%
+\\
+\>[B]{}\Conid{T}_{\Conid{Nf}}\;\mathrel{=}\;\mu^{\text{\tiny T}}\;{}\<[12]%
+\>[12]{}({}\<[18]%
+\>[18]{}\Delta^{\text{\tiny T}}\;\Varid{suc}\;(\eta^{\text{\tiny T}}\;\ensuremath{\mbox{$\circ$}}\;\Varid{inr}){}\<[E]%
+\\
+\>[12]{}\mathbin{\uplus^{\text{\tiny T}}}\;{}\<[18]%
+\>[18]{}\Conid{TNfNe}){}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\Keyword{where}\;{}\<[10]%
+\>[10]{}\Conid{TNfNe}\;\in\;\Conid{SPF}\;(\bot\;\uplus\;\Conid{ℕ})\;\Conid{ℕ}{}\<[E]%
+\\
+\>[10]{}\Conid{TNfNe}\;\mathrel{=}\;\mu^{\text{\tiny T}}\;{}\<[23]%
+\>[23]{}({}\<[29]%
+\>[29]{}\Conid{SPF}\;(\lambda\;())\;\Conid{T}_{\Conid{Fin}}{}\<[E]%
+\\
+\>[23]{}\mathbin{\uplus^{\text{\tiny T}}}\;{}\<[29]%
+\>[29]{}((\eta^{\text{\tiny T}}\;\ensuremath{\mbox{$\circ$}}\;\Varid{inr})\;\mathbin{\times^{\text{\tiny T}}}\;(\eta^{\text{\tiny T}}\;\ensuremath{\mbox{$\circ$}}\;(\Varid{inl}\;\ensuremath{\mbox{$\circ$}}\;\Varid{inr})))){}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
 
@@ -3503,7 +3573,7 @@ given type:
 \end{hscode}\resethooks
 In recent work \cite{calco-indind} present a categorical semantics for
 this kind of definitions based on dialgebras. However, a presentation
-of strictly positive definitions in the spirit of conatienrs is not
+of strictly positive definitions in the spirit of contaienrs is not
 yet available.
 
 \todo{Discuss the relationship to inductive-recursive definitions.}

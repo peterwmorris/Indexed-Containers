@@ -28,15 +28,15 @@ open import icont
 
 %endif
 
-\section{Terminal Co-Algebras of Indexed Containers}
+\section{Terminal Coalgebras of Indexed Containers}
 \label{sec:termcoalg}
 
-Dually to the initial algebra construction out-lined above, we can also show
-that indexed-containers are closed under parameterised terminal co-algebras.
+Dually to the initial algebra construction outlined above, we can also show
+that indexed containers are closed under parameterised terminal coalgebras.
 We proceed in much the same way as before, by first constructing the dual of
 the indexed |W|-type, which we refer to as an indexed |M|-type. As you might
 expect this is in fact the plain (as opposed to parametrized) terminal
-co-algebra of an indexed container functor:
+coalgebra of an indexed container functor:
 
 %format ∞ = "\infty"
 %format ♯ = "\sharp"
@@ -79,7 +79,7 @@ MIunfold m i x | s , f = sup (s , (λ i′ p → ♯ MIunfold m i′ (f i′ p))
 
 \end{code}
 
-Here we employ Agda's approach to co-programming, where we mark (possibly) infinite subtrees with |∞|, |♯ : A → ∞ A| and |♭ : ∞ A → A| pack and unpack infinite objects respectively.
+Here we employ Agda's approach to coprogramming (e.g. see \cite{txa:mpc2010g}), where we mark (possibly) infinite subtrees with |∞|, |♯ : A → ∞ A| and |♭ : ∞ A → A| pack and unpack infinite objects respectively.
 
 The paths to positions in and indexed |M| tree, are always finite -- in fact modulo the use of |♭|, this |Path| is the same as the definition for the initial algebra case.
 

@@ -62,7 +62,7 @@ Setop  = Set
 
 Our constructions are all developed in Agda, and so we adopt its syntax, but we will take certain liberties with its type-theory. 
 
-We have $\Pi$-types, denoted |(a : A) → B a| and $\Sigma$-types, which we denote in a non-standard way: |Σ* a ∶ A *Σ B a|. In fact this is sugar for the record type:
+We have $\Pi$-types, denoted |(a : A) → B a| and $\Sigma$-types, which we write as: |Σ* a ∶ A *Σ B a|. In fact this is sugar for the record type:
 
 \begin{code}
 
@@ -180,7 +180,7 @@ open uip public
 
 %endif
 
-With these assumptions we obtain a theory which corresponds to
+With these ingredients we obtain a theory which corresponds to
 extensional Type Theory \cite{hofmann-conservativity}.
 
 We are going to use type theory versions of certain category theoretic
@@ -206,3 +206,5 @@ Finally, for readability we will elide certain artifacts in Agda's syntax,
 for instance the quantification of implicit arguments when their types can be
 inferred from the context. The reader should be reassured that the paper is a
 literate agda file, available from the final author's webpage.
+
+\todo{Define Func.}

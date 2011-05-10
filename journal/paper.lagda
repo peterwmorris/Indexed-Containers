@@ -139,7 +139,7 @@ Tm : (Γ : Con) → Ty Γ → Set
 \end{spec}
 In recent work \cite{calco-indind} present a categorical semantics for
 this kind of definitions based on dialgebras. However, a presentation
-of strictly positive definitions in the spirit of conatienrs is not
+of strictly positive definitions in the spirit of contaienrs is not
 yet available.
 
 \todo{Discuss the relationship to inductive-recursive definitions.}

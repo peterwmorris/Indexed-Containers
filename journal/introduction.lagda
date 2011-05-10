@@ -31,9 +31,7 @@ open import tt
 (e.g. COQ~\cite{CIC}) or functional programming (e.g. 
 Haskell\footnote{Here we shall view Haskell as an approximation of strong
   functional programming as proposed by Turner \cite{sfp} and ignore
-non-termination.})
-
-Examples include the natural numbers al Peano:
+non-termination.}). Examples include the natural numbers al Peano:
 \begin{code}
 
 data ℕ : Set where
@@ -87,7 +85,7 @@ Programming} \cite{BirdDeMoor:AlgProp}.
 
 While the theory of inductive types is well developed, we often want
 to have a finer, more expressive, notion of types, for example to
-ensure the absence of run time errors --- access to arrays out of
+ensure the absence of runtime errors --- access to arrays out of
 range or access to an undefined variable in the previous example of
 $\lambda$-terms. 
 
@@ -128,7 +126,7 @@ _!!_ : {A : Set} → List A → ℕ → Maybe A
 (a ∷ as) !! suc n  = as !! n  
 \end{code}
 Note, that a corresponding function |_!!_ : {A : Set} → List A → ℕ →
-A| is not definable in a total langauge like Agda.
+A| is not definable in a total language like Agda.
 
 Finally we can define the notion of a well-scoped lambda term with
 |ScLam| which assigns to a natural number |n| the set of $\lambda$-terms
@@ -173,7 +171,7 @@ mutual
 The initial algebra semantics of inductive types can be extended to
 model inductive families by replacing functors on the category |Set|
 with functors on the category of families indexed by a given type - in
-the case of $\lambda$-terms this indexing type was |Nat|. The objects
+the case of all our examples so far this indexing type was |Nat|. The objects
 of the category of families indexed over a type |I : set| are
 |I|-indexed families, i.e. functions of type |I → Set|, and a
 morphism between |I|-indexed families |A, B : I → Set| is given by a
