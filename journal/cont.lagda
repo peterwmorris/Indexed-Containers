@@ -22,15 +22,30 @@ open import func
 %format Func.obj = "\!"
 %format Func.mor = "\!"
 
+The initial algebra semantics is useful to provide a generic
+analysis of inductive types exploiting generic concepts such as
+constructors and functorial map. However, it cannot say whether such inductive
+types actually exist, and it falls short of providing a systematic
+characterisation of generic operations such as equality or the
+zipper~\cite{huet:zipper,conor:derivative}. 
+
+In previous
+work, \cite{alti:cont-tcs,alti:fossacs03}, we have proposed the notion of a container
+type: A (unary) container is given by a set of shapes |S| and a
+family of positions |P| assigning, to each shape, the set
+of positions where data can be stored in a data structure of that
+shape.
+
 \begin{code}
-
-
 record Cont : Set₁ where
   constructor _◁_ 
   field 
     S : Set
     P : S → Set
+\end{code}
 
+Every container |S ◁ P|  gives rise to a functor:
+\begin{code}
 ⟦_⟧ : Cont → Func
 ⟦ S ◁ P ⟧ = record  { obj  = λ A → Σ* s ∶ S *Σ (P s → A)
                     ; mor  = λ m → split s & f tilps ↦ (s , m ∘ f)  !m !s 
@@ -62,6 +77,8 @@ _projPo (S ◁ P) = P
 %format ⟧⇒ = ⟧ "\mbox{$\!^{\Rightarrow}$}"
 %format ⟦_⟧⇒ = ⟦ _ ⟧⇒
 
+We define morphisms of containers, this can be derived from the specification that embedding should be full and faithful using the Yoneda lemma:
+
 \begin{code}
 
 record _⇒_ (C D : Cont) : Set where
@@ -75,7 +92,7 @@ record _⇒_ (C D : Cont) : Set where
 
 \end{code}
 
-The category of containers is a full and faithful sub-category of the functor category. We have also shown that the category of containers is cartesian closed, and is closed under formation of co-products.
+The category of containers is a full and faithful sub-category of the functor category. We have also shown that the category of containers is cartesian closed (\cite{cie}, and is closed under formation of co-products.
 
 Container functors have initial algebras, indeed these are exactly the |W| types we know well from Type-Theory, which we can be equivalently defined to be:
 

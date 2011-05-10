@@ -180,6 +180,9 @@ open uip public
 
 %endif
 
+With these assumptions we obtain a theory which corresponds to
+extensional Type Theory \cite{hofmann-conservativity}.
+
 We are going to use type theory versions of certain category theoretic
 concepts For instance, we use ends |End| to capture natural transformations.
 Given a bifunctor |F : Setop → Set → Set|, an element of |∫ X ** F X X| is

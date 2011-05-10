@@ -465,8 +465,8 @@ To model this we move to the notion of an inductive
 family in Type Theory. A family is a type indexed by another already
 given type. The first example is the family of finite sets \ensuremath{\Conid{Fin}} which
 assigns to any natural number \ensuremath{\Varid{n}} a set \ensuremath{\Conid{Fin}\;\Varid{n}} which has exactly
-\ensuremath{\Varid{n}}-elements. \ensuremath{\Conid{Fin}} can be used where in conventional reasoning we
-assume any finite set, e.g. when dealing with a finite address apce or
+\ensuremath{\Varid{n}} elements. \ensuremath{\Conid{Fin}} can be used where in conventional reasoning we
+assume any finite set, e.g. when dealing with a finite address apace or
 a finite set of variables. The inductive definition of \ensuremath{\Conid{Fin}} refines
 the type of natural numbers:
 \begin{hscode}\SaveRestoreHook
@@ -716,6 +716,32 @@ is a laborious but straightforward exercise.
 
 \todo{Expand here?}
 
+\noindent
+Inductive families are the backbone of
+dependently typed programming as present in Epigram or
+Agda~\cite{Agda}. Coq also supports the definition of inductive families
+but programming with them is rather hard --- a situation which has been
+improved by the new \texttt{Program} tactic~\cite{sozeau}. 
+More recently, the implementation of Generalized Algebraic Datatypes 
+(GADTs)~\cite{Hinze:GADT} 
+allows \ensuremath{\Conid{Fin}} and \ensuremath{\Conid{Lam}} to be encoded in Haskell:
+\begin{tabbing}\tt
+~data~Fin~a~where~\\
+\tt ~~~FZero~\char58{}\char58{}~Fin~\char40{}Maybe~a\char41{}\\
+\tt ~~~FSucc~\char58{}\char58{}~Fin~a~\char45{}\char62{}~Fin~\char40{}Maybe~a\char41{}\\
+\tt ~\\
+\tt ~data~Lam~a~where~\\
+\tt ~~~Var~\char58{}\char58{}~Fin~a~\char45{}\char62{}~Lam~a\\
+\tt ~~~App~\char58{}\char58{}~Lam~a~\char45{}\char62{}~Lam~a~\char45{}\char62{}~Lam~a\\
+\tt ~~~Abs~\char58{}\char58{}~Lam~\char40{}Maybe~a\char41{}~\char45{}\char62{}~Lam~a
+\end{tabbing}
+Here \texttt{Fin} and \texttt{Lam} are indexed by types instead of
+natural numbers; The type constructor \texttt{Maybe} serves as a type level
+copy of the \ensuremath{\Varid{succ}} constructor for natural numbers.
+Note that \texttt{Lam} is actually just a nested datatype 
+\cite{alti:csl99} while \texttt{Fin} exploits the full power of
+GADTs because the range of the constructors is constrained.
+
 \subsection{Overview over the paper}
 \label{sec:overview-over-paper}
 
@@ -738,47 +764,58 @@ families and interpret this using indexed containers \ref{sec:spf}.
 \subsection{Related work}
 \label{sec:related-work}
 
-\noindent
-Inductive families are the backbone of
-dependently typed programming as present in Epigram or
-Agda~\cite{Agda}. Coq also supports the definition of inductive families
-but programming with them is rather hard --- a situation which has been
-improved by the new \texttt{Program} tactic~\cite{sozeau}. 
-More recently, the implementation of Generalized Algebraic Datatypes 
-(GADTs)~\cite{Hinze:GADT} 
-allows \ensuremath{\Conid{Fin}} and \ensuremath{\Conid{Lam}} to be encoded in Haskell:
-\begin{tabbing}\tt
-~data~Fin~a~where~\\
-\tt ~~~FZero~\char58{}\char58{}~Fin~\char40{}Maybe~a\char41{}\\
-\tt ~~~FSucc~\char58{}\char58{}~Fin~a~\char45{}\char62{}~Fin~\char40{}Maybe~a\char41{}\\
-\tt ~\\
-\tt ~data~Lam~a~where~\\
-\tt ~~~Var~\char58{}\char58{}~Fin~a~\char45{}\char62{}~Lam~a\\
-\tt ~~~App~\char58{}\char58{}~Lam~a~\char45{}\char62{}~Lam~a~\char45{}\char62{}~Lam~a\\
-\tt ~~~Abs~\char58{}\char58{}~Lam~\char40{}Maybe~a\char41{}~\char45{}\char62{}~Lam~a
-\end{tabbing}
-Here \texttt{Fin} and \texttt{Lam} are indexed by types instead of
-natural numbers; The type constructor \texttt{Maybe} serves as a type level
-copy of the $\succ$ constructor for natural numbers.
-Note that \texttt{Lam} is actually just a nested datatype 
-\cite{alti:csl99} while \texttt{Fin} exploits the full power of
-GADTs because the range of the constructors is constrained.
+\noindent We introduce the notion of indexed container which
+generalizes containers allowing us to represent inductive
+families. This is a further step from \emph{dependent polynomial
+  functors} \cite{HylandGambino} representing endofunctors on a slice
+category. Indexed containers as introduced in the present paper allow us
+to represent functors between different slices and capture also mutual
+and nested inductive definitions.
 
-\todo{Rewrite and expand}
+While Hyland and Gambino \cite{HylandGambino} show that dependent polynomial 
+functors always
+have initial algebras, we show that indexed containers are closed under 
+parametrized initial algebras. Hence we can apply the fixpoint
+construction several times. The flexibility of indexed
+containers allows us to also establish closure under the adjoints of
+reindexing. This leads directly to a grammar for strictly positive
+families, which itself is an instance of a strictly positive family 
+(section \ref{sec:spf}) --- see also our previous work \cite{alti:cats07,alti:jcats07}.
 
-The paper is an expanded and revised version of the LICS paper by the
+Containers are related to Girard's normal functors \cite{GirardNormal} which
+themselves are a special case of Joyal's analytic functors
+\cite{JoyalA:fonaes} --- those that allow only finite sets of positions.
+Fiore, Gambino, Hyland and Winskel's work on generalized species
+\cite{fiore2008ccb} considers those concepts in a more generic setting ---
+th e precise relation of this work to indexed containers remains to be
+explored.
+
+Perhaps the earliest publication related to indexed containers
+occurs in Petersson and Synek's paper
+\cite{PS89} from 1989. They present rules extending Martin-L{\"o}f's
+type theory with a set constructor for `tree sets' : families of
+mutually defined inductive sets, over a fixed index set.
+
+Inspired in part by Petersson and Synek's constructor,
+Hancock, Hyvernat and Setzer \cite{hancock-apal06} applied indexed (and unindexed)
+containers, under the name `interaction structures' to the task of
+modelling imperative interfaces such as command-response interfaces in
+a number of publications. 
+
+This paper is an expanded and revised version of the LICS paper by the
 first and 3rd author \cite{lics}. In the present paper we have
 integrated the Agda formalisation in the main development, which in
 many instances required extending it. We have made explicit the use of
 relative monads which was only hinted at in the conference version
 based on the recent work on relative monads \cite{relmon}. We have
-also dualized the development to terminal coalgebras which requires a
-non-trivial change in the setup (section \ref{sec:termcoalg}).  We
+also dualized the development to terminal coalgebras which required
+the type of paths to be defined inductively instead of recursively as
+done in the conference paper (section \ref{sec:termcoalg}).  We
 have also formalized the derivation of indexed W-types from ordinary
 W-types (section \ref{wifromw}. The derivation of M-types from W-types
 (section \ref{sec:mfromw})
 was already given in \cite{C-CSPTs} is revisited here exploiting the
-indexed W-type derived previously amd the development is formalized in
+indexed W-type derived previously. moreover the development is formalized in
 Agda. 
 
 \todo{What did I miss?}
@@ -797,7 +834,7 @@ Agda.
 
 
 
-Our contructions are all developed in Agda, and so we adopt its syntax, but we will take certain liberties with its type-theory. 
+Our constructions are all developed in Agda, and so we adopt its syntax, but we will take certain liberties with its type-theory. 
 
 We have $\Pi$-types, denoted \ensuremath{(\Varid{a}\;\in\;\Conid{A})\;\rightarrow\;\Conid{B}\;\Varid{a}} and $\Sigma$-types, which we denote in a non-standard way: \ensuremath{\Sigma(\!\;\Varid{a}\;\in\;\Conid{A}\;\!)\!\times\!\;\Conid{B}\;\Varid{a}}. In fact this is sugar for the record type:
 
@@ -857,7 +894,12 @@ A type theory has \ensuremath{\Conid{W}} types if it has a type former \ensurema
 \end{hscode}\resethooks
 
 \noindent
-As a notational convenience, we will continue to define extra Agda data-types in the rest of the paper, but in the end we will show how each of these can be reduced to a theory that contains only \ensuremath{\Conid{W}}. For compactness, and readablity we will also define functions using Agda's pattern matching syntax, rather than encoding them using wrec, it is an unstated lemma that each of these definitions can be reduced to terms which only use \ensuremath{\Varid{wrec}}.
+As a notational convenience, we will continue to define extra Agda data-types
+in the rest of the paper, but in the end we will show how each of these can
+be reduced to a theory that contains only \ensuremath{\Conid{W}}. For compactness, and
+readability we will also define functions using Agda's pattern matching
+syntax, rather than encoding them using \ensuremath{\Varid{wrec}}, it is an unstated lemma that
+each of these definitions can be reduced to terms which only use \ensuremath{\Varid{wrec}}.
 
 We'll also require a notion of propositional equality, in Agda this is defined via a data-type:
 
@@ -877,7 +919,7 @@ We'll also require a notion of propositional equality, in Agda this is defined v
 \ColumnHook
 \end{hscode}\resethooks
 
-This is an intensioanl equality, but we want to work in a setting with extensional type-theory, so we extend the propositional equality with this extensionality axiom:
+This is an intensional equality, but we want to work in a setting with extensional type-theory, so we extend the propositional equality with this extensionality axiom:
 
 
 \begin{hscode}\SaveRestoreHook
@@ -900,7 +942,10 @@ This is an intensioanl equality, but we want to work in a setting with extension
 \ColumnHook
 \end{hscode}\resethooks
 
-This creates non-canonical elements of \ensuremath{\Varid{\char95 ≅\char95 }}, \emph{i.e.} closed terms in equality types which are not \ensuremath{\Varid{refl}}. In order to deal with these non-canonical elements, we also rely on axiom \ensuremath{\Conid{K}}, or the uniqueness of idenity proofs:
+This creates non-canonical elements of \ensuremath{\Varid{\char95 ≅\char95 }}, \emph{i.e.} closed terms in
+equality types which are not \ensuremath{\Varid{refl}}. In order to deal with these
+non-canonical elements, we also rely on axiom \ensuremath{\Conid{K}}, or the uniqueness of
+identity proofs:
 
 
 
@@ -915,8 +960,11 @@ This creates non-canonical elements of \ensuremath{\Varid{\char95 ≅\char95 }},
 \end{hscode}\resethooks
 
 
-We are going to use type theory versions of certain category theoretic concepts 
-For instance, we use ends \ensuremath{\Conid{End}} to capture natural transformations.
+With these assumptions we obtain a theory which corresponds to
+extensional Type Theory \cite{hofmann-conservativity}.
+
+We are going to use type theory versions of certain category theoretic
+concepts For instance, we use ends \ensuremath{\Conid{End}} to capture natural transformations.
 Given a bifunctor \ensuremath{\Conid{F}\;\in\;\Conid{Set}^{\Varid{op}}\;\rightarrow\;\Conid{Set}\;\rightarrow\;\Conid{Set}}, an element of \ensuremath{\prodd\;\Conid{X}\;.\;\Conid{F}\;\Conid{X}\;\Conid{X}} is
 equivalent to an element of \ensuremath{\Varid{f}\;\in\;\{\mskip1.5mu \Conid{X}\;\in\;\Conid{Set}\mskip1.5mu\}\;\rightarrow\;\Conid{F}\;\Conid{X}\;\Conid{X}}, along with a proof:
 
@@ -924,8 +972,7 @@ equivalent to an element of \ensuremath{\Varid{f}\;\in\;\{\mskip1.5mu \Conid{X}\
 
 
 \noindent
-The natural transformations between functors \ensuremath{\Conid{F}} and \ensuremath{\Conid{G}} are
-ends \ensuremath{\prodd\;\Conid{X}\;.\;\Conid{F}\;\Conid{X}\;\rightarrow\;\Conid{G}\;\Conid{X}}. We will often ignore the presence of the proofs, and 
+The natural transformations between functors \ensuremath{\Conid{F}} and \ensuremath{\Conid{G}} are ends \ensuremath{\prodd\;\Conid{X}\;.\;\Conid{F}\;\Conid{X}\;\rightarrow\;\Conid{G}\;\Conid{X}}. We will often ignore the presence of the proofs, and 
 use such ends directly as polymorphic functions.
 
 In this setting, the Yoneda lemma can be stated as follows, for any functor \ensuremath{\Conid{F}\;\in\;\Conid{Set}\;\rightarrow\;\Conid{Set}}:
@@ -934,18 +981,32 @@ In this setting, the Yoneda lemma can be stated as follows, for any functor \ens
 
 we will make use of this fact later on.
 
-Finally, for readability we will elide certain artifacts in Agda's syntax, for instance the quantification of implicit arguments when their types can be inferred from the context. The reader should be reassured that the paper is a literate agda file, available from the final author's webpage.
+Finally, for readability we will elide certain artifacts in Agda's syntax,
+for instance the quantification of implicit arguments when their types can be
+inferred from the context. The reader should be reassured that the paper is a
+literate agda file, available from the final author's webpage.
  
 \subsection{Containers}
 
+
+The initial algebra semantics is useful to provide a generic
+analysis of inductive types exploiting generic concepts such as
+constructors and functorial map. However, it cannot say whether such inductive
+types actually exist, and it falls short of providing a systematic
+characterisation of generic operations such as equality or the
+zipper~\cite{huet:zipper,conor:derivative}. 
+
+In previous
+work, \cite{alti:cont-tcs,alti:fossacs03}, we have proposed the notion of a container
+type: A (unary) container is given by a set of shapes \ensuremath{\Conid{S}} and a
+family of positions \ensuremath{\Conid{P}} assigning, to each shape, the set
+of positions where data can be stored in a data structure of that
+shape.
 
 \begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{3}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{5}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{21}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{28}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{69}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
 \>[B]{}\Keyword{record}\;\Conid{Cont}\;\in\;\Conid{Set₁}\;\Keyword{where}{}\<[E]%
 \\
@@ -960,7 +1021,16 @@ Finally, for readability we will elide certain artifacts in Agda's syntax, for i
 \\
 \>[3]{}\hsindent{2}{}\<[5]%
 \>[5]{}\Conid{P}\;\in\;\Conid{S}\;\rightarrow\;\Conid{Set}{}\<[E]%
-\\[\blanklineskip]%
+\ColumnHook
+\end{hscode}\resethooks
+
+Every container \ensuremath{\Conid{S}\;\lhd\;\Conid{P}}  gives rise to a functor:
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{21}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{28}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{69}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
 \>[B]{}\Varid{⟦\char95 ⟧}\;\in\;\Conid{Cont}\;\rightarrow\;\Conid{Func}{}\<[E]%
 \\
 \>[B]{}\Varid{⟦}\;\Conid{S}\;\lhd\;\Conid{P}\;\Varid{⟧}\;\mathrel{=}\;\Keyword{record}\;{}\<[21]%
@@ -979,6 +1049,8 @@ For example the list functor is a container, its shapes are given by the natural
 
 
 
+
+We define morphisms of containers, this can be derived from the specification that embedding should be full and faithful using the Yoneda lemma:
 
 \begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
@@ -1005,7 +1077,7 @@ For example the list functor is a container, its shapes are given by the natural
 \ColumnHook
 \end{hscode}\resethooks
 
-The category of containers is a full and faithful sub-category of the functor category. We have also shown that the category of containers is cartesian closed, and is closed under formation of co-products.
+The category of containers is a full and faithful sub-category of the functor category. We have also shown that the category of containers is cartesian closed (\cite{cie}, and is closed under formation of co-products.
 
 Container functors have initial algebras, indeed these are exactly the \ensuremath{\Conid{W}} types we know well from Type-Theory, which we can be equivalently defined to be:
 
@@ -1022,7 +1094,7 @@ Container functors have initial algebras, indeed these are exactly the \ensurema
 \end{hscode}\resethooks
 
 
-However, we have also shown that for \ensuremath{\Varid{n}}-ary containers (containers with \ensuremath{\Varid{n}} position sets), it is possible to define a \emph{parameterised} initial algebra construction \ensuremath{\mu\;\in\;\forall{}\;\{\mskip1.5mu \Varid{n}\mskip1.5mu\}\;\rightarrow\;\Conid{Cont}\;(\Varid{suc}\;\Varid{n})\;\rightarrow\;\Conid{Cont}\;\Varid{n}}. This allows us to model a broad range of nested and mutual types as containers. We will develop an analogous construction for indexed conatainers in section ???.
+However, we have also shown that for \ensuremath{\Varid{n}}-ary containers (containers with \ensuremath{\Varid{n}} position sets), it is possible to define a \emph{parameterised} initial algebra construction \ensuremath{\mu\;\in\;\forall{}\;\{\mskip1.5mu \Varid{n}\mskip1.5mu\}\;\rightarrow\;\Conid{Cont}\;(\Varid{suc}\;\Varid{n})\;\rightarrow\;\Conid{Cont}\;\Varid{n}}. This allows us to model a broad range of nested and mutual types as containers.
 
 
 %%Indexed Functors
@@ -1087,7 +1159,7 @@ such that both \ensuremath{\Varid{id}^{\star}} is mapped to \ensuremath{\Varid{i
 \ensuremath{\Varid{mor}}. We adopt the convention that the projections \ensuremath{\Varid{obj}} and \ensuremath{\Varid{mor}} are silent, 
 \emph{i.e.} depending on the context \ensuremath{\Conid{F}\;\in\;\Conid{IFunc}\;\Conid{I}} can stand for either the 
 functor's action on objects, or on morphisms. A morphism between to such 
-indexed functors is a natural transormation:
+indexed functors is a natural transformation:
 
 
 \begin{hscode}\SaveRestoreHook
@@ -1243,10 +1315,11 @@ we denote \ensuremath{\Delta^{\text{\tiny F}}}:
 
 
 \noindent
-This construction is used, for instance, in building the pattern functor for \ensuremath{\Conid{ScLam}} as in the introduction; Concentranting only on the \ensuremath{\Varid{abs}} case we want to build  
-\ensuremath{\Conid{ScLam′}\;\Conid{X}\;\Varid{n}\;\mathrel{=}\;(\Conid{X}\;\ensuremath{\mbox{$\circ$}}\;\Varid{suc})\;\Varid{n}}. Or simply \ensuremath{\Conid{ScLam′}\;\Conid{X}\;\mathrel{=}\;\Delta^{\text{\tiny F}}\;\Varid{suc}\;\Conid{X}}. In general this combinator 
-restricts the functor \ensuremath{\Conid{X}} to the indicies in the image of the
-function \ensuremath{\Varid{f}}.
+This construction is used, for instance, in building the pattern functor for
+\ensuremath{\Conid{ScLam}} as in the introduction; Concentrating only on the \ensuremath{\Varid{abs}} case we want
+to build  \ensuremath{\Conid{ScLam′}\;\Conid{X}\;\Varid{n}\;\mathrel{=}\;(\Conid{X}\;\ensuremath{\mbox{$\circ$}}\;\Varid{suc})\;\Varid{n}}. Or simply \ensuremath{\Conid{ScLam′}\;\Conid{X}\;\mathrel{=}\;\Delta^{\text{\tiny F}}\;\Varid{suc}\;\Conid{X}}. In
+general this combinator restricts the functor \ensuremath{\Conid{X}} to the indices in the
+image of the function \ensuremath{\Varid{f}}.
 
 What if the restriction appears on the right of such an equation? As an example,
 consider the successor constructor for \ensuremath{\Conid{Fin}}; here we want to build the pattern functor: \ensuremath{\Conid{FFin′}\;\Conid{X}\;(\Varid{1}\;\Varid{+}\;\Varid{n})\;\mathrel{=}\;\Conid{X}\;\Varid{n}}. To do this we observe that this is equivalent to
@@ -1281,7 +1354,7 @@ construction \ensuremath{\Sigma^{\text{\tiny F}}}, so the 2nd equation can be wr
 \end{hscode}\resethooks
 
 \noindent
-Perhaps unsuprisingly, \ensuremath{\Sigma^{\text{\tiny F}}} turns out to be the left adjoint to re-indexing 
+Perhaps unsurprisingly, \ensuremath{\Sigma^{\text{\tiny F}}} turns out to be the left adjoint to re-indexing 
 (\ensuremath{\Delta^{\text{\tiny F}}}). Its right adjoint, we denote \ensuremath{\Pi^{\text{\tiny F}}}:
 
 \begin{hscode}\SaveRestoreHook
@@ -1430,7 +1503,7 @@ This prevents us from being able to define nested, or mutual inductive families
 in this way.
 
 For the morphism part of an indexed-functor over a co-product we can eliminate
-the coproduct and curry the result ing definition in this way:
+the co-product and curry the resulting definition in this way:
 
 \begin{align*}
 \ensuremath{\Conid{IFunc}\;(\Conid{I}\;\uplus\;\Conid{J})} 
@@ -1860,7 +1933,7 @@ are preserved under \ensuremath{\Varid{⟦\char95 ⟧\char95 }}, i.e.:
 \end{align*}
 
 Which follow from the extensionality of our propositional equality, the 
-assosciativity of \ensuremath{\Sigma} and the terminality of \ensuremath{\top}. By the full and faithful 
+associativity of \ensuremath{\Sigma} and the terminality of \ensuremath{\top}. By the full and faithful 
 nature of the embedding into \ensuremath{\Conid{IFunc}} we can then reuse the result that
 \ensuremath{(\Conid{IFunc},\eta^{\text{\tiny F}},\anonymous \bind ^{\text{\tiny F}}\anonymous )} is a relative monad.
 
@@ -1914,7 +1987,7 @@ has left and right adjoints \ensuremath{\Sigma^{\text{\tiny C}}} and \ensuremath
 
 \begin{proof}
 
-Again we appeal to the full and faithfullness of \ensuremath{\Varid{⟦\char95 ⟧\char95 }} and show instead that
+Again we appeal to the full and faithfulness of \ensuremath{\Varid{⟦\char95 ⟧\char95 }} and show instead that
 the embedding into \ensuremath{\Conid{IFunc}} preserves these constructions. That, is we want to show that the following three statements hold:
 
 \begin{align*}
@@ -1989,10 +2062,10 @@ define their partial application.
 \end{hscode}\resethooks
 
 \noindent
-The composite container has shapes given by a shape \ensuremath{\Varid{s}\;\in\;\Conid{S}} and an assigment of \ensuremath{\Conid{T}} 
-shapes to \ensuremath{\Conid{P}^{\Conid{J}}\;\Varid{s}} positions. Positions are then a choice between 
-a \ensuremath{\Conid{I}}-indexed position, or a pair of an \ensuremath{\Conid{J}}-indexed position, and a \ensuremath{\Conid{Q}} position
-\emph{underneath} the appropriate \ensuremath{\Conid{T}} shape. 
+The composite container has shapes given by a shape \ensuremath{\Varid{s}\;\in\;\Conid{S}} and an assignment
+of \ensuremath{\Conid{T}} shapes to \ensuremath{\Conid{P}^{\Conid{J}}\;\Varid{s}} positions. Positions are then a choice between a
+\ensuremath{\Conid{I}}-indexed position, or a pair of an \ensuremath{\Conid{J}}-indexed position, and a \ensuremath{\Conid{Q}}
+position \emph{underneath} the appropriate \ensuremath{\Conid{T}} shape. 
 
 
 \noindent
@@ -2042,9 +2115,17 @@ argument, and lifts container morphisms in this way:
 \section{Initial Algebras of Indexed Containers}
 \label{sec:initalg}
 
-We will now examine how to construct the initial algebra of a container of the form \ensuremath{\Conid{F}\;\in\;\Conid{ICont}^{\star}\;(\Conid{I}\;\uplus\;\Conid{J})\;\Conid{J}}. The shapes of such a container are an \ensuremath{\Conid{J}}-indexed family of \ensuremath{\Conid{Set}}s and the positions are indexed by \ensuremath{\Conid{I}\;\uplus\;\Conid{J}}; we will treat these position as two separate entities, those positions indexed by \ensuremath{\Conid{I}} -- the recusive positions -- and those by \ensuremath{\Conid{J}} -- the payload positions.
+We will now examine how to construct the initial algebra of a container of
+the form \ensuremath{\Conid{F}\;\in\;\Conid{ICont}^{\star}\;(\Conid{I}\;\uplus\;\Conid{J})\;\Conid{J}}. The shapes of such a container are an
+\ensuremath{\Conid{J}}-indexed family of \ensuremath{\Conid{Set}}s and the positions are indexed by \ensuremath{\Conid{I}\;\uplus\;\Conid{J}}; we
+will treat these position as two separate entities, those positions indexed
+by \ensuremath{\Conid{I}} -- the recursive positions -- and those by \ensuremath{\Conid{J}} -- the payload
+positions.
 
-The shapes of initial algebra we are constructing will be trees with S shapes at the nodes and which branch over the recursive \ensuremath{\Conid{P}^{\Conid{I}}} positions. We call these trees \emph{indexed} \ensuremath{\Conid{W}}-types, denoted \ensuremath{\Conid{WI}} and they are the initial algebra of the functor \ensuremath{\Varid{⟦}\;\Conid{S}\;\lhd\;\Conid{P}^{\Conid{J}}\;\Varid{⟧}^{\star}}:
+The shapes of initial algebra we are constructing will be trees with S shapes
+at the nodes and which branch over the recursive \ensuremath{\Conid{P}^{\Conid{I}}} positions. We call
+these trees \emph{indexed} \ensuremath{\Conid{W}}-types, denoted \ensuremath{\Conid{WI}} and they are the initial
+algebra of the functor \ensuremath{\Varid{⟦}\;\Conid{S}\;\lhd\;\Conid{P}^{\Conid{J}}\;\Varid{⟧}^{\star}}:
 
 \begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
@@ -2079,9 +2160,11 @@ The shapes of initial algebra we are constructing will be trees with S shapes at
 
 
 \noindent
-This mirrors the construction for plain containers, where we can view ordinary \ensuremath{\Conid{W}} types as the initial algebra of a container functor.
+This mirrors the construction for plain containers, where we can view
+ordinary \ensuremath{\Conid{W}} types as the initial algebra of a container functor.
 
-Positions are given by paths through such a tree, terminated by a non-recursive \ensuremath{\Conid{P}^{\Conid{I}}}:
+Positions are given by paths through such a tree, terminated by a
+non-recursive \ensuremath{\Conid{P}^{\Conid{I}}}:
 
 \begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
@@ -2128,7 +2211,8 @@ sub \ensuremath{\Conid{Q}} position. Here the \ensuremath{\Conid{Q}} positions a
 
 
 \noindent
-We can now give the object part of the patrametrized initial algebra of a container, given by:
+We can now give the object part of the parametrised initial algebra of a
+container, given by:
 
 \begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
@@ -2168,7 +2252,9 @@ We can now give the object part of the patrametrized initial algebra of a contai
 
 
 \noindent
-The algebra map is a container morphism from the partial aplication of \ensuremath{\Conid{F}} and its parametrised initial algebra, to the initial algebra, given by the algebra map of \ensuremath{\Conid{WI}} (\ensuremath{\Varid{sup}}) and our mediation funtion \ensuremath{\Varid{path}}:
+The algebra map is a container morphism from the partial application of \ensuremath{\Conid{F}}
+and its parametrised initial algebra, to the initial algebra, given by the
+algebra map of \ensuremath{\Conid{WI}} (\ensuremath{\Varid{sup}}) and our mediation function \ensuremath{\Varid{path}}:
 
 
 \begin{hscode}\SaveRestoreHook
@@ -2255,7 +2341,12 @@ The algebra map is a container morphism from the partial aplication of \ensurema
 \section{Terminal Co-Algebras of Indexed Containers}
 \label{sec:termcoalg}
 
-Dually to the initial algebra construction out-lined above, we can also show that indexed-containers are closed under parameterized terminal co-algebras. We proceed in much the same way as before, by first constructing the dual of the indexed \ensuremath{\Conid{W}}-type, which we refer to as an indexed \ensuremath{\Conid{M}}-type. As you might expect this is in fact the plain (as opposed to parametrized) terminal co-algebra of an indexed container functor:
+Dually to the initial algebra construction out-lined above, we can also show
+that indexed-containers are closed under parameterised terminal co-algebras.
+We proceed in much the same way as before, by first constructing the dual of
+the indexed \ensuremath{\Conid{W}}-type, which we refer to as an indexed \ensuremath{\Conid{M}}-type. As you might
+expect this is in fact the plain (as opposed to parametrized) terminal
+co-algebra of an indexed container functor:
 
 
 \begin{hscode}\SaveRestoreHook
@@ -2451,8 +2542,6 @@ The parameterised terminal co-algebra of an indexed container is, then, given by
 \\
 \>[12]{}\hsindent{2}{}\<[14]%
 \>[14]{}\Varid{r}\;\Varid{t}\;\Varid{j}\;(\Varid{inr}\;(\Varid{i},\Varid{p},\Varid{runfold}\;(\pi_{1}\;(\Varid{f}\;\anonymous \;\Varid{t})\;\Varid{i}\;\Varid{p})\;\Varid{j}\;\Varid{q})){}\<[E]%
-\\[\blanklineskip]%
-\>[B]{}\Varid{-}\mskip1.5mu\}{}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
 
@@ -2463,11 +2552,21 @@ The parameterised terminal co-algebra of an indexed container is, then, given by
 
 
 
+So far we have developed a theory of indexed containers using a rich Type
+Theory. We claimed in the introduction, however, that this theory required
+only the presence of \ensuremath{\Conid{W}}-types. In this section we will outline the
+translation of many of the definitions above into such a spartan theory.
+First we will show how to obtain indexed \ensuremath{\Conid{W}}-types from un-indexed ones, and
+by analogy \ensuremath{\Conid{MI}} from \ensuremath{\Conid{M}}, and then we will revisit a proof of how to derive
+\ensuremath{\Conid{M}}-types from \ensuremath{\Conid{W}}.
+
 
 \subsection*{\ensuremath{\Conid{WI}} from \ensuremath{\Conid{W}}}
 \label{wifromw}
 
-How, then, can we build \ensuremath{\Conid{WI}} from \ensuremath{\Conid{W}}? The initial step is to create a type of \emph{pre}-\ensuremath{\Conid{WI}} trees, with nodes containing a shape \emph{and} its index, and branching over positions \emph{and their} indicies:
+How, then, can we build \ensuremath{\Conid{WI}} from \ensuremath{\Conid{W}}? The initial step is to create a type
+of \emph{pre}-\ensuremath{\Conid{WI}} trees, with nodes containing a shape \emph{and} its index,
+and branching over positions \emph{and their} indices:
 
 \begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
@@ -2676,10 +2775,12 @@ We can use this proof that \ensuremath{\Conid{WI}}-types can be encoded by \ensu
 \subsection*{\ensuremath{\Conid{M}} from \ensuremath{\Conid{W}}}
 \label{sec:mfromw}
 
-Since we have shown that both \ensuremath{\Conid{WI}} and \ensuremath{\Conid{MI}} types can be reduced to their 
-non-indexed counterparts, it only remains to show that \ensuremath{\Conid{M}} types can be, reduced
-to \ensuremath{\Conid{W}} types. This is a result from our previous work on containers~\cite{alti:cont-tcs}, though in the setting of 
-indexed \ensuremath{\Conid{WI}} types, we can give a better intuition.
+Since we have shown that both \ensuremath{\Conid{WI}} and \ensuremath{\Conid{MI}} types can be reduced to their
+non-indexed counterparts, it only remains to show that \ensuremath{\Conid{M}} types can be,
+reduced
+to \ensuremath{\Conid{W}} types. This is a result from our previous work on
+containers~\cite{alti:cont-tcs}, though in the setting of indexed \ensuremath{\Conid{WI}} types,
+we can give a better intuition.
 
 In category theory, an $\omega$-chain, is an infinite diagram:
 
@@ -2882,8 +2983,7 @@ To show that the co-algebra is terminal, we employ the universal property of
 }
 \]
 
-We 
-want to build \ensuremath{\Conid{M}}-types, which we know to be the terminal co-algebras of 
+We want to build \ensuremath{\Conid{M}}-types, which we know to be the terminal co-algebras of 
 container functors. In order to do this, we must construct 
 iteration of container functors (to build the chain) and show that all container
 functors are $\omega$ continuous.
@@ -2957,7 +3057,7 @@ above, a \ensuremath{\Conid{W}} type:
 \noindent
 We can truncate any given tree of depth greater than 1, this amounts to the 
 iteration of the morphism part of the container functor applied to the unique 
-moprhism into the terminal object:
+morphism into the terminal object:
 
 \begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
@@ -2970,7 +3070,7 @@ moprhism into the terminal object:
 \ColumnHook
 \end{hscode}\resethooks
 
-So now we can build the chain of finitie itererations of a container functor:
+So now we can build the chain of finite iterations of a container functor:
 
 \begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
@@ -3241,7 +3341,7 @@ lifting functor \ensuremath{\uparrow\;\in\;\Conid{Set}_{i}\;\rightarrow\;\Conid{
 
 \begin{proof}
 To prove the structure is a relative 
-monad we observe that the following equlities hold:
+monad we observe that the following equalities hold:
 
 For \ensuremath{\Conid{F}\;\in\;\Conid{ISPT}\;\Conid{K}}, \ensuremath{\Conid{G}\;\in\;\Conid{SPF}\;\Conid{J}\;\Conid{K}}, \ensuremath{\Conid{H}\;\in\;\Conid{ISPT}\;\Conid{I}\;\Conid{J}}:
 \begin{align}
