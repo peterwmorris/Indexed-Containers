@@ -31,6 +31,7 @@ open import termcoalg
 %endif
 
 \section{Strictly Positive Families}
+\label{sec:spf}
 
 %format ^T = "^{\text{\tiny T}}"
 

@@ -36,7 +36,7 @@ non-indexed counterparts, it only remains to show that |M| types can be,
 reduced
 to |W| types. This is a result from our previous work on
 containers~\cite{alti:cont-tcs}, though in the setting of indexed |WI| types,
-we can give a better intuition.
+we can give a better expalnation.
 
 In category theory, an $\omega$-chain, is an infinite diagram:
 
