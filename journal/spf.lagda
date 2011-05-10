@@ -104,6 +104,7 @@ mutual
 We can equip this syntax with a substitution operation, |_>>=^T_|:
 
 %format ISPTmap = ISPT
+%format SPFmap = SPF
 
 \begin{code}
 
@@ -112,13 +113,16 @@ mutual
   ISPTmap : ∀ {I J} → (I → J) → ISPT I → ISPT J
   ISPTmap γ t = t >>=^T (η^T ∘ γ)
 
+  SPFmap : ∀ {I J K} → (I → J) → SPF I K → SPF J K
+  SPFmap γ t k = ISPTmap γ (t k)
+
   _>>=^T_ : ∀ {I J} → ISPT I → SPF J I → ISPT J
   η^T i      >>=^T F = F i
   Δ^T f G j  >>=^T F = Δ^T f (λ k → G k >>=^T F) j
   Σ^T f G k  >>=^T F = Σ^T f (λ j → G j >>=^T F) k
   Π^T f G k  >>=^T F = Π^T f (λ j → G j >>=^T F) k
-  μ^T G j    >>=^T F = μ^T (λ k → G k >>=^T [  (ISPTmap inj₁ ∘ F) , (η^T ∘ inj₂) ]) j
-  ν^T G j    >>=^T F = ν^T (λ k → G k >>=^T [  (ISPTmap inj₁ ∘ F) , (η^T ∘ inj₂) ]) j
+  μ^T G j    >>=^T F = μ^T (λ k → G k >>=^T [  (SPFmap inj₁ F) , (η^T ∘ inj₂) ]) j
+  ν^T G j    >>=^T F = ν^T (λ k → G k >>=^T [  (SPFmap inj₁ F) , (η^T ∘ inj₂) ]) j
 
 \end{code}
 
@@ -288,7 +292,36 @@ TVec =  μ^T   (     Σ^T {J = ⊤} (λ _ → zero) (λ _ → ⊤^T)
               +^T*  Σ^T suc (λ n → η^T (inj₁ _) ×^T η^T (inj₂ n)))
 
 TScLam : SPF ⊥ ℕ
-TScLam = μ^T  (     (η^T ∘ inj₂)
+TScLam = μ^T  (     SPFmap (λ ()) TFin
               +^T*  (((η^T ∘ inj₂) ×^T* (η^T ∘ inj₂))
               +^T*  Δ^T suc (η^T ∘ inj₂)))
+\end{code}
+
+Note that we have to weaken the reference to |TFin| in the definition of 
+|TScLam|, since under the |μ^T| we can refer to the recursive |TSCLam| trees, 
+but |TFin| itself can refer to no variables.
+
+We can also define the mutual types, |Ne| and |Nf|. Here, a copy of the normal 
+forms is defined \emph{inside} the definition of the neutral terms, and vice
+versa:
+
+%format TNe = T "_{" Ne "}"
+%format TNf = T "_{" Nf "}"
+
+\begin{code}
+
+TNe : SPF ⊥ ℕ
+TNe = μ^T (     SPFmap (λ ()) TFin
+          +^T*  ((η^T ∘ inj₂) ×^T* TNeNf))
+  where  TNeNf : SPF (⊥ ⊎ ℕ) ℕ
+         TNeNf = μ^T  (     (Δ^T suc (η^T ∘ inj₂)) 
+                      +^T*  (η^T ∘ (inj₁ ∘ inj₂)))
+
+TNf : SPF ⊥ ℕ
+TNf = μ^T  (     Δ^T suc (η^T ∘ inj₂)
+           +^T*  TNfNe)
+  where  TNfNe : SPF (⊥ ⊎ ℕ) ℕ
+         TNfNe = μ^T  (     SPFmap (λ ()) TFin
+                      +^T*  ((η^T ∘ inj₂) ×^T* (η^T ∘ (inj₁ ∘ inj₂))))
+
 \end{code}
