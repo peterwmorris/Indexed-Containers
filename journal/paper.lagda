@@ -102,6 +102,47 @@ module paper where
 
 \section{Conclusions}
 
+We have shown how inductive and coinductive families, a central
+feature in dependently typed programming, can be constructed from the
+standard infrastructure present in Type Theory, i.e. W-types together
+with $\Pi$, $\Sigma$ and equality types. Indeed, we are able to reduce
+the syntactically rich notion of families to a small collection of
+categorically inspired combinators. This is an alternative to the
+complex syntactic schemes present in the \emph{Calculus of Inductive
+  Constructions} (CIC), or in the Agda and Epigram systems. We are
+able to encode inductively defined families in a small core language
+which means that we rely only on a small trusted code base. The
+reduction to W-types requires an extensional propositional
+equality. Our current approach using an axiom |ext| is sufficent for
+proofs but isn't computationally adequate. A more satisfying approach
+would built on \emph{Observational Type Theory} (OTT)
+\cite{alti:ott-conf}.
+
+\todo{Mention Epigram 2?}
+
+The present paper is an annotated Agda script, i.e. all the proofs are
+checked by the Agda system. We have tried hard to integrate the formal
+development with the narrative. In some cases we have surpressed
+certain details present in the source of the paper to keep the
+material readable.
+
+A more serious challenge are mutual inductively (or coinductively)
+defined families where one type depends on another
+\cite{setzer-forsberg-indind}. A typical example is the syntax of Type
+Theory itself which, to simplify, can be encoded by mutually defining
+contexts containing terms, types in a given context and terms in a
+given type:
+\begin{spec}
+Con : Set
+Ty : Con → Set
+Tm : (Γ : Con) → Ty Γ → Set
+\end{spec}
+In recent work \cite{calco-indind} present a categorical semantics for
+this kind of definitions based on dialgebras. However, a presentation
+of strictly positive definitions in the spirit of conatienrs is not
+yet available.
+
+\todo{Discuss the relationship to inductive-recursive definitions.}
 
 \bibliographystyle{plain}
 \bibliography{ic}
