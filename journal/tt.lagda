@@ -52,9 +52,9 @@ Setop  = Set
 
 %endif
 
-%format Σ* = Σ "(\!"
+%format Σ* = "(\!"
 %format ∶ = :
-%format *Σ = "\!)\!" × "\!"
+%format *Σ = "\!)" × 
 
 %format Σ′ = Σ
 %format π₀ = "\pi_0"

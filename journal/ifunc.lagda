@@ -434,7 +434,7 @@ _⟨_⟩M* F {G} {H} γ = λ k → _⟨_⟩M  (F k) {G} {H} γ
 \end{code}
 
 \noindent
-A parametrized |F|-algebra for |F : IFunc* (I ⊎ J) I| is a pair of an 
+A parametrised |F|-algebra for |F : IFunc* (I ⊎ J) I| is a pair of an 
 indexed-functor |G : IFunc J I| and a natural transformation
 |α : F ⟨ G ⟩F* =*=>^F G|. A morphism between two such algebras 
 |(G , α)| and |(H , β)| is a natural transformation |γ : G =*=>^F H| 
@@ -448,10 +448,10 @@ such that the follow diagram commutes:
 \]
 
 \noindent
-As you might expect, a parametrized initial algebra for |F|, if it is exists, 
-will be the initial object in the category of parametrized |F|-algebras. 
+As you might expect, a parametrised initial algebra for |F|, if it is exists, 
+will be the initial object in the category of parametrised |F|-algebras. 
 
-The fact that the parametrized initial algebra construction can be iterated, 
+The fact that the parametrised initial algebra construction can be iterated, 
 means that we can define nested and mutual families of data-types, such as the
 tuple of neutral and normal |λ|-terms outlined in the introduction. 
 

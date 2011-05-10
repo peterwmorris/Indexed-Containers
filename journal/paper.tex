@@ -912,7 +912,8 @@ readability we will also define functions using Agda's pattern matching
 syntax, rather than encoding them using \ensuremath{\Varid{wrec}}, it is an unstated lemma that
 each of these definitions can be reduced to terms which only use \ensuremath{\Varid{wrec}}.
 
-We'll also require a notion of propositional equality, in Agda this is defined via a data-type:
+We'll also require a notion of propositional equality. To simplyfy the presentation of some definitions later on, we will employ a heterogeneous equality.
+This can be defined in Agda via a data-type:
 
 
 \begin{hscode}\SaveRestoreHook
@@ -929,6 +930,21 @@ We'll also require a notion of propositional equality, in Agda this is defined v
 \>[B]{}\Varid{subst}\;\Conid{P}\;\Varid{refl}\;\Varid{p}\;\mathrel{=}\;\Varid{p}{}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
+
+Most of the time our equalities will be homogeneous, however, so we introduce a short hand for this:
+
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\Varid{\char95 ≡\char95 }\;\in\;\{\mskip1.5mu \Conid{A}\;\in\;\Conid{Set}\mskip1.5mu\}\;\rightarrow\;\Conid{A}\;\rightarrow\;\Conid{A}\;\rightarrow\;\Conid{Set}{}\<[E]%
+\\
+\>[B]{}\Varid{a}\;\equiv\;\Varid{b}\;\mathrel{=}\;\Varid{a}\;\cong\;\Varid{b}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+
+It is also known that homogeneous and heterogeneous equality have the same 
+strength, so all the definitions employing our equality could also be encoded in
+a theory with only homogeneous equality.
 
 This is an intensional equality, but we want to work in a setting with extensional type-theory, so we extend the propositional equality with this extensionality axiom:
 
