@@ -128,7 +128,7 @@ material readable.
 
 A more serious challenge are mutual inductively (or coinductively)
 defined families where one type depends on another
-\cite{setzer-forsberg-indind}. A typical example is the syntax of Type
+\cite{forsberg2010inductive}. A typical example is the syntax of Type
 Theory itself which, to simplify, can be encoded by mutually defining
 contexts containing terms, types in a given context and terms in a
 given type:
@@ -137,7 +137,7 @@ Con : Set
 Ty : Con → Set
 Tm : (Γ : Con) → Ty Γ → Set
 \end{spec}
-In recent work \cite{calco-indind} present a categorical semantics for
+In recent work \cite{txa:catind2} present a categorical semantics for
 this kind of definitions based on dialgebras. However, a presentation
 of strictly positive definitions in the spirit of contaienrs is not
 yet available.

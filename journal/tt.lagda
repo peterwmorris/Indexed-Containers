@@ -197,7 +197,7 @@ open uip public
 %endif
 
 With these ingredients we obtain a theory which corresponds to
-extensional Type Theory \cite{hofmann-conservativity}.
+extensional Type Theory \cite{hofmann1996conservativity}.
 
 We are going to use type theoretic versions of certain category theoretic
 concepts. For example we represent functors by packing up their definition as
