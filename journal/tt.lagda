@@ -102,10 +102,13 @@ readability we will also define functions using Agda's pattern matching
 syntax, rather than encoding them using |wrec|, it is an unstated lemma that
 each of these definitions can be reduced to terms which only use |wrec|.
 
-We'll also require a notion of propositional equality, in Agda this is defined via a data-type:
+We'll also require a notion of propositional equality. To simplyfy the presentation of some definitions later on, we will employ a heterogeneous equality.
+This can be defined in Agda via a data-type:
 
 %format ≅′ = ≅
 %format _≅′_ = _≅_
+%format ≡′ = ≡
+%format _≡′_ = _≡_
 %format subst′ = subst
 
 \begin{code}
@@ -117,6 +120,19 @@ subst′ : {A : Set} (P : A → Set) {x y : A} → x ≅′ y → P x → P y
 subst′ P refl p = p  
 
 \end{code}
+
+Most of the time our equalities will be homogeneous, however, so we introduce a short hand for this:
+
+\begin{code}
+
+_≡′_ : {A : Set} → A → A → Set 
+a ≡ b = a ≅ b
+
+\end{code}
+
+It is also known that homogeneous and heterogeneous equality have the same 
+strength, so all the definitions employing our equality could also be encoded in
+a theory with only homogeneous equality.
 
 This is an intensional equality, but we want to work in a setting with extensional type-theory, so we extend the propositional equality with this extensionality axiom:
 
