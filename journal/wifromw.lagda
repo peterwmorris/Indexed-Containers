@@ -39,14 +39,22 @@ proj₁≡ refl = refl
 
 %endif
 
-So far we have developed a theory of indexed containers using a rich Type Theory. We claimed in the introduction, however, that this theory required only the presence of |W|-types. In this section we will outline the translation of many of the definitions above into such a spartan theory. First we will show how to obtain indexed |W|-types from unindexed ones, and by analogy |MI| from |M|, and then we will revisit a proof of how to derive |M|-types from |W|.
+So far we have developed a theory of indexed containers using a rich Type
+Theory. We claimed in the introduction, however, that this theory required
+only the presence of |W|-types. In this section we will outline the
+translation of many of the definitions above into such a spartan theory.
+First we will show how to obtain indexed |W|-types from un-indexed ones, and
+by analogy |MI| from |M|, and then we will revisit a proof of how to derive
+|M|-types from |W|.
 
 %format proj₁≡ = proj₁ ≡
 
 \subsection*{|WI| from |W|}
 \label{wifromw}
 
-How, then, can we build |WI| from |W|? The initial step is to create a type of \emph{pre}-|WI| trees, with nodes containing a shape \emph{and} its index, and branching over positions \emph{and their} indicies:
+How, then, can we build |WI| from |W|? The initial step is to create a type
+of \emph{pre}-|WI| trees, with nodes containing a shape \emph{and} its index,
+and branching over positions \emph{and their} indices:
 
 \begin{code}
 

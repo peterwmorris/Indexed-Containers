@@ -90,5 +90,5 @@ data WW (S : Set) (P : S → Set) : Set where
 
 %format μ = "\mu"
 
-However, we have also shown that for |n|-ary containers (containers with |n| position sets), it is possible to define a \emph{parameterised} initial algebra construction |μ : ∀ {n} → Cont (suc n) → Cont n|. This allows us to model a broad range of nested and mutual types as containers. We will develop an analogous construction for indexed conatainers in section ???.
+However, we have also shown that for |n|-ary containers (containers with |n| position sets), it is possible to define a \emph{parameterised} initial algebra construction |μ : ∀ {n} → Cont (suc n) → Cont n|. This allows us to model a broad range of nested and mutual types as containers.
 

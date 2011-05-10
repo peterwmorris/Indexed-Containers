@@ -31,10 +31,12 @@ open import func
 \subsection*{|M| from |W|}
 \label{sec:mfromw}
 
-Since we have shown that both |WI| and |MI| types can be reduced to their 
-non-indexed counterparts, it only remains to show that |M| types can be, reduced
-to |W| types. This is a result from our previous work on containers~\cite{alti:cont-tcs}, though in the setting of 
-indexed |WI| types, we can give a better intuition.
+Since we have shown that both |WI| and |MI| types can be reduced to their
+non-indexed counterparts, it only remains to show that |M| types can be,
+reduced
+to |W| types. This is a result from our previous work on
+containers~\cite{alti:cont-tcs}, though in the setting of indexed |WI| types,
+we can give a better intuition.
 
 In category theory, an $\omega$-chain, is an infinite diagram:
 
@@ -212,8 +214,7 @@ To show that the co-algebra is terminal, we employ the universal property of
 }
 \]
 
-We 
-want to build |M|-types, which we know to be the terminal co-algebras of 
+We want to build |M|-types, which we know to be the terminal co-algebras of 
 container functors. In order to do this, we must construct 
 iteration of container functors (to build the chain) and show that all container
 functors are $\omega$ continuous.
@@ -277,7 +278,7 @@ WM′ S P = WI S′ P′
 \noindent
 We can truncate any given tree of depth greater than 1, this amounts to the 
 iteration of the morphism part of the container functor applied to the unique 
-moprhism into the terminal object:
+morphism into the terminal object:
 
 \begin{code}
 
@@ -287,7 +288,7 @@ trunc (suc n) (sup (s , f)) = sup (s , trunc n ∘ f)
 
 \end{code}
 
-So now we can build the chain of finitie itererations of a container functor:
+So now we can build the chain of finite iterations of a container functor:
 
 \begin{code}
 

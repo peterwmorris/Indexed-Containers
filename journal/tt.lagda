@@ -60,7 +60,7 @@ Setop  = Set
 %format π₀ = "\pi_0"
 %format π₁ = "\pi_1"
 
-Our contructions are all developed in Agda, and so we adopt its syntax, but we will take certain liberties with its type-theory. 
+Our constructions are all developed in Agda, and so we adopt its syntax, but we will take certain liberties with its type-theory. 
 
 We have $\Pi$-types, denoted |(a : A) → B a| and $\Sigma$-types, which we denote in a non-standard way: |Σ* a ∶ A *Σ B a|. In fact this is sugar for the record type:
 
@@ -95,7 +95,12 @@ wrec Q (sup (s , f)) m = m s f (λ p → wrec Q (f p) m)
 \end{code}
 
 \noindent
-As a notational convenience, we will continue to define extra Agda data-types in the rest of the paper, but in the end we will show how each of these can be reduced to a theory that contains only |W|. For compactness, and readablity we will also define functions using Agda's pattern matching syntax, rather than encoding them using wrec, it is an unstated lemma that each of these definitions can be reduced to terms which only use |wrec|.
+As a notational convenience, we will continue to define extra Agda data-types
+in the rest of the paper, but in the end we will show how each of these can
+be reduced to a theory that contains only |W|. For compactness, and
+readability we will also define functions using Agda's pattern matching
+syntax, rather than encoding them using |wrec|, it is an unstated lemma that
+each of these definitions can be reduced to terms which only use |wrec|.
 
 We'll also require a notion of propositional equality, in Agda this is defined via a data-type:
 
@@ -113,7 +118,7 @@ subst′ P refl p = p
 
 \end{code}
 
-This is an intensioanl equality, but we want to work in a setting with extensional type-theory, so we extend the propositional equality with this extensionality axiom:
+This is an intensional equality, but we want to work in a setting with extensional type-theory, so we extend the propositional equality with this extensionality axiom:
 
 %if style == newcode
 
@@ -136,7 +141,10 @@ module EXT {l l'} {A : Set l} {B : A → Set l'} where
 
 \end{code}
 
-This creates non-canonical elements of |_≅_|, \emph{i.e.} closed terms in equality types which are not |refl|. In order to deal with these non-canonical elements, we also rely on axiom |K|, or the uniqueness of idenity proofs:
+This creates non-canonical elements of |_≅_|, \emph{i.e.} closed terms in
+equality types which are not |refl|. In order to deal with these
+non-canonical elements, we also rely on axiom |K|, or the uniqueness of
+identity proofs:
 
 %if style == newcode
 
@@ -172,8 +180,8 @@ open uip public
 
 %endif
 
-We are going to use type theory versions of certain category theoretic concepts 
-For instance, we use ends |End| to capture natural transformations.
+We are going to use type theory versions of certain category theoretic
+concepts For instance, we use ends |End| to capture natural transformations.
 Given a bifunctor |F : Setop → Set → Set|, an element of |∫ X ** F X X| is
 equivalent to an element of |f : {X : Set} → F X X|, along with a proof:
 
@@ -181,8 +189,8 @@ equivalent to an element of |f : {X : Set} → F X X|, along with a proof:
 
 
 \noindent
-The natural transformations between functors |F| and |G| are
-ends |∫ X ** F X → G X|. We will often ignore the presence of the proofs, and 
+The natural transformations between functors |F| and |G| are ends |∫ X ** F X
+→ G X|. We will often ignore the presence of the proofs, and 
 use such ends directly as polymorphic functions.
 
 In this setting, the Yoneda lemma can be stated as follows, for any functor |F : Set → Set|:
@@ -191,4 +199,7 @@ In this setting, the Yoneda lemma can be stated as follows, for any functor |F :
 
 we will make use of this fact later on.
 
-Finally, for readability we will elide certain artifacts in Agda's syntax, for instance the quantification of implicit arguments when their types can be inferred from the context. The reader should be reassured that the paper is a literate agda file, available from the final author's webpage.
+Finally, for readability we will elide certain artifacts in Agda's syntax,
+for instance the quantification of implicit arguments when their types can be
+inferred from the context. The reader should be reassured that the paper is a
+literate agda file, available from the final author's webpage.

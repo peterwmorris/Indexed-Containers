@@ -31,7 +31,12 @@ open import icont
 \section{Terminal Co-Algebras of Indexed Containers}
 \label{sec:termcoalg}
 
-Dually to the initial algebra construction out-lined above, we can also show that indexed-containers are closed under parameterized terminal co-algebras. We proceed in much the same way as before, by first constructing the dual of the indexed |W|-type, which we refer to as an indexed |M|-type. As you might expect this is in fact the plain (as opposed to parametrized) terminal co-algebra of an indexed container functor:
+Dually to the initial algebra construction out-lined above, we can also show
+that indexed-containers are closed under parameterised terminal co-algebras.
+We proceed in much the same way as before, by first constructing the dual of
+the indexed |W|-type, which we refer to as an indexed |M|-type. As you might
+expect this is in fact the plain (as opposed to parametrized) terminal
+co-algebra of an indexed container functor:
 
 %format ∞ = "\infty"
 %format ♯ = "\sharp"
@@ -152,8 +157,15 @@ unfold^C {I} {J} {S ◁* P} (T ◁* Q) (f ◁* r) = funfold ◁* runfold
            runfold t j (path (inj₂ (i , (p , q)))) = 
              r t j (inj₂ (i , p , runfold (proj₂ (f _ t) i p) j q))
 
+\end{code}
+
+%if style == newcode
+
+\begin{code}
+
 -}
 
 \end{code}
 
+%endif
 

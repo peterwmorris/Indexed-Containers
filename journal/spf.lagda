@@ -157,7 +157,7 @@ lifting functor |↑ : Seti → Setsi|. Moreover, this structure is preserved un
 
 \begin{proof}
 To prove the structure is a relative 
-monad we observe that the following equlities hold:
+monad we observe that the following equalities hold:
 
 For |F : ISPT K|, |G : SPF J K|, |H : ISPT I J|:
 \begin{align}

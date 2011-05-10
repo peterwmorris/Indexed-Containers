@@ -89,7 +89,7 @@ such that both |idd| is mapped to |id| and |_⊚_| to |_∘_| under the action o
 |mor|. We adopt the convention that the projections |obj| and |mor| are silent, 
 \emph{i.e.} depending on the context |F :  IFunc I| can stand for either the 
 functor's action on objects, or on morphisms. A morphism between to such 
-indexed functors is a natural transormation:
+indexed functors is a natural transformation:
 
 %format ^F = "^{\text{\tiny F}}"
 %format ⇒^F = "\Rightarrow" ^F
@@ -216,10 +216,11 @@ we denote |Δ^F|:
 
 
 \noindent
-This construction is used, for instance, in building the pattern functor for |ScLam| as in the introduction; Concentranting only on the |abs| case we want to build  
-|ScLam′ X n = (X ∘ suc) n|. Or simply |ScLam′ X = Δ^F suc X|. In general this combinator 
-restricts the functor |X| to the indicies in the image of the
-function |f|.
+This construction is used, for instance, in building the pattern functor for
+|ScLam| as in the introduction; Concentrating only on the |abs| case we want
+to build  |ScLam′ X n = (X ∘ suc) n|. Or simply |ScLam′ X = Δ^F suc X|. In
+general this combinator restricts the functor |X| to the indices in the
+image of the function |f|.
 
 What if the restriction appears on the right of such an equation? As an example,
 consider the successor constructor for |Fin|; here we want to build the pattern functor: |FFin′ X (1+ n) = X n|. To do this we observe that this is equivalent to
@@ -236,7 +237,7 @@ construction |Σ^F|, so the 2nd equation can be written |FFin′ X = Σ^F suc X|
 \end{code}
 
 \noindent
-Perhaps unsuprisingly, |Σ^F| turns out to be the left adjoint to re-indexing 
+Perhaps unsurprisingly, |Σ^F| turns out to be the left adjoint to re-indexing 
 (|Δ^F|). Its right adjoint, we denote |Π^F|:
 
 \begin{code}
@@ -373,7 +374,7 @@ This prevents us from being able to define nested, or mutual inductive families
 in this way.
 
 For the morphism part of an indexed-functor over a co-product we can eliminate
-the coproduct and curry the result ing definition in this way:
+the co-product and curry the resulting definition in this way:
 
 \begin{align*}
 |IFunc (I ⊎ J)| 

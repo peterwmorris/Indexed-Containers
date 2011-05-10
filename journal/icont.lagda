@@ -281,7 +281,7 @@ are preserved under |⟦_⟧_|, i.e.:
 \end{align*}
 
 Which follow from the extensionality of our propositional equality, the 
-assosciativity of |Σ| and the terminality of |⊤|. By the full and faithful 
+associativity of |Σ| and the terminality of |⊤|. By the full and faithful 
 nature of the embedding into |IFunc| we can then reuse the result that
 |(IFunc , η^F , _>>=^F_)| is a relative monad.
 
@@ -337,7 +337,7 @@ open DelSigPi
 
 \begin{proof}
 
-Again we appeal to the full and faithfullness of |⟦_⟧_| and show instead that
+Again we appeal to the full and faithfulness of |⟦_⟧_| and show instead that
 the embedding into |IFunc| preserves these constructions. That, is we want to show that the following three statements hold:
 
 \begin{align*}
@@ -378,10 +378,10 @@ _⟨_⟩C {I} {J} (S ◁ P) (T ◁* Q) =
 \end{code}
 
 \noindent
-The composite container has shapes given by a shape |s : S| and an assigment of |T| 
-shapes to |PJ s| positions. Positions are then a choice between 
-a |I|-indexed position, or a pair of an |J|-indexed position, and a |Q| position
-\emph{underneath} the appropriate |T| shape. 
+The composite container has shapes given by a shape |s : S| and an assignment
+of |T| shapes to |PJ s| positions. Positions are then a choice between a
+|I|-indexed position, or a pair of an |J|-indexed position, and a |Q|
+position \emph{underneath} the appropriate |T| shape. 
 
 %if style==code
 

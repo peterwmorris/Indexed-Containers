@@ -31,9 +31,17 @@ open import icont
 \section{Initial Algebras of Indexed Containers}
 \label{sec:initalg}
 
-We will now examine how to construct the initial algebra of a container of the form |F : ICont* (I ⊎ J) J|. The shapes of such a container are an |J|-indexed family of |Set|s and the positions are indexed by |I ⊎ J|; we will treat these position as two separate entities, those positions indexed by |I| -- the recusive positions -- and those by |J| -- the payload positions.
+We will now examine how to construct the initial algebra of a container of
+the form |F : ICont* (I ⊎ J) J|. The shapes of such a container are an
+|J|-indexed family of |Set|s and the positions are indexed by |I ⊎ J|; we
+will treat these position as two separate entities, those positions indexed
+by |I| -- the recursive positions -- and those by |J| -- the payload
+positions.
 
-The shapes of initial algebra we are constructing will be trees with S shapes at the nodes and which branch over the recursive |PI| positions. We call these trees \emph{indexed} |W|-types, denoted |WI| and they are the initial algebra of the functor |⟦ S ◁ PJ ⟧*|:
+The shapes of initial algebra we are constructing will be trees with S shapes
+at the nodes and which branch over the recursive |PI| positions. We call
+these trees \emph{indexed} |W|-types, denoted |WI| and they are the initial
+algebra of the functor |⟦ S ◁ PJ ⟧*|:
 
 \begin{code}
 
@@ -50,9 +58,11 @@ WIfold f j (sup (s , g)) = f j (s , λ j′ p → WIfold f j′ (g j′ p))
 
 
 \noindent
-This mirrors the construction for plain containers, where we can view ordinary |W| types as the initial algebra of a container functor.
+This mirrors the construction for plain containers, where we can view
+ordinary |W| types as the initial algebra of a container functor.
 
-Positions are given by paths through such a tree, terminated by a non-recursive |PI|:
+Positions are given by paths through such a tree, terminated by a
+non-recursive |PI|:
 
 \begin{code}
 
@@ -93,7 +103,8 @@ sub |Q| position. Here the |Q| positions are recursive |Path| positions.
 %format μ^C = μ ^C
 
 \noindent
-We can now give the object part of the patrametrized initial algebra of a container, given by:
+We can now give the object part of the parametrised initial algebra of a
+container, given by:
 
 \begin{code}
 
@@ -109,7 +120,9 @@ We can now give the object part of the patrametrized initial algebra of a contai
 %format unfold^C = unfold ^C
 
 \noindent
-The algebra map is a container morphism from the partial aplication of |F| and its parametrised initial algebra, to the initial algebra, given by the algebra map of |WI| (|sup|) and our mediation funtion |path|:
+The algebra map is a container morphism from the partial application of |F|
+and its parametrised initial algebra, to the initial algebra, given by the
+algebra map of |WI| (|sup|) and our mediation function |path|:
 
 %if style == newcode
 
