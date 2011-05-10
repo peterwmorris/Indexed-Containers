@@ -52,9 +52,9 @@ Setop  = Set
 
 %endif
 
-%format Σ* = Σ "(\!"
+%format Σ* = "(\!"
 %format ∶ = :
-%format *Σ = "\!)\!" × "\!"
+%format *Σ = "\!)" × 
 
 %format Σ′ = Σ
 %format π₀ = "\pi_0"
@@ -99,13 +99,16 @@ As a notational convenience, we will continue to define extra Agda data-types
 in the rest of the paper, but in the end we will show how each of these can
 be reduced to a theory that contains only |W|. For compactness, and
 readability we will also define functions using Agda's pattern matching
-syntax, rather than encoding them using |wrec|, it is an unstated lemma that
-each of these definitions can be reduced to terms which only use |wrec|.
+syntax, rather than encoding them using |wrec|, all of these definitions can 
+be reduced to terms which only use |wrec|.
 
-We'll also require a notion of propositional equality, in Agda this is defined via a data-type:
+We'll also require a notion of propositional equality. To simplyfy the presentation of some definitions later on, we will employ a heterogeneous equality.
+This can be defined in Agda via a data-type:
 
 %format ≅′ = ≅
 %format _≅′_ = _≅_
+%format ≡′ = ≡
+%format _≡′_ = _≡_
 %format subst′ = subst
 
 \begin{code}
@@ -117,6 +120,19 @@ subst′ : {A : Set} (P : A → Set) {x y : A} → x ≅′ y → P x → P y
 subst′ P refl p = p  
 
 \end{code}
+
+Most of the time our equalities will be homogeneous, however, so we introduce a short hand for this:
+
+\begin{code}
+
+_≡′_ : {A : Set} → A → A → Set 
+a ≡ b = a ≅ b
+
+\end{code}
+
+It is also known that homogeneous and heterogeneous equality have the same 
+strength, so all the definitions employing our equality could also be encoded in
+a theory with only homogeneous equality.
 
 This is an intensional equality, but we want to work in a setting with extensional type-theory, so we extend the propositional equality with this extensionality axiom:
 
@@ -183,20 +199,33 @@ open uip public
 With these ingredients we obtain a theory which corresponds to
 extensional Type Theory \cite{hofmann1996conservativity}.
 
-We are going to use type theory versions of certain category theoretic
-concepts For instance, we use ends |End| to capture natural transformations.
+We are going to use type theoretic versions of certain category theoretic
+concepts. For example we represent functors by packing up their definition as
+an Agda record. An endo functor on set, is given by:
+
+\begin{code}
+
+record Func : Set₁ where
+  obj  : Set → Set
+  mor  : ∀ {A B} → (A → B) → obj A → obj B
+
+\end{code}
+
+It would also be possible to pack up the functor laws as extra fields in these 
+records. 
+
+We use ends |End| to capture natural transformations.
 Given a bifunctor |F : Setop → Set → Set|, an element of |∫ X ** F X X| is
 equivalent to an element of |f : {X : Set} → F X X|, along with a proof:
 
 \[ \mbox{|{A B : Set} (g : A → B) → F g B (f {B}) ≡ F A g (f {A})|} \]
-
 
 \noindent
 The natural transformations between functors |F| and |G| are ends |∫ X ** F X
 → G X|. We will often ignore the presence of the proofs, and 
 use such ends directly as polymorphic functions.
 
-In this setting, the Yoneda lemma can be stated as follows, for any functor |F : Set → Set|:
+In this setting, the Yoneda lemma can be stated as follows, for any functor |F|:
 
 \[\mbox{| F X ≅ ∫ Y ** (X → Y) → F Y |}\]
 
@@ -204,7 +233,8 @@ we will make use of this fact later on.
 
 Finally, for readability we will elide certain artifacts in Agda's syntax,
 for instance the quantification of implicit arguments when their types can be
-inferred from the context. The reader should be reassured that the paper is a
+inferred from the context. We will often leave out record projections 
+from notions such as |Func|, allowing the functor to stand for both its action 
+on object and morphism, just as would happen in the category theory 
+literature. The reader should be reassured that the paper is a
 literate agda file, available from the final author's webpage.
-
-\todo{Define Func.}

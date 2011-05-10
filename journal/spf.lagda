@@ -306,8 +306,10 @@ We can also define the mutual types, |Ne| and |Nf|. Here, a copy of the normal
 forms is defined \emph{inside} the definition of the neutral terms, and vice
 versa:
 
-%format TNe = T "_{" Ne "}"
-%format TNf = T "_{" Nf "}"
+%format TNe = T "_{" NeLam "}"
+%format TNf = T "_{" NfLam "}"
+%format TNeNf = T "_{" NeNf "}"
+%format TNfNe = T "_{" NfNe "}"
 
 \begin{code}
 

@@ -131,10 +131,10 @@ the following derivation:
 
 \begin{align*}
                 & |⟦ S ◁ P ⟧ ⇒^F F| & \\
-  \equiv  \;    & |∫ X ** Σ* s ∶ S (P s -*-> X) → F X| & \{\mbox{by definition}\} \\
-  \equiv  \;    & |∫ X ** (s : s) → (P s -*-> X) → F X| & \{\mbox{currying}\} \\
-  \cong   \;    & |(s : S) → ∫ X ** (P s -*-> X) → F X| & \{\mbox{commuting end and pi} \} \\
-  \cong   \;    & |(s : S) → F (P s)| & \{\mbox{Yoneda}\} \\
+  \equiv  \;    & |∫ X ** Σ* s ∶ S *Σ (P s -*-> X) → F X| & \{\mbox{by definition}\} \\
+  \approx  \;    & |∫ X ** (s : s) → (P s -*-> X) → F X| & \{\mbox{currying}\} \\
+  \approx   \;    & |(s : S) → ∫ X ** (P s -*-> X) → F X| & \{\mbox{commuting end and pi} \} \\
+  \approx   \;    & |(s : S) → F (P s)| & \{\mbox{Yoneda}\} \\
 \end{align*}
 
 \noindent
@@ -142,8 +142,8 @@ If |F| is also an indexed container |T ◁ Q| then we have:
 
 \begin{align*}
            & |⟦ S ◁ P ⟧ ⇒^F ⟦ T ◁ Q ⟧| \\
- \cong \;  & |(s : S) → Σ* t ∶ T * *Σ (Q t -*-> P s)| \\
- \cong \;  & |Σ* f ∶ S → T *Σ ((s : S) → Q (f s) -*-> P s)|
+ \approx \;  & |(s : S) → Σ* t ∶ T * *Σ (Q t -*-> P s)| \\
+ \approx \;  & |Σ* f ∶ S → T *Σ ((s : S) → Q (f s) -*-> P s)|
 \end{align*}
  
 We will use this last line as the definition for container morphisms, captured by 

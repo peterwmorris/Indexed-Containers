@@ -63,7 +63,7 @@ data Lam : Set where
 
 \noindent An elegant way to formalize and reason about inductive types
 is to model them as the initial algebra of an endofunctor, we can
-define the siganture functors cirresponding to each of the examples above:
+define the siganture functors corresponding to each of the examples above:
 
 \begin{code}
 
@@ -200,6 +200,9 @@ FScLam X n = Fin n ⊎ (X n × X n) ⊎ (X ∘ suc) n
 The equality type expresses the focussed character of the constructors
 for |Fin|. The mutual definition of |NeLam| and |NfLam| can be
 represented by two binary functors:
+
+%format FNe = F "_{" NeLam "}"
+%format FNf = F "_{" NfLam "}"
 
 \begin{code}
 
