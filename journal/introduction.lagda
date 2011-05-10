@@ -9,6 +9,7 @@ module introduction where
 open import Data.Unit
 open import Data.Product
 open import Data.Sum
+open import Data.Maybe
 open import Relation.Binary.HeterogeneousEquality
 -- open import Data.List
 open import Function
@@ -181,7 +182,7 @@ Indeed, this category
 is easily seen to be isomorphic to the slice category $|Set|/ |I|$ but
 the chosen representation is more convenient type-theoretically. Using
 $\Sigma$-types and equality types from Type Theory, we can define the
-following endofunctors |FFin, FVec| and |FLam|
+following endofunctors |FFin|, |FVec| and |FLam|
 on the category of families
 over |Nat| whose initial algebras are |Fin| and |Lam|, respectively:
 
@@ -200,6 +201,16 @@ FScLam X n = Fin n ⊎ (X n × X n) ⊎ (X ∘ suc) n
 
 The equality type expresses the focussed character of the
 constructors for |Fin|. 
+
+\begin{code}
+
+FNe : (ℕ → Set) → (ℕ → Set) → ℕ → Set
+FNe X Y n = Fin n ⊎ (X n ⊎ Y n)
+
+FNf : (ℕ → Set) → (ℕ → Set) → ℕ → Set
+FNf X Y n = (Y ∘ suc) n ⊎ X n
+
+\end{code} 
 
 \todo{Discuss mutual case.}
 
