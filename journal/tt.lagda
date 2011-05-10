@@ -200,7 +200,8 @@ With these ingredients we obtain a theory which corresponds to
 extensional Type Theory \cite{hofmann-conservativity}.
 
 We are going to use type theoretic versions of certain category theoretic
-concepts. For example we represent functors by packing up their definitions in Agda's records. An endo functor on set, is given by:
+concepts. For example we represent functors by packing up their definition as
+an Agda record. An endo functor on set, is given by:
 
 \begin{code}
 

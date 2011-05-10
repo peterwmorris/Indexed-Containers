@@ -379,8 +379,8 @@ the co-product and curry the resulting definition in this way:
 \begin{align*}
 |IFunc (I ⊎ J)| 
   & \equiv      & |(I ⊎ J → Set) → Set| \\
-  & \cong       & |(I → Set) × (J → Set) → Set|\\
-  & \cong       & |(I → Set) → (J → Set) → Set|\\
+  & \approx       & |(I → Set) × (J → Set) → Set|\\
+  & \approx       & |(I → Set) → (J → Set) → Set|\\
 \end{align*}
 
 \noindent
