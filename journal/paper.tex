@@ -621,7 +621,7 @@ Indeed, this category
 is easily seen to be isomorphic to the slice category $\ensuremath{\Conid{Set}}/ \ensuremath{\Conid{I}}$ but
 the chosen representation is more convenient type-theoretically. Using
 $\Sigma$-types and equality types from Type Theory, we can define the
-following endofunctors \ensuremath{\Conid{F}_{\Conid{Fin}},\Conid{F}_{\Conid{Vec}}} and \ensuremath{\Conid{F}_{\Conid{Lam}}}
+following endofunctors \ensuremath{\Conid{F}_{\Conid{Fin}}}, \ensuremath{\Conid{F}_{\Conid{Vec}}} and \ensuremath{\Conid{F}_{\Conid{Lam}}}
 on the category of families
 over \ensuremath{\Conid{Nat}} whose initial algebras are \ensuremath{\Conid{Fin}} and \ensuremath{\Conid{Lam}}, respectively:
 
@@ -644,6 +644,19 @@ over \ensuremath{\Conid{Nat}} whose initial algebras are \ensuremath{\Conid{Fin}
 
 The equality type expresses the focussed character of the
 constructors for \ensuremath{\Conid{Fin}}. 
+
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\Conid{FNe}\;\in\;(\Conid{ℕ}\;\rightarrow\;\Conid{Set})\;\rightarrow\;(\Conid{ℕ}\;\rightarrow\;\Conid{Set})\;\rightarrow\;\Conid{ℕ}\;\rightarrow\;\Conid{Set}{}\<[E]%
+\\
+\>[B]{}\Conid{FNe}\;\Conid{X}\;\Conid{Y}\;\Varid{n}\;\mathrel{=}\;\Conid{Fin}\;\Varid{n}\;\uplus\;(\Conid{X}\;\Varid{n}\;\uplus\;\Conid{Y}\;\Varid{n}){}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\Conid{FNf}\;\in\;(\Conid{ℕ}\;\rightarrow\;\Conid{Set})\;\rightarrow\;(\Conid{ℕ}\;\rightarrow\;\Conid{Set})\;\rightarrow\;\Conid{ℕ}\;\rightarrow\;\Conid{Set}{}\<[E]%
+\\
+\>[B]{}\Conid{FNf}\;\Conid{X}\;\Conid{Y}\;\Varid{n}\;\mathrel{=}\;(\Conid{Y}\;\ensuremath{\mbox{$\circ$}}\;\Varid{suc})\;\Varid{n}\;\uplus\;\Conid{X}\;\Varid{n}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
 
 \todo{Discuss mutual case.}
 
