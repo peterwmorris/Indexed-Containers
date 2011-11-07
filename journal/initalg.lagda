@@ -31,23 +31,26 @@ open import icont
 \section{Initial Algebras of Indexed Containers}
 \label{sec:initalg}
 
-We will now examine how to construct the initial algebra of a container of
-the form |F : ICont* (I ⊎ J) J|. The shapes of such a container are an
-|J|-indexed family of |Set|s and the positions are indexed by |I ⊎ J|; we
-will treat these position as two separate entities, those positions indexed
-by |I| -- the recursive positions -- and those by |J| -- the payload
-positions.
+We will now examine how to construct the parameterised initial algebra
+of an indexed container of the form |F : ICont* (I ⊎ J) J|. The shapes of such
+a container are an |J|-indexed family of |Set|s and the positions are
+indexed by |I ⊎ J|; we will treat these position as two separate
+entities, those positions indexed by |I| -- the recursive positions --
+and those by |J| -- the payload positions.
 
-The shapes of initial algebra we are constructing will be trees with S shapes
-at the nodes and which branch over the recursive |PI| positions. We call
-these trees \emph{indexed} |W|-types, denoted |WI| and they are the initial
-algebra of the functor |⟦ S ◁ PJ ⟧*|:
+The shapes of initial algebra we are constructing will be trees with S
+shapes at the nodes and which branch over the recursive |PI|
+positions. We call these trees \emph{indexed} |W|-types, denoted |WI|,
+and they are the initial algebra of the functor |⟦ S ◁ PJ ⟧*|. In
+Agda, we can implement the |WI| constructor and its associated 
+iteration operator |WIfold| as follows:
 
 \begin{code}
 
 data WI  {J : Set} (S : J → Set) 
          (PJ : (j : J) → S j → J → Set) : J → Set where
   sup : obj* ⟦ S ◁* PJ ⟧* (WI S PJ)  -**-> WI S PJ 
+
 
 WIfold :  ∀  {J} {X : J → Set} {S : J → Set} 
              {PJ : (j : J) → S j → J → Set} →
@@ -57,12 +60,10 @@ WIfold f j (sup (s , g)) = f j (s , λ j′ p → WIfold f j′ (g j′ p))
 \end{code}
 
 
-\noindent
-This mirrors the construction for plain containers, where we can view
-ordinary |W| types as the initial algebra of a container functor.
-
-Positions are given by paths through such a tree, terminated by a
-non-recursive |PI|:
+\noindent This mirrors the construction for plain containers, where we
+can view ordinary |W|-types as the initial algebra of a container
+functor.  Positions in an indexed |W|-type are given by the paths through
+such a tree which terminate in a non-recursive |PI|-position:
 
 \begin{code}
 
@@ -94,17 +95,19 @@ pathminusone (path p) = p
 
 %format pathminusone = path minusone
 
-\noindent
-Again this mirrors the partial application construction where positions were 
-given by a |PJ| position at the top level, or a pair of a |PJ| position and a 
-sub |Q| position. Here the |Q| positions are recursive |Path| positions. 
+\noindent Again this mirrors the partial application construction
+where positions were given by a |PJ| position at the top level, or a
+pair of a |PJ| position and a sub |Q| position. Here the |Q| positions
+are recursive |Path| positions. This reflects the fact that a
+|WI|-type can be thought of as iterated partial application.  {\bf
+indentation and line spacing} We can now use |WI|-types, or
+equivalently initial algebras of indexed contianers, to construct the
+parametrised initial algebra of an indexed container. Firstly we
+construct the carrier {\bf defined} of the parameterised initial algebra:
 
 %format μ = "\mu"
 %format μ^C = μ ^C
 
-\noindent
-We can now give the object part of the parametrised initial algebra of a
-container, given by:
 
 \begin{code}
 
@@ -119,10 +122,11 @@ container, given by:
 %format fold^C = fold ^C
 %format unfold^C = unfold ^C
 
-\noindent
-The algebra map is a container morphism from the partial application of |F|
-and its parametrised initial algebra, to the initial algebra, given by the
-algebra map of |WI| (|sup|) and our mediation function |path|:
+\noindent Next, we note that the structure map {\bf defined} for this
+parameterised initial algebra is a container morphism from the partial
+application of |F| and its parametrised initial algebra, to the
+parameterised initial algebra. This structure map is given by the
+constructor |sup| of |WI| and the constructor |path| of |Path|:
 
 %if style == newcode
 
@@ -154,6 +158,9 @@ in^C F = (λ _ → sup) ◁* λ _ _ (path p) → p
 
 %endif
 
+That we have a parameterised initial algebra follows from the
+definition of the associated iteration operator which we now present.
+
 \begin{code}
 
 fold^C : ∀  {I J} {F : ICont* (I ⊎ J) J} (G : ICont* I J) → 
@@ -171,7 +178,10 @@ fold^C {I} {J} {S ◁* P} (T ◁* Q) (f ◁* r) = ffold ◁* rfold
              path (inj₂ (j′ , (q , rfold (f j′ q) i y)))
 
 
-\end{code}
+\end{code} {\bf Do we need some kind of proof of initiality, either
+for mu C or |WI|. Do we have a notion of parameterised algebra or is
+it translated to algebra of F[]. See cotianers for reference point.
+}
 
 %if style == newcode
 

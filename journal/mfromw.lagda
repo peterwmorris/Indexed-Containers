@@ -31,12 +31,15 @@ open import func
 \subsection*{|M| from |W|}
 \label{sec:mfromw}
 
-Since we have shown that both |WI| and |MI| types can be reduced to their
-non-indexed counterparts, it only remains to show that |M| types can be,
-reduced
-to |W| types. This is a result from our previous work on
-containers~\cite{alti:cont-tcs}, though in the setting of indexed |WI| types,
-we can give a better expalnation.
+Since we have shown that both |WI| and |MI| types can be reduced to
+their non-indexed counterparts, we can finish the reduction of the
+logical theory of indexed contianers to |W|-types by showing that |M|
+types can be reduced to |W| types. This is a result from our previous
+work on containers~\cite{alti:cont-tcs}, though in the setting of
+indexed |WI| types, we can give a better expalnation. Before tackling
+this question directly, we first introduce the basic definitions
+pertaining to final coalgebras and our implementation of them within
+Agda.
 
 In category theory, an $\omega$-chain, is an infinite diagram:
 
@@ -56,7 +59,7 @@ In category theory, an $\omega$-chain, is an infinite diagram:
 \cdots} 
 \]
 
-In type-theroy, we can represent such a chain, as a pair of functions:
+In type-theory, we can represent such a chain as a pair of functions:
 
 \begin{code}
 
@@ -65,9 +68,9 @@ Chain = Σ* A ∶ (ℕ → Set) *Σ ((n : ℕ) → A (suc n) → A n)
 
 \end{code}
 
-The limit of a chain is an object |X| and family of projections 
-$\pi_{n} \in \mbox{|X|} → \mbox{|A|}_{n}$ such that in the following diagram, 
-all the small triangles commute:
+A cone for a chain is an object |X| and family of projections 
+$\pi_{n} \in \mbox{|X|} → \mbox{|A|}_{n}$ such that, in the following diagram, 
+all the small triangles commute: {\bf noindents}
 
 \[
 \xymatrix{
@@ -97,9 +100,10 @@ all the small triangles commute:
 } 
 \]
 
-It is also required that the limit is the terminal cone with this property. 
-Again, we can encode the limit of a chain, its projections, and this universal 
-property in type theory:
+The limit of a chain is the cone which is terminal amongst all cones
+for that chain. This terminality condition is called the universal
+property of the limit. We can encode the limit of a chain, including its
+projections and its universal property, in Agda as follows:
 
 %format π = "\pi"
 
@@ -121,7 +125,9 @@ univ pro com x = (λ n → pro n x) , (λ n → com n x)
 
 \end{code}
 
-Given a functor |F|, we can build a chain:
+We are interested in certain $\omega$-chains which can be constructed
+from a functor |F| as follows (where |!| is the unique moprhism from
+any object into the terminal object |⊤|):
 
 \[
 \xymatrix{
@@ -148,10 +154,10 @@ $\omega$-continuous, \emph{i.e.} that for any chain |(A , a)|:
 
 | F (LIM (A, a)) ≅ LIM ((F ∘ A), (F ∘ a)) |
 
-\noindent
-then the limit of |F om| will be the terminal co-algebra of |F|. 
-
-To see this we first observe that we there is an isomorphism between the limit of a chain, and the limit of any of its \emph{tails}:
+\noindent then the limit of |F om| will be the terminal co-algebra of
+|F|. To see this we first observe that we there is an isomorphism
+between the limit of a chain, and the limit of any of its
+\emph{tails}: {\bf comment on formalisation of category theory}
 
 \begin{code}
 
@@ -214,14 +220,16 @@ To show that the co-algebra is terminal, we employ the universal property of
 }
 \]
 
-We want to build |M|-types, which we know to be the terminal co-algebras of 
-container functors. In order to do this, we must construct 
-iteration of container functors (to build the chain) and show that all container
-functors are $\omega$ continuous.
-
-Since we only need to build iterations of container functors applied to the 
-terminal object |⊤|, we build that directly. We define the following variation 
-of |W|, cut off at a know depth:
+We now turn to the specific task at hand, namely the construction of
+|M|-types from |W|-types, that is the capacity to construct final
+coalgebras of container functors from the capacity to construct the
+initial algebras of container functors.  In order to do this, we must
+construct the iteration of container functors (to build the chain) and
+show that all container functors are $\omega$ continuous. Since we
+only need to build iterations of container functors applied to the
+terminal object |⊤|, we build that directly. We define the following
+variation of |W|, cut off at a known depth: {\bf did we do final
+coalgebras of contianers and |M|-types}
 
 \begin{code}
 
@@ -231,13 +239,11 @@ data WM (S : Set) (P : S → Set) : ℕ → Set where
 
 \end{code}
 
-\noindent
-It should be obvious that |WM zero| is indeed terminal in |Set| and that 
-|⟦ S ◁ P ⟧ (WM S P n) ≅ WM S P (suc n)|, so upto to isomorphism, this just the 
-thing we need to construct |⟦ S ◁ P ⟧|$^{\omega}$.
-
-Note that |WM| is itself encodable as an indexed |WI| type, and by the result 
-above, a |W| type:
+\noindent It should be obvious that |WM zero| is indeed terminal in
+|Set| and that |⟦ S ◁ P ⟧ (WM S P n) ≅ WM S P (suc n)| so, upto to
+isomorphism, this is a good candidate for the final coalgebra of |⟦ S
+◁ P ⟧|. Note that |WM| is itself encodable as an indexed |WI| type
+and, by the result above, a |W| type:
 
 %if style == newcode
 
@@ -275,10 +281,11 @@ WM′ S P = WI S′ P′
 
 %endif
 
-\noindent
-We can truncate any given tree of depth greater than 1, this amounts to the 
-iteration of the morphism part of the container functor applied to the unique 
-morphism into the terminal object:
+\noindent We can truncate any given tree of depth greater than 1. This
+is done by the repeated application of the morphism part of the
+container functor to the unique morphism into the terminal object:{\bf
+define terminal}. Unwinding the definition of the action of a contianer
+functor on morphisms gives us the following definition of truncation in Agda:
 
 \begin{code}
 
@@ -288,7 +295,9 @@ trunc (suc n) (sup (s , f)) = sup (s , trunc n ∘ f)
 
 \end{code}
 
-So now we can build the chain of finite iterations of a container functor:
+Now we can build the chain of finite iterations of a container
+functor whose limit will form the final coalgebra of the container
+functor.
 
 \begin{code}
 
@@ -363,7 +372,7 @@ module imp (S : Set) (P : S → Set) (A : ℕ → Set) (a : (n : ℕ) → A (suc
 
 Note that the shape picked at every point along the chain must be the same, in 
 order to make the diagrams commute. This is the key insight
-into constructing this function.
+into constructing this function. {\bf dont see it}
 
 %if style == newcode
 
@@ -385,3 +394,5 @@ M : (S : Set) (P : S → Set) → Set
 M S P = LIM (M-chain S P)
 
 \end{code}
+
+{\bf is LIM defined? where is w-cont?}

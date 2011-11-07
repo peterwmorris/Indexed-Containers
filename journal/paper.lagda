@@ -57,15 +57,19 @@ module paper where
 
 \begin{abstract}
 
-  We show that the syntactically rich notion of inductive families can
-  be reduced to a core type theory with a fixed number of type
-  constructors exploiting the novel notion of indexed containers.
-  Indexed containers generalize simple containers, capturing strictly
-  positive families instead of just strictly positive types, without
-  having to extend the core type theory. Other applications of indexed
-  containers include datatype-generic programming and reasoning about
-  polymorphic functions. The construction presented here has been
-  formalized using the Agda system.
+  We show that the syntactically rich notion of strictly positive
+  families can be reduced to a core type theory with a fixed number of
+  type constructors exploiting the novel notion of indexed containers.
+  As a result, we show indexed containers capture strictly positive families
+  in much the same way that containers capture strictly positive
+  types. Interestingly, this step from containers to indexed
+  containers is achieved without having to extend the core type
+  theory. 
+%Other applications of indexed containers include
+%  datatype-generic programming and reasoning about polymorphic
+%  functions. 
+The construction presented here has been formalized using
+  the Agda system.
 
 \end{abstract}
 

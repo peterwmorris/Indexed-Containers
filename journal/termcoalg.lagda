@@ -36,7 +36,7 @@ that indexed containers are closed under parameterised terminal coalgebras.
 We proceed in much the same way as before, by first constructing the dual of
 the indexed |W|-type, which we refer to as an indexed |M|-type. As you might
 expect this is in fact the plain (as opposed to parametrized) terminal
-coalgebra of an indexed container functor:
+coalgebra of an indexed container:
 
 %format ∞ = "\infty"
 %format ♯ = "\sharp"
@@ -79,9 +79,10 @@ MIunfold m i x | s , f = sup (s , (λ i′ p → ♯ MIunfold m i′ (f i′ p))
 
 \end{code}
 
-Here we employ Agda's approach to coprogramming (e.g. see \cite{txa:mpc2010g}), where we mark (possibly) infinite subtrees with |∞|, |♯ : A → ∞ A| and |♭ : ∞ A → A| pack and unpack infinite objects respectively.
-
-The paths to positions in and indexed |M| tree, are always finite -- in fact modulo the use of |♭|, this |Path| is the same as the definition for the initial algebra case.
+Here we employ Agda's approach to coprogramming (e.g. see
+\cite{txa:mpc2010g}), where we mark (possibly) infinite subtrees with
+|∞|, |♯ : A → ∞ A| and |♭ : ∞ A → A| pack and unpack infinite objects
+respectively. {\bf explain. and why?} The paths to positions in and indexed |M| tree, are always finite -- in fact modulo the use of |♭|, this |Path| is the same as the definition for the initial algebra case.
 
 \begin{code}
 
@@ -96,7 +97,9 @@ data Path  {I J : Set} (S : J → Set)
 
 \end{code}
 
-The parameterised terminal co-algebra of an indexed container is, then, given by a choice of |MI| shapes and positions given by |Path|.
+Just as with parameterised initial algebras of indexed containers are
+built from |WI|-types, so parameterised terminal coalgebras of indexed
+containers is built from |WI|-types as follows.
 
 \begin{code}
 
@@ -166,6 +169,8 @@ unfold^C {I} {J} {S ◁* P} (T ◁* Q) (f ◁* r) = funfold ◁* runfold
 -}
 
 \end{code}
+
+{\bf There must be something more to say}
 
 %endif
 

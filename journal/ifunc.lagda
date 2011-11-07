@@ -32,9 +32,19 @@ open import tt
 %format IFunc.obj = "\!"
 %format IFunc.mor = "\!"
 
-Given |I : Set| we consider the category of families over |I|. Its objects are
-|I|-indexed families of types |A : I → Set| and morphisms are given by 
-|I|-indexed families of functions:
+While containers provide a robust framework for studying data types
+arising as inital algebras of functors over sets, indexed containers
+provide an equally robust framework for studying the more refined data
+types which arise as initial algebras of functors over indexed
+sets. Indeed, just as the essence of containers is a compact
+representation of well behaved functors over sets, so the essnce of
+indexed containers will be an equally compact representation of
+functors over indexed sets. Given |I : Set| we begin by considering
+the category of families over |I|. Its objects are |I|-indexed
+families of sets |A : I → Set| and its morphisms are given by
+|I|-indexed families of functions. The definitions of morphisms,
+identity morphisms and composition of morphisms in this category are given below:{\bf
+check types vs sets}
 
 %format * = "^{\star}" 
 %format -*-> = "\rightarrow" *
@@ -109,7 +119,12 @@ F ⇒^F G =  ∫ A ** IFunc.obj F A ->> IFunc.obj G A
 %format >>=^F = >>= ^F
 %format _>>=^F_ = _ >>=^F _
 
-|IFunc| comes with a monad like structure given by:
+Our goal is, eventually, to give a representation for indexed functors
+as indexed containers. In doing this, we will also wish to represent
+structure on indexed functors as structure on indexed containers. In
+order to do this, we next look at the structure possesed by indexed
+functors. The main structure we wish to highlight for 
+|IFunc| is the following is a monad-like structure:
 
 \begin{code}
 
@@ -157,13 +172,20 @@ For |F : IFunc I|, |G : IFunc* J I|, |H : IFunc* K J|:
 %format mor* = mor *
 
 \noindent
-The opposite of the Kleisli category associated with |IFunc| has objects 
-|I , J : Set| and morphisms given by |J|-indexed families of |I|-indexed 
-functors. We denote this notion of indexed functor |IFunc*|: 
+
+So far our indexed functors represent functors |Fam I| to |Set|.  Of
+course, really we want to study functors |Fam I| to |Fam J| as we want
+to study functors mapping indexed sets to indexed sets. We will
+therefore define a type |IFunc*| of such doubly indexed functors and
+then investigate the structure possessed by such functors.
+Fortunately |IFunc*| can easily be derived from |IFunc| as
+follows. Firstly, note that the opposite of the Kleisli category
+associated with |IFunc| has objects |I , J : Set| and morphisms given
+by |J|-indexed families of |I|-indexed functors. We denote this notion
+of indexed functor |IFunc*| and note that, as required, inhabitants of
+|IFunc*| are functors mapping indexed sets to indexed sets.
 
 \begin{code}
-
-  
 
 IFunc* : (I J : Set) → Set₁ 
 IFunc* I J = J → IFunc I 
@@ -178,7 +200,7 @@ mor* F m j  = IFunc.mor (F j) m
 
 \noindent
 Again, we will omit |obj*| and |mor*| when inferable from the context 
-in which they appear. Natural transformations extend to this double index 
+in which they appear. Natural transformations extend to this doubly indexed 
 setting, too:
 
 %format obj* = 
@@ -202,10 +224,10 @@ F =*=>^F G = ∫ A ** obj* F A -*-> obj* G A
 %format Π^F = Π ^F
 %format Σ^F = Σ ^F
 
-\noindent
-Clearly, the Kleisli structure gives rise to identities and composition in 
-|IFunc*|. Indeed, composition gives rise to a \emph{re-indexing} operation which
-we denote |Δ^F|:
+\noindent Turning to the structure on |IFunc*|, clearly, the Kleisli
+structure gives rise to identities and composition in
+|IFunc*|. Indeed, composition gives rise to a \emph{re-indexing}
+operation which we denote |Δ^F|:
 
 \begin{code}
 
@@ -222,10 +244,12 @@ to build  |ScLam′ X n = (X ∘ suc) n|. Or simply |ScLam′ X = Δ^F suc X|. I
 general this combinator restricts the functor |X| to the indices in the
 image of the function |f|.
 
-What if the restriction appears on the right of such an equation? As an example,
-consider the successor constructor for |Fin|; here we want to build the pattern functor: |FFin′ X (1+ n) = X n|. To do this we observe that this is equivalent to
-the equation |FFin′ X n = Σ Nat λ m → n ≡ 1+ m × X m|. We denote the general
-construction |Σ^F|, so the 2nd equation can be written |FFin′ X = Σ^F suc X|:
+What if the restriction appears on the right of such an equation? As
+an example, consider the successor constructor for |Fin|; here we want
+to build the pattern functor: |FFin′ X (1+ n) = X n|. To do this we
+observe that this is equivalent to the equation |FFin′ X n = Σ Nat λ m
+→ n ≡ 1+ m × X m|. We denote the general construction |Σ^F|, so the
+2nd equation can be written |FFin′ X = Σ^F suc X|:
 
 \begin{code}
 
@@ -307,7 +331,7 @@ module SigDeltaPi {I J K : Set} {F : IFunc* I J} {G : IFunc* I K} where
 \end{code}
 
 \noindent
-It only remains to observe that these pairs or functions are mutual inverses, 
+It only remains to observe that these pairs of functions are mutual inverses, 
 which is a simple proof.
 
 \end{proof}
@@ -342,18 +366,19 @@ _×^F_ : ∀ {I} → (F G : IFunc I) → IFunc* I ⊤
 F ×^F G = Π^F _ λ b → if b then F else G  
 \end{code}
 
-\noindent
-Clearly these are simply the constantly |⊤| and |⊥| valued functors, and the 
-point-wise product and co-product of functors, but this encoding allows us to 
-keep the number of constants in our vocabulary to a minimum.
+\noindent Clearly these are simply the constantly |⊤| and |⊥| valued
+functors, and the point-wise product and co-product of
+functors. However, encoding them using |Σ^F| and |Π^F| allows us to
+keep to a minimum the language of indexed functors (and hence indexed
+containers) with obvious benefits in terms of tractability.
 
 \subsection{Initial algebras of indexed functors}
 
-We observe that an |F : IFunc* I I| is an endo-functor on the category |Fam I|. 
-Using this observation we know that an algebra of such a functor is a family 
-|A : Fam I| and a map |α : obj* F A -*-> A|. A morphism, then, between two such 
-algebras |(A , α)| and |(B , β)| is a map |f : A -*-> B| such that the follow 
-diagram commutes:
+We have seen that an |F : IFunc* I I| is an endo-functor on the
+category |Fam I|.  Using this observation we know that an algebra of
+such a functor is a family |A : Fam I| and a map |α : obj* F A -*->
+A|. A morphism, then, between two such algebras |(A , α)| and |(B ,
+β)| is a map |f : A -*-> B| such that the follow diagram commutes:
 
  \[
 \xymatrix{
@@ -368,13 +393,16 @@ category of |F|-algebras spelt out above. It follows from the fact that not all
 functors in |Set → Set| (for instance |F A = (A → Bool) → Bool|) have initial 
 algebras that neither do all indexed-functors.
 
-We also know that we cannot iterate the construction of initial algebras given 
-above, an endo-functor |IFunc* I I| gives rise to an initial algebra in |Fam I|.
-This prevents us from being able to define nested, or mutual inductive families 
-in this way.
+We also know that we cannot iterate the construction of initial
+algebras given above. That is, an endo-functor |IFunc* I I| gives rise
+to an initial algebra in |Fam I|, and we cannot take the inital
+algebra of something in |Fam I|. This prevents us from being able to
+define nested, or mutual inductive families in this way.
 
-For the morphism part of an indexed-functor over a co-product we can eliminate
-the co-product and curry the resulting definition in this way:
+We finish our study of indexed functors by tackling this problem. Our
+strategy is as follows: First note that for a singly indexed functor
+over a co-product we can eliminate the co-product and curry the
+resulting definition in this way:
 
 \begin{align*}
 |IFunc (I ⊎ J)| 
@@ -433,9 +461,10 @@ _⟨_⟩M* F {G} {H} γ = λ k → _⟨_⟩M  (F k) {G} {H} γ
 
 \end{code}
 
-\noindent
-A parametrised |F|-algebra for |F : IFunc* (I ⊎ J) I| is a pair of an 
-indexed-functor |G : IFunc J I| and a natural transformation
+\noindent A parametrised |F|-algebra for |F : IFunc* (I ⊎ J) J| is
+then simply an algebra for the functor |F ⟨ _ ⟩M*|. That is, it a
+parameterised |F|-algebra consists of a pair of an 
+indexed-functor |G : IFunc I J| and a natural transformation
 |α : F ⟨ G ⟩F* =*=>^F G|. A morphism between two such algebras 
 |(G , α)| and |(H , β)| is a natural transformation |γ : G =*=>^F H| 
 such that the follow diagram commutes:
@@ -447,15 +476,24 @@ such that the follow diagram commutes:
 \mbox{|F ⟨ H ⟩F*|} \ar[r]^{\quad\mbox{|β|}} & \mbox{|H|}}
 \]
 
-\noindent
-As you might expect, a parametrised initial algebra for |F|, if it is exists, 
-will be the initial object in the category of parametrised |F|-algebras. 
+\noindent As you might expect, a parametrised initial algebra for |F|,
+if it is exists, will be the initial object in the category of
+parametrised |F|-algebras. Alternatively, it is the initial 
+|F ⟨ _ ⟩M*|-algebra. Either way, the parameterised inital
+algebra construction will map indexed functors to indexed functors and
+hence can be iterated. This means that we can define nested and mutual
+families of data-types, such as the tuple of neutral and normal
+|λ|-terms outlined in the introduction.
 
-The fact that the parametrised initial algebra construction can be iterated, 
-means that we can define nested and mutual families of data-types, such as the
-tuple of neutral and normal |λ|-terms outlined in the introduction. 
+However, it is still the case that not all indexed functors in |IFunc*
+(I ⊎ J) I| have parameterised initial algebras. In the analgous
+situation for functors on |Set|, we solved this problem by limiting
+ourselves to those functors which can be represented by containers.
+We follow a similar approach in the indexed setting, that is, we
+restrict our attention to those indexed functors which can be
+represented by indexed containers. We show that all indexed containers
+have parameterised initial algebras and that, suprisingly, inital
+algebras may be constructed using only the |W|-types used to construct
+inital algebras of containers.
 
-As before we know that not all |IFunc* (I ⊎ J) I| functors have initial 
-algebras. In the next section, however we spell out what it is for a functor to 
-be given by an indexed container, and these functors are those which have such 
-initial algebras.
+

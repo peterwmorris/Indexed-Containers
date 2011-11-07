@@ -56,9 +56,16 @@ open import termcoalg
 %format ⟧^T* = ⟧ ^T* 
 
 
-We now give a syntax for defining indexed strictly positive types and strictly positive families:
+We have developed indexed containers as a representations of those
+indexed functors which, intuitively, support a shapes and positions
+metaphor. These shapes and positions are just as with standard
+containers apart from the fact they are indexed. We now turn to the
+question of defining a grammar for generating indexed containers. This
+grammar defines what we call the strictly positive families. Strictly
+positive families are in turn defined from indexed strictly positive
+types as follows:
 
-\begin{code}
+ \begin{code}
 
 mutual
   SPF : (I J : Set) → Set₁
@@ -84,7 +91,8 @@ open DelSigPi
 
 %endif
 
-We intend to interpret terms in this syntax as indexed functors, in order to interpret |μ^T| and |ν^T| we need to go first via indexed containers, which we know to be closed under ther formation of these fixed-points:
+We show how to interpret strictly positive families as indexed
+contianers and hence indexed functors.
 
 \begin{code}
 
@@ -102,7 +110,8 @@ mutual
 
 \end{code}
 
-We can equip this syntax with a substitution operation, |_>>=^T_|:
+Just as indexed containers support a relative monad structure, so do
+strictly positive families:
 
 %format ISPTmap = ISPT
 %format SPFmap = SPF
@@ -127,7 +136,11 @@ mutual
 
 \end{code}
 
-As defined above this doesn't pass Agda's termination check, due to deriving the |ISPT| from the monad instance. If we define the map of the functor directly the whole thing obviously terminates, at the expense of having to show the two definitions of the map for |ISPT| agree.
+As defined above this doesn't pass Agda's termination check, due to
+deriving the |ISPT| from the monad instance. If we define the map of
+the functor directly the whole thing obviously terminates, at the
+expense of having to show the two definitions of the map for |ISPT|
+agree.
 
 %if style == newcode
 
@@ -241,7 +254,12 @@ bindpres (μ^T F j) G = {!!}
 %format ×^T* = "\mathbin{" × ^T "}"
 %format _×^T*_ = _ × ^T _
 
-We define disjoint union and cartesian product just as we did in the functor and container universes:
+
+We finish by showing how strictly positive families represent some of
+the key indexed data types we saw in the beginning of the paper. We
+start by showing that, as with indexed containers and indexed
+functors, strictly positive families support disjoint unions and
+cartesian products.
 
 \begin{code}
 
@@ -283,6 +301,10 @@ _×^T*_ : ∀ {I J} → (F G : SPF I J) → SPF I J
 %format TVec = T "_{" Vec "}"
 %format TScLam = T "_{" ScLam "}"
 
+
+We can now define finite sets, vectors and lambda terms as strictly
+positive families.
+
 \begin{code}
 
 TFin : SPF ⊥ ℕ
@@ -298,13 +320,12 @@ TScLam = μ^T  (     SPFmap (λ ()) TFin
               +^T*  Δ^T suc (η^T ∘ inj₂)))
 \end{code}
 
-Note that we have to weaken the reference to |TFin| in the definition of 
-|TScLam|, since under the |μ^T| we can refer to the recursive |TSCLam| trees, 
-but |TFin| itself can refer to no variables.
-
-We can also define the mutual types, |Ne| and |Nf|. Here, a copy of the normal 
-forms is defined \emph{inside} the definition of the neutral terms, and vice
-versa:
+Note that we have to weaken the reference to |TFin| in the definition
+of |TScLam|, since under the |μ^T| we can refer to the recursive
+|TSCLam| trees, but |TFin| itself can refer to no variables. We can
+also define the mutual types, |Ne| and |Nf|. Here, a copy of the
+normal forms is defined \emph{inside} the definition of the neutral
+terms, and vice versa:
 
 %format TNe = T "_{" NeLam "}"
 %format TNf = T "_{" NfLam "}"

@@ -39,22 +39,24 @@ proj₁≡ refl = refl
 
 %endif
 
-So far we have developed a theory of indexed containers using a rich Type
-Theory. We claimed in the introduction, however, that this theory required
-only the presence of |W|-types. In this section we will outline the
-translation of many of the definitions above into such a spartan theory.
-First we will show how to obtain indexed |W|-types from un-indexed ones, and
-by analogy |MI| from |M|, and then we will revisit a proof of how to derive
-|M|-types from |W|.
+So far we have developed a theory of indexed containers using a rich
+Type Theory with features such as |WI|- and |MI|-types. We claimed in
+the introduction, however, that the theory of indexed containers could
+be developed even when one only has |W|-types. In this section we will
+outline the translation of many of the definitions above into such a
+spartan theory.  First we will show how to obtain indexed |WI|-types
+from |W|-types, and by analogy |MI|-types from |M|-types, and then we
+will revisit our proof of how to derive |M|-types from |W|-types.
 
 %format proj₁≡ = proj₁ ≡
 
 \subsection*{|WI| from |W|}
 \label{wifromw}
 
-How, then, can we build |WI| from |W|? The initial step is to create a type
-of \emph{pre}-|WI| trees, with nodes containing a shape \emph{and} its index,
-and branching over positions \emph{and their} indices:
+How, then, can we build |WI|-types from |W|-typs? The initial step is
+to create a type of \emph{pre}-|WI| trees, with nodes containing a
+shape \emph{and} its index, and branching over positions \emph{and
+their} indices:
 
 \begin{code}
 
@@ -64,7 +66,11 @@ WI′ {I} S P = W (Σ* i ∶ I *Σ S i) (split i & s tilps ↦ Σ* i′ ∶ I *�
 
 \end{code}
 
-Given such a tree we want to express the property that the subtrees of such a pre-tree have the correct index in their node information. In order to do this we need a second |W|-type, which is similar to |WWI′|, but with an extra copy of the index information stored in that node:
+Given such a tree we want to express the property that the subtrees of
+such a pre-tree have the correct index in their node information. In
+order to do this we need a second |W|-type, which is similar to
+|WI′|, but with an extra copy of the index information stored in that
+node:
 
 \begin{code}
 
@@ -74,7 +80,11 @@ WIl {I} S P = W (I × (Σ* i ∶ I *Σ S i)) (split i′ & i & s tilps ↦ Σ* i
 
 \end{code}
 
-There are two possible completions of this extra indexing information, either we push the indexes down to the subtrees, or we copy it from the sub-trees themselves:
+There are two canonical ways to turn an element of |WI' S P| into an
+element of |WIl S P|, both of which involve filling in this extra indexing
+information: i) we can simply copy the index already stored at the node;
+or ii) we can push the indexes down from parent nodes to
+child nodes:
 
 %if style == newcode
 
@@ -106,7 +116,9 @@ open label
 
 %endif
 
-The property of a pre-tree being type correct can be stated as its two possible labellings being equal:
+The property of a pre-tree being type correct can be stated as its two
+possible labellings being equal. That is we can use |W|-types to
+define the |WI|-type as follows:
 
 \begin{code}
 
@@ -128,7 +140,9 @@ module supm {I : Set} {S : I → Set} {P : (i : I) (s : S i) → I → Set} wher
 
 %format supi = sup
 
-We rely on function extensionality to define the constructor |supi|:
+Having built the |WI|-type from the |W|-type, we must next build the
+constructor |supi| which makes elements of |WI|-types. We rely on
+function extensionality to define the constructor |supi|:
 
 %if style == newcode
 
@@ -201,8 +215,9 @@ It's then straight forward but labourious to prove the $\beta$ law for |wirec|, 
 
 %endif
 
-We can use this proof that |WI|-types can be encoded by |W| to explain where 
-|Path| fits in, since it is straight forwardly encoded as a |WI|:
+We can use this proof that |WI|-types can be encoded by |W| to explain
+where |Path| fits in, since it is straight forwardly encoded as a
+|WI|: {\bf should this be in the previous section?}
 
 %if style == newcode
 
@@ -223,10 +238,10 @@ Path :  {I J : Set} (S : J → Set)
 Path {I} {J} S PI PJ j w i = WI PathS PathP (j , w) 
   where PathS : Σ* j ∶ J *Σ WI S PJ j → Set
         PathS (j , sup (s , f)) = PI j s i ⊎ Σ J (PJ j s)
-        PathP : (jw : Σ* j ∶ J *Σ WI S PJ j) (s : PathS jw) → Σ* j ∶ J *Σ WI S PJ j → Set
+        PathP : (jw : Σ* j ∶ J *Σ WI S PJ j) (s : PathS jw) 
+                                                       → Σ* j ∶ J *Σ WI S PJ j → Set
         PathP (j , sup (s , f)) (inj₁ p) (j′ , w′) = ⊥
-        PathP (j , sup (s , f)) (inj₂ (j′′ , p)) (j′ , w′) = 
-          (j′′ ≡ j′) × (f j′′ p ≅ w′)
+        PathP (j , sup (s , f)) (inj₂ (j′′ , p)) (j′ , w′) = (j′′ ≡ j′) × (f j′′ p ≅ w′)
 
 \end{code}
 
@@ -239,5 +254,6 @@ Path {I} {J} S PI PJ j w i = WI PathS PathP (j , w)
 \end{code}
 
 %endif
-
-\todo{Derive MI from M or at least say so and hide the proof.}
+{\bf overflow of line length in Agda code}
+The reader will be unsuprised to learn that a similar construction to
+the above allows us to derive |MI|-types from |M|-types.

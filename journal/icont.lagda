@@ -44,7 +44,12 @@ open import ifunc
 %format $* = "\!\!"
 %format λ* = "\!\!"
 
-An |I|-indexed container is given by a set of shapes, and an |I|-indexed \emph{family} of positions:
+Following the structure of the previous section, we first define
+singly indexed containers which will represent singly indexed
+functors, and then we define doubly indexed containers which will
+represent doubly indexed functors. To this end, we define an
+|I|-indexed container to be given by a set of shapes, and an
+|I|-indexed \emph{family} of positions:
 
 \begin{code}
 
@@ -56,7 +61,19 @@ record ICont (I : Set) : Set₁ where
 
 \end{code}
 
-The extension of such a container is an |IFunc I|:
+The above definition shows that an |I|-indexed container is similar to
+a container in that it has a set of shapes whose elements can be
+thought of as constructors. However, the difference between an
+|I|-indexed container and a container lies in the notion of the
+positions associated to a given shape. In the case of a container, the positions
+for a given shape simply form a set. In the case of an |I|-indexed
+container, the positions for a given shape form an |I|-indexed set. If
+we think of |I| as a collection of sorts, then not only does
+constructor require input to be stored at its positions, but each
+of these positions is tagged with an |i : I| and will only store data of sort |i
+: I| at that position.  This intuition is formalised by the following
+definition which shows how singly indexed containers represent singly
+indexed functors
 
 \begin{code}
 
@@ -67,8 +84,23 @@ The extension of such a container is an |IFunc I|:
 
 \end{code}
 
-As with |IFunc| we can extend this notion to doubly indexed containers, where
-an |ICont* I J| is a function from |J| to |ICont I|:
+Notice how the extension of an indexed container is very similar to
+the extension of a container. In particular, an element of |⟦ S ◁ P ⟧
+A| consists of a shape |s : S| and a morphism |P s -*-> A| of
+|I|-indexed sets. This latter function assigns to each |i : I|,
+and each position |p : P s i| an element of |A i|. If we think
+of |I| as a collection of sorts, then this function assigns to each |i
+: I|-sorted position, an |i|-sorted piece of data, ie an element of
+|A i|. 
+
+Analogously to the generalisation of singly indexed functors to doubly
+indexed functors, we can generalise {\bf vs extend} singly indexed
+containers to doubly indexed containers. Indeed, a doubly indexed
+container, that is an element of |ICont* I J|, is simply a function
+from |J| to |ICont I|. Unpacking the definition of such a function
+gives us the following definition of a doubly indexed container and
+its extension to a doubly indexed functor: {\bf extension of a
+container}
 
 \begin{code}
 record ICont* (I J : Set) : Set₁ where
@@ -79,13 +111,12 @@ record ICont* (I J : Set) : Set₁ where
 
 
 ⟦_⟧* : ∀ {I J} → ICont* I J → IFunc* I J
-⟦ S ◁* P ⟧* i = ⟦ S i ◁ P i ⟧
+⟦ S ◁* P ⟧* j = ⟦ S j ◁ P j ⟧
 
 
 \end{code}
 
-We will denote the two projections for an |ICont| postfix as |_ projS| and
-|_ projP|. 
+
 
 %if style == code 
 
@@ -124,30 +155,38 @@ _$*_ : ∀ {I J} → ICont* I J → J → ICont I
 %format ⟧⇒* = ⟧ "\mbox{$\!^{\Rightarrow^{\!\star}}$}"
 %format ⟦_⟧⇒*_ = ⟦ _ ⟧⇒* _
 
-\noindent
-We can establish what denotes a morphism between a container |S ◁ P : ICont I|
-and functor |F : IFunc I|, simply by expanding the definition and employing 
-the following derivation:
+\noindent {\bf indent} We will denote the two projections for an
+|ICont| postfix as |_ projS| and |_ projP|. Our methodology of {\bf go
+big on this} reflecting structure on indexed functors as structure on
+indexed containers means we must next consider how to reflect
+morphisms between indexed functors which can be represented by indexed
+containers as morphisms between those indexed containers. We begin by
+considering what constitutes a natural transformation between the
+extension of an indexed container and an arbitrary indexed functor. We
+do this in the singly indexed case as follows:
+
 
 \begin{align*}
-                & |⟦ S ◁ P ⟧ ⇒^F F| & \\
+                & |⟦ S ◁ P ⟧ ⇒^F F| & \hspace{1in} (1) \\
   \equiv  \;    & |∫ X ** Σ* s ∶ S *Σ (P s -*-> X) → F X| & \{\mbox{by definition}\} \\
   \approx  \;    & |∫ X ** (s : s) → (P s -*-> X) → F X| & \{\mbox{currying}\} \\
   \approx   \;    & |(s : S) → ∫ X ** (P s -*-> X) → F X| & \{\mbox{commuting end and pi} \} \\
   \approx   \;    & |(s : S) → F (P s)| & \{\mbox{Yoneda}\} \\
 \end{align*}
 
+
 \noindent
-If |F| is also an indexed container |T ◁ Q| then we have:
+Now, if |F| is the extension of an indexed container |T ◁ Q|, we have:
 
 \begin{align*}
-           & |⟦ S ◁ P ⟧ ⇒^F ⟦ T ◁ Q ⟧| \\
+           & |⟦ S ◁ P ⟧ ⇒^F ⟦ T ◁ Q ⟧| \hspace{2.2in} (2) \\
  \approx \;  & |(s : S) → Σ* t ∶ T * *Σ (Q t -*-> P s)| \\
  \approx \;  & |Σ* f ∶ S → T *Σ ((s : S) → Q (f s) -*-> P s)|
 \end{align*}
  
-We will use this last line as the definition for container morphisms, captured by 
-this record type:  
+\noindent We will use this last line as the definition for indexed
+container morphisms. This definition can be implemented by the
+following record type:
 
 \begin{code}
 
@@ -159,9 +198,8 @@ record _⇒_ {I} (C D : ICont I) : Set₁ where
 
 \end{code}
 
-\noindent
-We witness one side of the isomorphism between container morphisms and natural 
-transformations:
+\noindent We witness the construction of a natural transformation from
+an indexed container morphisms as follows:
 
 \begin{code}
 
@@ -171,15 +209,22 @@ transformations:
 
 \end{code}
 
+
+\noindent The representation of natural transformations between
+indexed functors arising from indexed contianers and morphisms between
+the indexed containers themselves is actually a bijection. This, in
+turn, opens the way to reasoning about natural transformations by
+reasoning about indexed container morphisms. Technically, this
+bijection is stated as follows:
+
 \begin{proposition}
 
-The functor |(⟦_⟧_ , ⟦_⟧⇒_)| in |[ ICont I , IFunc I ]| is full and faithful.
+The functor |(⟦_⟧ , ⟦_⟧⇒) : ICont I → IFunc I | is full and faithful.
 
 \end{proposition}
 
 \begin{proof}
-
-By construction.
+The isomorphism is proved in equations (1) and (2)
 
 %%\begin{code}
 %%
@@ -198,7 +243,10 @@ By construction.
 
 \end{proof}
 
-We can lift this functor to the doubly indexed variant:
+Having dealt with indexed container morphisms in the singly indexed
+setting {\bf mention this strategy}, we now turn to the doubly indexed
+setting. First of all, we define the morphisms between two doubly
+indexed containers.
 
 \begin{code}
 
@@ -248,7 +296,15 @@ _projr* m j = _⇒*_.r m
 %format >>=^C = >>= ^C
 %format _>>=^C_ = _ >>=^C _
 
-As with |IFunc|, we can equip |ICont| with a relative monadic structure:
+{\bf full and faith} Having defined indexed containers and indexed
+containers morphisms as representations of indexed functors and the
+natural transfortmations between them, we now turn our attention to
+the relative monad structure on indexed functors, reindexing of
+indexed functors (and the associated adjoints), and parameterised
+inital algebras of indexed functors. Our goal in the rest of this
+section is to reflect {\bf reflect?} each of these structures within
+indexed containers. We begin by showing that, as with |IFunc|, we can
+equip |ICont| with a relative monadic structure:
 
 \begin{code}
 
@@ -273,17 +329,18 @@ The triple |(ICont , η^C , _>>=^C_)| is a relative monad.
 \begin{proof}
 
 Instead of proving this directly, we observe that the |η^C| and |_>>=^C_|
-are preserved under |⟦_⟧_|, i.e.:
+are preserved under |⟦_⟧|, i.e.:
 
 \begin{align*}
 |⟦ η^C i ⟧| && \approx &&& |η^F i| \\
 |⟦ C >>=^C D ⟧| && \approx &&& |⟦ C ⟧* >>=^F ⟦ D ⟧| \\
 \end{align*}
 
-Which follow from the extensionality of our propositional equality, the 
-associativity of |Σ| and the terminality of |⊤|. By the full and faithful 
-nature of the embedding into |IFunc| we can then reuse the result that
-|(IFunc , η^F , _>>=^F_)| is a relative monad.
+These facts follow from the extensionality of our propositional
+equality, the associativity of |Σ| and the terminality of |⊤|. By the
+full and faithful nature of the embedding |⟦_⟧|, we can then reuse the
+result that |(IFunc , η^F , _>>=^F_)| is a relative monad to establish
+the theorem. {\bf qed marker and mention use of ff before}
 
 \end{proof}
 
@@ -291,8 +348,12 @@ nature of the embedding into |IFunc| we can then reuse the result that
 %format Π^C = Π ^C
 %format Σ^C = Σ ^C
 
-As with indexed functors, the re-indexing |Δ^C| is defined by composition, and 
-has left and right adjoints |Σ^C| and |Π^C|:
+As with indexed functors, the re-indexing functor |Δ^C| on indexed
+containers is defined by composition, and it has left and right
+adjoints |Σ^C| and |Π^C|. As we shall see, our proof of this fact uses
+the full and faithfullness of the embedding of indexed containers as
+indexed functors and the fact that reindexing of indexed functors has
+left and right adjoints.
 
 %if style == newcode 
 
@@ -337,8 +398,9 @@ open DelSigPi
 
 \begin{proof}
 
-Again we appeal to the full and faithfulness of |⟦_⟧_| and show instead that
-the embedding into |IFunc| preserves these constructions. That, is we want to show that the following three statements hold:
+Again we appeal to the full and faithfulness of |⟦_⟧| and show instead
+that |⟦_⟧| also preserves these constructions. That, is we want to
+show that the following three statements hold:
 
 \begin{align*}
 |⟦ Σ^C f F j ⟧| && \approx &&& |Σ^F f ⟦ F ⟧* j| \\

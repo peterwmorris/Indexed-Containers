@@ -39,7 +39,7 @@ data ℕ : Set where
   suc   : (n : ℕ) → ℕ
 
 \end{code}
-the set of lists indexed by any given set:
+the set of lists indexed by a given set:
 \begin{code}
 
 data List (A : Set) : Set where
@@ -62,8 +62,9 @@ data Lam : Set where
 %format FLam = F "_{" Lam "}"
 
 \noindent An elegant way to formalize and reason about inductive types
-is to model them as the initial algebra of an endofunctor, we can
-define the siganture functors corresponding to each of the examples above:
+is to model them as the initial algebra of an endofunctor. We can
+define the signature functors corresponding to each of the above examples
+as follows:
 
 \begin{code}
 
@@ -84,20 +85,18 @@ reasoning about inductive types, e.g. see the \emph{Algebra of
 Programming} \cite{BirdDeMoor:AlgProp}.
 
 While the theory of inductive types is well developed, we often want
-to have a finer, more expressive, notion of types, for example to
-ensure the absence of runtime errors --- access to arrays out of
-range or access to an undefined variable in the previous example of
-$\lambda$-terms. 
-
-To model this we move to the notion of an inductive
-family in Type Theory. A family is a type indexed by another already
-given type. The first example is the family of finite sets |Fin| which
-assigns to any natural number |n| a set |Fin n| which has exactly
-|n| elements. |Fin| can be used where in conventional reasoning we
-assume any finite set, e.g. when dealing with a finite address apace or
+to have a finer, more expressive, notion of type. This allows us, for
+example, to ensure the absence of runtime errors such as access to
+arrays out of range or access to undefined variables in the previous
+example of $\lambda$-terms. To model such finer types, we move to the
+notion of an inductive family in Type Theory. A family is a type
+indexed by another, already given, type. Our first example of an
+inductive family is the family of finite sets |Fin| which assigns to
+any natural number |n| a type |Fin n| which has exactly |n|
+elements. |Fin| can be used where, in conventional reasoning, we
+assume a finite set, e.g. when dealing with a finite address space or
 a finite set of variables. The inductive definition of |Fin| refines
-the type of natural numbers:
-\begin{code}
+the type of natural numbers: \begin{code}
 
 data Fin : ℕ → Set where
   zero  : ∀ {n}              → Fin (suc n)
@@ -106,7 +105,7 @@ data Fin : ℕ → Set where
 \end{code}
 
 In the same fashion we can refine the type of lists to the type of
-vectors which are additionally indexed by a number indicating the
+vectors which are indexed by a number indicating the
 length of the vector:
 
 \begin{code}
@@ -117,15 +116,19 @@ data Vec (A : Set) : ℕ → Set where
 
 \end{code}
 
-Using |Fin| and |Vec| instead of |Nat| and |List| enables us to write
-a total projection function projecting the nth element out of vector:
-\begin{code}
-_!!_ : {A : Set} → {n : ℕ} → Vec A n → Fin n → A
-[] !! ()
-(a ∷ as) !! zero = a
-(a ∷ as) !! suc n = as !! n
-\end{code}
-Note, that a corresponding function |_!!_ : {A : Set} → List A → ℕ →
+Notice how using the inductive family |Vec| instead of
+|List| enables us to write a total projection
+function projecting the nth element out of vector: 
+
+\begin{code} 
+_!!_ : {A : Set} → {n : ℕ} → Vec A n → Fin n → A 
+      [] !! () 
+(a ∷ as) !! zero  = a 
+(a ∷ as) !! suc n = as !! n 
+
+\end{code} 
+
+In contrast, the corresponding function |_!!_ : {A : Set} → List A → ℕ →
 A| is not definable in a total language like Agda.
 
 Finally we can define the notion of a well-scoped lambda term with
@@ -145,8 +148,7 @@ data ScLam (n : ℕ) : Set where
 
 \noindent
 Importantly, the constructor
-|lam| reduces the number of \emph{free} variables by one --- by
-binding one. 
+|lam| reduces the number of \emph{free} variables by one. 
 Inductive families may be mutually defined, for example the scoped
 versions of  $\beta$ (|NfLam|)
 normal forms and neutral $\lambda$-terms (|NeLam|): 
@@ -172,7 +174,7 @@ The initial algebra semantics of inductive types can be extended to
 model inductive families by replacing functors on the category |Set|
 with functors on the category of families indexed by a given type - in
 the case of all our examples so far this indexing type was |Nat|. The objects
-of the category of families indexed over a type |I : set| are
+of the category of families indexed over a type |I : Set| are
 |I|-indexed families, i.e. functions of type |I → Set|, and a
 morphism between |I|-indexed families |A, B : I → Set| is given by a
 family of maps |f : (i : I) -> A i -> B i|
@@ -218,7 +220,7 @@ We can construct |NeLam| and |NfLam| by an elimination procedure:
 first we define a parametrized initial algebra |NeLam' : (ℕ → Set) → ℕ
 → Set| so that |NeLam' Y| is the initial algebra of |λ X → FNe X Y|
 and then |NfLam| is the initial algebra of |λ Y → FNf (NeLam' Y) Y|.
-Symmetrically we derive |NeLam| --- compare this with the encoding in
+Symmetrically we derive |NeLam|. Compare this with the encoding in
 section \ref{sec:spf}.
 
 %format ι = "\iota"
@@ -250,20 +252,96 @@ data STLam (Γ : List Ty) : Ty → Set where
 
 \end{code}
 
-\noindent
-Types like this can be used to implement a tag-free, terminating
-evaluator~\cite{bsn}. To obtain the corresponding functors
-is a laborious but straightforward exercise.
-
-\todo{Expand here?}
-
-\noindent
-Inductive families are the backbone of
+\noindent Types like this can be used to implement a tag-free,
+terminating evaluator~\cite{bsn}. To obtain the corresponding functors
+is a laborious but straightforward exercise.  As a result of examples
+such as the above, inductive families have become the backbone of
 dependently typed programming as present in Epigram or
-Agda~\cite{Agda}. Coq also supports the definition of inductive families
-but programming with them is rather hard --- a situation which has been
-improved by the new \texttt{Program} tactic~\cite{sozeau}. 
-More recently, the implementation of Generalized Algebraic Datatypes 
+Agda~\cite{Agda}. Coq also supports the definition of inductive
+families but programming with them is rather hard --- a situation
+which has been improved by the new \texttt{Program}
+tactic~\cite{sozeau}. 
+
+
+Indexed containers are designed to provide the mathematical and
+computational infrastructure required to program with inductive
+families. The remarkable fact about indexed containers, and the fact
+underpins their practical usefullness, is that they offer an
+exceedingly compact way to encapsulate all the information inherent
+within the definition of functors such as |FFin|, |FVec| and |FScLam|,
+|FNeLam| and |FNfLam| and hence within the associated inductive
+families |Fin|, |Vec|, |ScLam|, |NeLam| and |NfLam|.  The second
+important thing about indexed containers is that not only can they be
+used to represent functors, but the canonical constructions on
+functors can be internalised to become constructions on the indexed
+containers which represent those functors. As a result, we get a
+combinator language for inductive families as opposed to simply a
+syntactic definitional format for inductive families. 
+
+
+
+\subsection{Related work}
+\label{sec:related-work}
+
+This paper is an expanded and revised version of the LICS paper by the
+first and 3rd author \cite{alti:lics09}. In the present paper we have
+integrated the Agda formalisation in the main development, which in
+many instances required extending it. We have made explicit the use of
+relative monads which was only hinted at in the conference version
+based on the recent work on relative monads \cite{alti:fossacs10}. We
+have also dualized the development to terminal coalgebras which
+required the type of paths to be defined inductively instead of
+recursively as done in the conference paper (section
+\ref{sec:termcoalg}).  We have also formalized the derivation of
+indexed W-types from ordinary W-types (section \ref{wifromw}. The
+derivation of M-types from W-types (section \ref{sec:mfromw}) was
+already given in \cite{alti:cont-tcs} is revisited here exploiting the
+indexed W-type derived previously. Moreover the development is fully
+formalized in Agda.
+
+Indexed containers are intimately related to \emph{dependent
+polynomial functors} \cite{HylandGambino}. Indeed, at a very general
+level one could think of indexed containers as the type theoretic
+version of dependent polynomials and vice versa. However, the
+different needs of programmers from category theorists has taken our
+development of indexed contianers in a different direction from that
+of dependent polynomials. The biggest difference is the Agda
+implementation of our ideas which makes our work much more accessible
+to programmers than the categorical work on dependent polynomials.
+Secondary differences are the use of indexed containers to model
+mutual and nested inductive definitions. We have also show that
+indexed containers are closed under parametrized initial algebras and
+coalgebras and reduce the construction of parameterised final
+coalgebras to that of initial algebras. Hence we can apply both the
+inital algebra and final coalgebra construction several times. The
+flexibility of indexed containers allows us to also establish closure
+under the adjoints of reindexing. This leads directly to a grammar for
+strictly positive families, which itself is an instance of a strictly
+positive family (section \ref{sec:spf}) --- see also our previous work
+\cite{alti:cats07,alti:jcats07}.
+
+Containers are related to Girard's normal functors \cite{GirardNormal}
+which themselves are a special case of Joyal's analytic functors
+\cite{JoyalA:fonaes} --- those that allow only finite sets of
+positions.  Fiore, Gambino, Hyland and Winskel's work on generalized
+species \cite{fiore2008ccb} considers those concepts in a more generic
+setting --- the precise relation of this work to indexed containers
+remains to be explored but it appears that generalised species can be
+hought of as indexed contaioners closed under quotients.
+
+
+Perhaps the earliest publication related to indexed containers occurs
+in Petersson and Synek's paper \cite{PS89} from 1989. They present
+rules extending Martin-L{\"o}f's type theory with a set constructor
+for `tree sets' : families of mutually defined inductive sets, over a
+fixed index set. Inspired in part by Petersson and Synek's
+constructor, Hancock, Hyvernat and Setzer \cite{hancock-apal06}
+applied indexed (and unindexed) containers, under the name
+`interaction structures' to the task of modelling imperative
+interfaces such as command-response interfaces in a number of
+publications.
+
+Recently, the implementation of Generalized Algebraic Datatypes 
 (GADTs)~\cite{Hinze:GADT} 
 allows |Fin| and |Lam| to be encoded in Haskell:
 \begin{verbatim}
@@ -276,12 +354,18 @@ data Lam a where
   App :: Lam a -> Lam a -> Lam a
   Abs :: Lam (Maybe a) -> Lam a
 \end{verbatim}
+
 Here \texttt{Fin} and \texttt{Lam} are indexed by types instead of
-natural numbers; The type constructor \texttt{Maybe} serves as a type level
-copy of the |succ| constructor for natural numbers.
-Note that \texttt{Lam} is actually just a nested datatype 
-\cite{alti:csl99} while \texttt{Fin} exploits the full power of
-GADTs because the range of the constructors is constrained.
+natural numbers; The type constructor \texttt{Maybe} serves as a type
+level copy of the |succ| constructor for natural numbers.  Note that
+\texttt{Lam} is actually just a nested datatype \cite{alti:csl99}
+while \texttt{Fin} exploits the full power of GADTs because the range
+of the constructors is constrained. The problem with using GADTs to
+model inductive families is, however, that the use of type level
+proxies for say, natural numbers, means that computation must be
+imported to the type level. This is a difficult problem and probably
+limits the use of GADTs as a model of inductive families.
+
 
 \subsection{Overview over the paper}
 \label{sec:overview-over-paper}
@@ -301,63 +385,3 @@ showing the existence of terminal coalgebras from indexed M-types
 M-types can be derived from ordinary W-types, this is shown in section
 \ref{sec:w-enough}. Finally, we define a syntax from strictly positive
 families and interpret this using indexed containers \ref{sec:spf}.
-
-\subsection{Related work}
-\label{sec:related-work}
-
-\noindent We introduce the notion of indexed container which
-generalizes containers allowing us to represent inductive
-families. This is a further step from \emph{dependent polynomial
-  functors} \cite{HylandGambino} representing endofunctors on a slice
-category. Indexed containers as introduced in the present paper allow us
-to represent functors between different slices and capture also mutual
-and nested inductive definitions.
-
-While Hyland and Gambino \cite{HylandGambino} show that dependent polynomial 
-functors always
-have initial algebras, we show that indexed containers are closed under 
-parametrized initial algebras. Hence we can apply the fixpoint
-construction several times. The flexibility of indexed
-containers allows us to also establish closure under the adjoints of
-reindexing. This leads directly to a grammar for strictly positive
-families, which itself is an instance of a strictly positive family 
-(section \ref{sec:spf}) --- see also our previous work \cite{alti:cats07,alti:jcats07}.
-
-Containers are related to Girard's normal functors \cite{GirardNormal} which
-themselves are a special case of Joyal's analytic functors
-\cite{JoyalA:fonaes} --- those that allow only finite sets of positions.
-Fiore, Gambino, Hyland and Winskel's work on generalized species
-\cite{fiore2008ccb} considers those concepts in a more generic setting ---
-th e precise relation of this work to indexed containers remains to be
-explored.
-
-Perhaps the earliest publication related to indexed containers
-occurs in Petersson and Synek's paper
-\cite{PS89} from 1989. They present rules extending Martin-L{\"o}f's
-type theory with a set constructor for `tree sets' : families of
-mutually defined inductive sets, over a fixed index set.
-
-Inspired in part by Petersson and Synek's constructor,
-Hancock, Hyvernat and Setzer \cite{hancock-apal06} applied indexed (and unindexed)
-containers, under the name `interaction structures' to the task of
-modelling imperative interfaces such as command-response interfaces in
-a number of publications. 
-
-This paper is an expanded and revised version of the LICS paper by the
-first and 3rd author \cite{alti:lics09}. In the present paper we have
-integrated the Agda formalisation in the main development, which in
-many instances required extending it. We have made explicit the use of
-relative monads which was only hinted at in the conference version
-based on the recent work on relative monads \cite{alti:fossacs10}. We have
-also dualized the development to terminal coalgebras which required
-the type of paths to be defined inductively instead of recursively as
-done in the conference paper (section \ref{sec:termcoalg}).  We
-have also formalized the derivation of indexed W-types from ordinary
-W-types (section \ref{wifromw}. The derivation of M-types from W-types
-(section \ref{sec:mfromw})
-was already given in \cite{alti:cont-tcs} is revisited here exploiting the
-indexed W-type derived previously. moreover the development is formalized in
-Agda. 
-
-\todo{What did I miss?}
-
