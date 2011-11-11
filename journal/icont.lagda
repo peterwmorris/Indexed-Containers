@@ -470,3 +470,18 @@ C ⟨ γ ⟩CM =
      split s & f tilps i !* ↦ [ inj₁ , (split j & p & q tilps ↦ inj₂ (j , p , γ projr* $$ j $$ (f j p) $$ i $$ q) !m !s) ] !m !s 
 
 \end{code}
+
+
+%if style==code
+
+\begin{code}
+
+_⟨_⟩CM* :  ∀  {I J K} (C : ICont* (I ⊎ J) K) {D E : ICont* I J} → 
+                    D       ⇒*         E        
+             → C ⟨  D ⟩C*   ⇒*    C ⟨  E ⟩C*  
+C ⟨ γ ⟩CM* = (λ k → split s & f tilps ↦ (s , λ j p → γ projf* $$ j $$ (f j p)) !m !s) ◁* 
+              λ {k} → split s & f tilps i !* ↦ Data.Sum.map id (split j & p & q tilps ↦ (j , p , γ projr* $$ j $$ (f j p) $$ i $$ q) !m !s) !m !s 
+ 
+\end{code}
+
+%endif

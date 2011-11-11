@@ -59,3 +59,9 @@ subst₂′ P refl refl p = p
 
 _->>_ : ∀ {l l'} → (A : Set l) (B : Set l') -> Set (l ⊔ l')
 _->>_ A B = A  -> B 
+
+⊎case : ∀ {a b c} {A : Set a} {B : Set b} {C : Set c} (x : A ⊎ B) →
+        ((x : A) → C ) → ((x : B) → C ) →
+        C 
+⊎case (inj₁ x) l r = l x
+⊎case (inj₂ y) l r = r y

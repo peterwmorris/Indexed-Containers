@@ -109,6 +109,8 @@ app≅' refl refl refl a .a refl = refl
 
 postulate
   ext' : {l l' : Level} {A A' : Set l} {B : A → Set l'} {B' : A' → Set l'} {f : (a : A) → B a} {g : (a : A') → B' a} → ((a : A) (a' : A') → a ≅ a' → f a ≅ g a') → f ≅ g
-  iext' : {l l' : Level} {A A' : Set l} {B : A → Set l'} {B' : A' → Set l'} {f : {a : A} → B a} {g : {a : A'} → B' a} → ({a : A} {a' : A'} → a ≅ a' → f {a} ≅ g {a'}) → _≅_ {_} {{a : A} → B a} f {{a : A'} → B' a} g 
+  iext' : {l l' : Level} {A A' : Set l} {B : A → Set l'} {B' : A' → Set l'} {f : {a : A} → B a} {g : {a : A'} → B' a} → ({a : A} {a' : A'} → a ≅ a' → f {a} ≅ g {a'}) → (\{x} -> f {x}) ≅ (\{x} -> g {x}) 
+
+postulate
   ext : {l l' : Level} {A : Set l} {B : A → Set l'} {f g : (a : A) → B a} → ((a : A) → f a ≅ g a) → f ≅ g
-  iext : {l l' : Level} {A : Set l} {B : A → Set l'} {f g : {a : A} → B a} → ({a : A} → f {a} ≅ g {a}) → _≅_ {_} {{a : A} → B a} f {{a : A} → B a} g 
+  iext : {l l' : Level} {A : Set l} {B : A → Set l'} {f g : {a : A} → B a} → ({a : A} → f {a} ≅ g {a}) → (\{x} -> f {x}) ≅ (\{x} -> g {x}) 

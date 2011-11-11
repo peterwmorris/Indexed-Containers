@@ -132,7 +132,7 @@ introduce a short hand for this:
 \begin{code}
 
 _≡′_ : {A : Set} → A → A → Set 
-a ≡ b = a ≅ b
+a ≡′ b = a ≅ b
 
 \end{code}
 
@@ -213,8 +213,9 @@ an Agda record. An endo functor on set, is given by:
 \begin{code}
 
 record Func : Set₁ where
-  obj  : Set → Set
-  mor  : ∀ {A B} → (A → B) → obj A → obj B
+  field
+    obj  : Set → Set
+    mor  : ∀ {A B} → (A → B) → obj A → obj B
 
 \end{code}
 

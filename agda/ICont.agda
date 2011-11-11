@@ -19,7 +19,7 @@ module ICont where
   ⟦_⟧ : ∀ {l} → {I : Set l} → ICont I → IFunc I
   ⟦_⟧ {I = I} (S ◁ P) = 
     ifunc (λ X → Σ S λ s → {i : I} → P s i → X i) 
-          (λ f → split (λ x y → x , λ i → f (y i))) 
+          (λ f → split (λ x y → x , (λ {_} p → (f (y p))))) 
           refl (λ f g → refl)
 
   _⇒_ : {l : Level} {I : Set l} (C D : ICont I) → Set l 
@@ -34,7 +34,7 @@ module ICont where
   -}
 
   ⟦_⟧⇒ : {l : Level} {I : Set l} {C D : ICont I} (m : C ⇒ D) → NatTrans ⟦ C ⟧ ⟦ D ⟧ 
-  ⟦ m ⟧⇒ = record { fun = split (λ s f → proj₁ (m s) , λ q → f (proj₂ (m s) q)) ; law = refl }
+  ⟦ m ⟧⇒ = record { fun = split (λ s f → proj₁ (m s) , (λ {_} p → f (proj₂ (m s) p))) ; law = refl }
 
   q⇒ : {l : Level} {I : Set l} {C D : ICont I} → NatTrans ⟦ C ⟧ ⟦ D ⟧ → C ⇒ D
   q⇒ {C = S ◁ P} {D = T ◁ Q} nt =  λ s → NatTrans.fun nt (s , λ p → p) -- (λ s → proj₁ (trick s)) ◁ λ s → proj₂ (trick s) 
@@ -63,7 +63,7 @@ module ICont where
   Δ≅ f F j = refl
 
   Σ≅ : ∀ {l} {I : Set l} {J K : Set l} (f : J → K) (F : J → ICont I) (k : K) → ⟦ Σ^C f F k ⟧ ≅^F  Σ^F f (λ j → ⟦ F j ⟧) k
-  Σ≅ f F k = record { fiso = λ {A} → iso (split (split (λ w → split (λ x y z → w , x , (y , z))))) (split (λ w → split (λ x → split (λ y z → (w , (x , y)) , z)))) refl refl; law1 = refl; law2 = refl }
+  Σ≅ f F k = record { fiso = λ {A} → iso (λ x → _ , (_ , (_ , (proj₂ x)))) (split (λ w → split (λ x → split (λ y z → (w , (x , y)) , z)))) refl refl; law1 = refl; law2 = refl }
 
   Π≅ : ∀ {l} {I : Set l} {J K : Set l} (f : J → K) (F : J → ICont I) (k : K) → ⟦ Π^C f F k ⟧ ≅^F  Π^F f (λ j → ⟦ F j ⟧) k
   Π≅ f F k = record { fiso = λ {A} → iso ( λ x j x' → (proj₁ x j x') , (λ x0 → proj₂ x (j , (x' , x0)))) (λ x → (λ j p → proj₁ (x j p)) , λ {i} → split (λ j → split λ p q → proj₂ (x j p) q)) refl refl; law1 = refl; law2 = refl }

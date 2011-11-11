@@ -59,6 +59,27 @@ WIfold f j (sup (s , g)) = f j (s , λ j′ p → WIfold f j′ (g j′ p))
 
 \end{code}
 
+%if style == newcode
+
+\begin{code}
+
+sup⁻¹ : {J : Set} {S : J → Set} {PJ : (j : J) → S j → J → Set} 
+        {C : {j : J} → WI S PJ j → Set} → 
+        ({j : J} → (x : obj* ⟦ S ◁* PJ ⟧* (WI S PJ) j) → C (sup x)) →
+        {j : J} → (w : WI S PJ j) → C w
+sup⁻¹ m (sup x) = m x
+
+WIfolduniq : ∀  {J} {X : J → Set} {S : J → Set} 
+             {PJ : (j : J) → S j → J → Set} 
+             (α : obj* ⟦ S ◁* PJ ⟧* X -*-> X) →
+             (β : WI S PJ -*-> X) → 
+             ((j : J) (x : obj* ⟦ S ◁* PJ ⟧* (WI S PJ) j) → β j (sup x) ≡ α j (proj₁ x , (λ j′ p → β j′ (proj₂ x j′ p)))) →
+             ((j : J) (x : WI S PJ j) → β j x ≡ WIfold α j x)
+WIfolduniq α β commβ j (sup y) = trans (commβ j y) (cong (λ f → α j (proj₁ y , f)) (ext (λ j′ → ext (λ p → WIfolduniq α β commβ j′ (proj₂ y j′ p)))))
+
+\end{code}
+
+%endif
 
 \noindent This mirrors the construction for plain containers, where we
 can view ordinary |W|-types as the initial algebra of a container
@@ -161,7 +182,25 @@ in^C F = (λ _ → sup) ◁* λ _ _ (path p) → p
 That we have a parameterised initial algebra follows from the
 definition of the associated iteration operator which we now present.
 
+%if style == newcode
+
 \begin{code}
+
+Pathfold : ∀  {I J}  (S : J → Set) (PI  :  (j : J) → S j → I  → Set) 
+                                   (PJ  :  (j : J) → S j → J  → Set) 
+                     (G : ICont* I J) 
+                     (f : (i' : J) → Σ (S i') (λ s' → (i0 : J) → PJ i' s' i0 → G projS* $$ i0) → G projS* $$ i')  
+                     (r : {j : J}
+                          (s' : Σ (S j) (λ s0 → (i' : J) → PJ j s0 i' → G projS* $$ i')) (i' : I)
+                          →
+                          G projP* $$ j $$ (f j s') $$ i' →
+                          PI j (proj₁ s') i' ⊎
+                          Σ J
+                          (λ j' →
+                             Σ (PJ j (proj₁ s') j') (λ p' → G projP* $$ j' $$ (proj₂ s' j' p') $$ i'))) →
+              {j : J} (s : WI S PJ j) (i : I) → G projP* $$ j $$ (WIfold f j s) $$ i → Path S PI PJ j s i
+Pathfold S PI PJ G f r (sup (s , g)) i p = path (Data.Sum.map id (split j & p & q tilps ↦ (j , (p , Pathfold S PI PJ G f r _ _ q)) !m !s) (r (s , _) i p))
+
 
 fold^C : ∀  {I J} {F : ICont* (I ⊎ J) J} (G : ICont* I J) → 
             F ⟨ G ⟩C* ⇒* G → μ^C F ⇒* G
@@ -171,12 +210,38 @@ fold^C {I} {J} {S ◁* P} (T ◁* Q) (f ◁* r) = ffold ◁* rfold
            ffold = WIfold f
            rfold :  {j : J} (s : WI S PJ j) 
                     (i : I) → Q j (ffold j s) i → Path S PI PJ j s i
-           rfold (sup (s , f)) i p  with r (s , _) i p
-           rfold (sup (s , f)) i p  | inj₁ x               = 
-             path (inj₁ x)
-           rfold (sup (s , f)) i p  | inj₂ (j′ , (q , y))  =
-             path (inj₂ (j′ , (q , rfold (f j′ q) i y)))
+           rfold  = Pathfold S PI PJ (T ◁* Q) f r
 
+{-
+
+\end{code}
+
+%endif
+
+\begin{code}
+
+
+fold^C : ∀  {I J} {F : ICont* (I ⊎ J) J} (G : ICont* I J) → 
+            F ⟨ G ⟩C* ⇒* G → μ^C F ⇒* G
+fold^C {I} {J} {S ◁* P} (T ◁* Q) (f ◁* r) = ffold ◁* rfold 
+    where  PI  :  (j : J) → S j → I  → Set ;  PI  j s i   = P j s (inj₁ i) 
+           PJ  :  (j : J) → S j → J  → Set ;  PJ  j s j′  = P j s (inj₂ j′)
+           ffold = WIfold f
+           rfold :  {j : J} (s : WI S PJ j) 
+                    (i : I) → Q j (ffold j s) i → Path S PI PJ j s i
+           rfold (sup (s , g)) i p  = path (Data.Sum.map id (split j & p & q tilps ↦ (j , (p , rfold _ _ q)) !m !s) (r (s , _) i p))
+
+\end{code}
+
+%if style == newcode
+
+\begin{code}
+
+-}
+
+\end{code}
+
+%endif
 
 \end{code} {\bf Do we need some kind of proof of initiality, either
 for mu C or |WI|. Do we have a notion of parameterised algebra or is

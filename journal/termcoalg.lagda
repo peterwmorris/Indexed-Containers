@@ -14,7 +14,7 @@ open import Data.Bool hiding (_≟_)
 open import Data.Sum
 open import Product as Prod
 open import Function
-open import Relation.Binary.PropositionalEquality
+open import Relation.Binary.HeterogeneousEquality
 open import Coinduction
 open import Data.Nat hiding (_⊔_)
 open import Relation.Nullary
@@ -78,6 +78,28 @@ MIunfold m i x with m i x
 MIunfold m i x | s , f = sup (s , (λ i′ p → ♯ MIunfold m i′ (f i′ p)))
 
 \end{code}
+
+
+%if style == newcode
+
+\begin{code}
+
+congsup : {I : Set} {S : I → Set} {PI : (i : I) → S i → I → Set} → {i : I} → {x y : MI S PI i} → sup⁻¹ x ≅ sup⁻¹ y → x ≡ y
+congsup = {!!}
+
+
+MIunfolduniq : ∀  {J} {X : J → Set} {S : J → Set} 
+             {PJ : (j : J) → S j → J → Set} 
+             (α : X -*-> obj* ⟦ S ◁* PJ ⟧* X) →
+             (β : X -*-> MI S PJ) → 
+             ((j : J) (x : X j) → sup⁻¹ (β j x) ≡ (proj₁ (α j x) , (λ j′ p → β j′ (proj₂ (α j x) j′ p) ))) →
+             ((j : J) (x : X j) → β j x ≡ MIunfold α j x)
+MIunfolduniq α β commβ j x with α j x 
+... | a =  congsup {!!} -- trans (commβ j y) (cong (λ f → α j (proj₁ y , f)) (ext (λ j′ → ext (λ p → WIfolduniq α β commβ j′ (proj₂ y j′ p)))))
+
+\end{code}
+
+%endif
 
 Here we employ Agda's approach to coprogramming (e.g. see
 \cite{txa:mpc2010g}), where we mark (possibly) infinite subtrees with
