@@ -243,7 +243,7 @@ fold^C {I} {J} {S ◁* P} (T ◁* Q) (f ◁* r) = ffold ◁* rfold
 
 %endif
 
-\end{code} {\bf Do we need some kind of proof of initiality, either
+{\bf Do we need some kind of proof of initiality, either
 for mu C or |WI|. Do we have a notion of parameterised algebra or is
 it translated to algebra of F[]. See cotianers for reference point.
 }
