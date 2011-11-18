@@ -8,11 +8,11 @@ module paper where
 
 %endif
 
-% \documentclass[a4paper]{article}
+\documentclass[a4paper]{article}
 
-\documentclass[12pt]{article}
-\usepackage[paperwidth=9cm, paperheight=12cm, top=0.5cm, bottom=0.5cm, left=0.0cm, right=0.5cm]{geometry}
-\special{papersize=9cm,12cm}
+% \documentclass[12pt]{article}
+% \usepackage[paperwidth=9cm, paperheight=12cm, top=0.5cm, bottom=0.5cm, left=0.0cm, right=0.5cm]{geometry}
+% \special{papersize=9cm,12cm}
 
 \usepackage{url}
 \usepackage{times}
