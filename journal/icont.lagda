@@ -420,6 +420,8 @@ These can be proved simply by employing the associativity of |Σ|.
 %format _⟨_⟩C* = _ ⟨ _ ⟩C*
 %format ⟩CM = ] ^C
 %format _⟨_⟩CM = _ ⟨ _ ⟩CM 
+%format ⟩CM* = ] "^{\text{\tiny{C}}^{\star}}"
+%format _⟨_⟩CM* = _ ⟨ _ ⟩CM* 
 
 %format PI = P "^{" I "}"
 %format PJ = P "^{" J "}" 
@@ -445,16 +447,23 @@ of |T| shapes to |PJ s| positions. Positions are then a choice between a
 |I|-indexed position, or a pair of an |J|-indexed position, and a |Q|
 position \emph{underneath} the appropriate |T| shape. 
 
-%if style==code
+%if style==newcode
 
 \begin{code}
 
 _⟨_⟩C* : ∀ {I J K} → ICont* (I ⊎ J) K → ICont* I J →  ICont* I K
 _⟨_⟩C* C D = λ* λ k → (C $* k) ⟨ D ⟩C
 
+_map⊎_ : ∀ {a b c d} {A : Set a} {B : Set b} {C : Set c} {D : Set d} →
+       (A → C) → (B → D) → (A ⊎ B → C ⊎ D)
+a map⊎ b = λ c -> Data.Sum.map a b c
+
 \end{code}
 
 %endif
+
+%format map⊎ = ⊎
+
 
 \noindent
 As with indexed functors, this construction is functorial in its second 
@@ -467,7 +476,7 @@ _⟨_⟩CM :  ∀  {I J} (C : ICont (I ⊎ J)) {D E : ICont* I J} →
              → C ⟨  D ⟩C   ⇒    C ⟨  E ⟩C  
 C ⟨ γ ⟩CM = 
   (  split s & f tilps ↦ (s , λ j p → γ projf* $$ j $$ (f j p)) !m !s) ◁ 
-     split s & f tilps i !* ↦ [ inj₁ , (split j & p & q tilps ↦ inj₂ (j , p , γ projr* $$ j $$ (f j p) $$ i $$ q) !m !s) ] !m !s 
+     split s & f tilps i !* ↦ id map⊎ (split j & p & q tilps ↦ (j , p , γ projr* $$ j $$ (f j p) $$ i $$ q) !m !s) !m !s 
 
 \end{code}
 
@@ -480,7 +489,7 @@ _⟨_⟩CM* :  ∀  {I J K} (C : ICont* (I ⊎ J) K) {D E : ICont* I J} →
                     D       ⇒*         E        
              → C ⟨  D ⟩C*   ⇒*    C ⟨  E ⟩C*  
 C ⟨ γ ⟩CM* = (λ k → split s & f tilps ↦ (s , λ j p → γ projf* $$ j $$ (f j p)) !m !s) ◁* 
-              λ {k} → split s & f tilps i !* ↦ Data.Sum.map id (split j & p & q tilps ↦ (j , p , γ projr* $$ j $$ (f j p) $$ i $$ q) !m !s) !m !s 
+              λ {k} → split s & f tilps i !* ↦ (id map⊎ (split j & p & q tilps ↦ (j , p , γ projr* $$ j $$ (f j p) $$ i $$ q) !m !s)) !m !s 
  
 \end{code}
 

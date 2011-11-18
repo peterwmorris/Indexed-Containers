@@ -147,7 +147,7 @@ construct the carrier {\bf defined} of the parameterised initial algebra:
 parameterised initial algebra is a container morphism from the partial
 application of |F| and its parametrised initial algebra, to the
 parameterised initial algebra. This structure map is given by the
-constructor |sup| of |WI| and the constructor |path| of |Path|:
+constructor |sup| of |WI| and the deconstructor for |Path|:
 
 %if style == newcode
 
@@ -179,7 +179,7 @@ in^C F = (λ _ → sup) ◁* λ _ _ (path p) → p
 
 %endif
 
-That we have a parameterised initial algebra follows from the
+That we have a parameterised initial |F|-algebra follows from the
 definition of the associated iteration operator which we now present.
 
 %if style == newcode
@@ -202,9 +202,9 @@ Pathfold : ∀  {I J}  (S : J → Set) (PI  :  (j : J) → S j → I  → Set)
 Pathfold S PI PJ G f r (sup (s , g)) i p = path (Data.Sum.map id (split j & p & q tilps ↦ (j , (p , Pathfold S PI PJ G f r _ _ q)) !m !s) (r (s , _) i p))
 
 
-fold^C : ∀  {I J} {F : ICont* (I ⊎ J) J} (G : ICont* I J) → 
+fold^C : ∀  {I J} (F : ICont* (I ⊎ J) J) {G : ICont* I J} → 
             F ⟨ G ⟩C* ⇒* G → μ^C F ⇒* G
-fold^C {I} {J} {S ◁* P} (T ◁* Q) (f ◁* r) = ffold ◁* rfold 
+fold^C {I} {J} (S ◁* P) {T ◁* Q} (f ◁* r) = ffold ◁* rfold 
     where  PI  :  (j : J) → S j → I  → Set ;  PI  j s i   = P j s (inj₁ i) 
            PJ  :  (j : J) → S j → J  → Set ;  PJ  j s j′  = P j s (inj₂ j′)
            ffold = WIfold f
@@ -218,20 +218,58 @@ fold^C {I} {J} {S ◁* P} (T ◁* Q) (f ◁* r) = ffold ◁* rfold
 
 %endif
 
+
 \begin{code}
 
 
-fold^C : ∀  {I J} {F : ICont* (I ⊎ J) J} (G : ICont* I J) → 
+fold^C : ∀  {I J} (F : ICont* (I ⊎ J) J) {G : ICont* I J} → 
             F ⟨ G ⟩C* ⇒* G → μ^C F ⇒* G
-fold^C {I} {J} {S ◁* P} (T ◁* Q) (f ◁* r) = ffold ◁* rfold 
+fold^C {I} {J} (S ◁* P) {T ◁* Q} (f ◁* r) = ffold ◁* rfold 
     where  PI  :  (j : J) → S j → I  → Set ;  PI  j s i   = P j s (inj₁ i) 
            PJ  :  (j : J) → S j → J  → Set ;  PJ  j s j′  = P j s (inj₂ j′)
            ffold = WIfold f
            rfold :  {j : J} (s : WI S PJ j) 
                     (i : I) → Q j (ffold j s) i → Path S PI PJ j s i
-           rfold (sup (s , g)) i p  = path (Data.Sum.map id (split j & p & q tilps ↦ (j , (p , rfold _ _ q)) !m !s) (r (s , _) i p))
+           rfold (sup (s , g)) i p  = 
+             path ((id map⊎ (split j & p & q tilps ↦ (j , p , rfold _ _ q) !m !s)) (r (s , _) i p))
 
 \end{code}
+
+
+\noindent
+We also need to show that the following diagram commutes for any parametrised algebra |( G , α )|:
+
+\[
+\xymatrix{
+\mbox{|F ⟨ μ^C F ⟩C*|}  \ar[r]^{\quad\mbox{|in^C F|}} 
+\ar[d]_{\mbox{|F ⟨ (fold^C F α) ⟩M*|}} & \mbox{|μ^C F|} \ar[d]^{\mbox{|fold^C F α|}}\\
+\mbox{|F ⟨ G ⟩C*|} \ar[r]^{\quad\mbox{|α|}} & \mbox{|G|}}
+\]
+
+\noindent
+Or, equivalently:
+
+%format comp* = "\circ^{\star}"
+
+\begin{code}
+comm : ∀  {I J} {F : ICont* (I ⊎ J) J} (G : ICont* I J) 
+          (α : F ⟨ G ⟩C* ⇒* G) →
+          ((fold^C F α) comp* (in^C F)) ≡
+            (α comp* (F ⟨ (fold^C F α) ⟩CM*))           
+\end{code}
+
+\noindent
+The proof of |comm| follows immediately from function extenstionality. All that remains for us to show in order to prove that |(μ^C F , in^C F)| is the initial parametrised |F|-algebra is to show that |fold^C F α| is \emph{unique} for any |α|. That is any morphism |β : μ^C F ⇒* G|, that makes the above diagram commute, must be |fold^C F α|:
+
+\begin{code}
+uniq : ∀  {I J} {F : ICont* (I ⊎ J) J} (G : ICont* I J) 
+          (α : F ⟨ G ⟩C* ⇒* G) (β : μ^C F ⇒* G) → 
+          (β comp* (in^C F))  ≡ (α comp* (F ⟨ β ⟩CM*)) →
+          β  ≡ (fold^C F α)
+\end{code}
+
+\noindent
+That the shape maps of |β| and |fold^C F α| agree follows from the uniqueness of |WIfold|; while the proof that the position maps agree follows the same inductive structure as |rfold| in the definition of |fold^C|. 
 
 %if style == newcode
 
@@ -240,15 +278,6 @@ fold^C {I} {J} {S ◁* P} (T ◁* Q) (f ◁* r) = ffold ◁* rfold
 -}
 
 \end{code}
-
-%endif
-
-{\bf Do we need some kind of proof of initiality, either
-for mu C or |WI|. Do we have a notion of parameterised algebra or is
-it translated to algebra of F[]. See cotianers for reference point.
-}
-
-%if style == newcode
 
 \begin{code}
 

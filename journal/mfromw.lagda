@@ -7,7 +7,7 @@
 
 module mfromw where
 
-open import Level
+open import Level hiding (zero; suc)
 open import Data.Empty
 open import Data.Unit hiding (_≟_)
 open import Data.Bool hiding (_≟_)
@@ -20,9 +20,8 @@ open import Data.Nat hiding (_⊔_)
 open import Relation.Nullary
 
 open import common
-open import tt
+open import tt hiding (Func)
 open import cont
-open import func
 
 \end{code}
 
@@ -355,6 +354,17 @@ the case that |F ≡ ⟦ S ◁ P ⟧ |, that is we must build a function:
 
 \begin{code}
 
+,≡₁ : {A : Set} {B : A → Set} → {t t' : Σ A B} → t ≅ t' → proj₁ t ≅ proj₁ t'
+,≡₁ refl = refl 
+
+,≡₂ : {A : Set} {B : A → Set} → {t t' : Σ A B} → t ≅ t' → proj₂ t ≅ proj₂ t'
+,≡₂ refl = refl 
+
+ext⁻¹' :  {A : Set} {B : A → Set} {f g : (a : A) → B a} → 
+         f ≡ g → ((a : A) (a' : A) → a ≡ a' → f a ≅ g a')
+ext⁻¹' refl a ._ refl = refl
+
+
 module imp (S : Set) (P : S → Set) (A : ℕ → Set) (a : (n : ℕ) → A (suc n) → A n) where
 
 \end{code}
@@ -372,14 +382,19 @@ module imp (S : Set) (P : S → Set) (A : ℕ → Set) (a : (n : ℕ) → A (suc
 
 Note that the shape picked at every point along the chain must be the same, in 
 order to make the diagrams commute. This is the key insight
-into constructing this function. {\bf dont see it}
+into constructing this function. 
 
 %if style == newcode
 
 \begin{code}
 
-  ω-cont = {!!}
-
+  ω-cont (f , p) = (proj₁ (f zero)) , (λ x → (λ n → proj₂ (f n) (subst P (foo n) x)) , (λ n → {!!}))
+    where foo : (n : ℕ) → (proj₁ (f 0)) ≡ (proj₁ (f n))
+          foo zero = refl
+          foo (suc n) = trans (foo n) (sym (,≡₁ (p n)))
+          bar : (n : ℕ) (x : P (proj₁ (f 0))) → proj₂ (f n) (subst P (foo n) x) ≅ proj₂ (f 0) x
+          bar zero x = refl
+          bar (suc n) x = trans {!,≡₂ (p n) !} (bar n x)
 \end{code}
 
 %endif

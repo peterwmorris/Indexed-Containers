@@ -66,10 +66,12 @@ cong₃ f refl refl refl = refl
 
 
 comm : ∀  {I J} {F : ICont* (I ⊎ J) J} (G : ICont* I J) (α : F ⟨ G ⟩C* ⇒* G) →
-       (comp* (fold^C {F = F} G α) (in^C F)) ≡⇒* comp* α (F ⟨ (fold^C {F = F} G α) ⟩CM*)           
+       (comp* (fold^C F α) (in^C F)) ≡⇒* comp* α (F ⟨ (fold^C F α) ⟩CM*)           
 comm {I} {J} {S ◁* P} (T ◁* Q) (f ◁* r) = 
   record {  f = λ _ → refl; 
             r = λ {j} s i p → refl }
+
+
 
 congpath : {I J : Set} {S : J → Set}  
            {PI  : (j : J) → S j → I  → Set} 
@@ -100,13 +102,13 @@ cong⊎map refl refl refl refl = refl
 
 uniq : ∀  {I J} {F : ICont* (I ⊎ J) J} (G : ICont* I J) (α : F ⟨ G ⟩C* ⇒* G)
           (β : μ^C F ⇒* G) → (comp* β (in^C F)) ≡⇒* comp* α (F ⟨ β ⟩CM*) →
-          β ≡⇒* fold^C {F = F} G α
+          β ≡⇒* fold^C F α
 uniq {I} {J} {SP} (TQ) (fr) (gq) βcomm = 
    record { f = WIfolduniq (_⇒*_.f fr) (_⇒*_.f gq) (λ _ → _≡⇒*_.f βcomm) _; r = foo  }
  where foo : {j : J} (s : ICont*.S (μ^C SP) j) (i : I)
               (p : ICont*.P TQ j (_⇒*_.f gq j s) i) →
               _⇒*_.r gq s i p ≡
-              _⇒*_.r (fold^C {F = SP} TQ fr) s i
+              _⇒*_.r (fold^C SP fr) s i
                (subst (λ s' → ICont*.P TQ j s' i)
                 (WIfolduniq (_⇒*_.f fr) (_⇒*_.f gq) (λ z → _≡⇒*_.f βcomm) j s) p)
        foo (sup x) i p = congpath _ _ (trans (_≡⇒*_.r βcomm x _ _) 
