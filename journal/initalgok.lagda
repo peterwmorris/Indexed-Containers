@@ -71,13 +71,11 @@ comm {I} {J} {S ◁* P} (T ◁* Q) (f ◁* r) =
   record {  f = λ _ → refl; 
             r = λ {j} s i p → refl }
 
-
-
 congpath : {I J : Set} {S : J → Set}  
            {PI  : (j : J) → S j → I  → Set} 
            {PJ  : (j : J) → S j → J  → Set} 
            {j : J} {x : obj*  ⟦ S ◁* PJ ⟧* (WI S PJ) j} {i : I} →
-           (p q : Path S PI PJ j (sup x) i) → pathminusone p ≡ pathminusone q → p ≡ q
+           (p q : Path S PI PJ j (sup _ x) i) → pathminusone p ≡ pathminusone q → p ≡ q
 congpath (path .q) (path q) refl = refl
 
 cong⊎map : ∀ {a b c d} {A : Set a} {B B′ : Set b} {C : Set c} {D : Set d}
@@ -111,10 +109,10 @@ uniq {I} {J} {SP} (TQ) (fr) (gq) βcomm =
               _⇒*_.r (fold^C SP fr) s i
                (subst (λ s' → ICont*.P TQ j s' i)
                 (WIfolduniq (_⇒*_.f fr) (_⇒*_.f gq) (λ z → _≡⇒*_.f βcomm) j s) p)
-       foo (sup x) i p = congpath _ _ (trans (_≡⇒*_.r βcomm x _ _) 
+       foo (sup _ x) i p = congpath _ _ (trans (_≡⇒*_.r βcomm x _ _) 
          (cong⊎map refl 
                    (cong (Σ J) (ext (λ j → cong (Σ (ICont*.P SP _ (proj₁ x) (inj₂ j))) (ext (λ p → cong (λ x' → ICont*.P TQ j x' i) (WIfolduniq (_⇒*_.f fr) (_⇒*_.f gq) (λ z → _≡⇒*_.f βcomm) j _ ))))))  
-                   (ext' (uncurry λ r₀ → uncurry λ r₁ r₂ → uncurry λ r₀' → uncurry λ r₁' r₂'  pp →   ,,≡ (,,≡₁ refl refl (ext λ j → ext λ v → cong (λ xx → ICont*.P TQ j xx i) (WIfolduniq (_⇒*_.f fr) (_⇒*_.f gq) (λ _ → _≡⇒*_.f βcomm) j _)) pp) (,,≡₂ refl refl (ext λ j → ext λ v → cong (λ xx → ICont*.P TQ j xx i) (WIfolduniq (_⇒*_.f fr) (_⇒*_.f gq) (λ _ → _≡⇒*_.f βcomm) j _)) pp) (trans (foo _ _ _) (cong₃ (λ xx yy zz → Pathfold (ICont*.S SP) (λ j s i' → ICont*.P SP j s (inj₁ i')) (λ j s j′ → ICont*.P SP j s (inj₂ j′)) TQ (_⇒*_.f fr) (_⇒*_.r fr) (proj₂ x xx yy) i zz) ((,,≡₁ refl refl (ext λ j → ext λ v → cong (λ xx → ICont*.P TQ j xx i) (WIfolduniq (_⇒*_.f fr) (_⇒*_.f gq) (λ _ → _≡⇒*_.f βcomm) j _)) pp)) (,,≡₂ refl refl (ext λ j → ext λ v → cong (λ xx → ICont*.P TQ j xx i) (WIfolduniq (_⇒*_.f fr) (_⇒*_.f gq) (λ _ → _≡⇒*_.f βcomm) j _)) pp) (trans (subst-removable (λ s' → ICont*.P TQ r₀ s' i) (WIfolduniq (_⇒*_.f fr) (_⇒*_.f gq) (λ z → _≡⇒*_.f βcomm) r₀ (proj₂ x r₀ r₁)) r₂) (,,≡₃ refl refl (ext λ j → ext λ v → cong (λ xx → ICont*.P TQ j xx i) (WIfolduniq (_⇒*_.f fr) (_⇒*_.f gq) (λ _ → _≡⇒*_.f βcomm) j _)) pp)))))) (cong₂ (λ xx yy → _⇒*_.r fr (proj₁ x , xx) i yy) (ext λ i' → ext λ z →  WIfolduniq (_⇒*_.f fr) (_⇒*_.f gq) (λ _ → _≡⇒*_.f βcomm) _ _) (trans (subst-removable (λ s' → ICont*.P TQ _ s' i) (_≡⇒*_.f βcomm x) p) (sym (subst-removable (λ s' → ICont*.P TQ _ s' i)(WIfolduniq (_⇒*_.f fr) (_⇒*_.f gq) (λ z → _≡⇒*_.f βcomm) _ (sup x)) p)))))) 
+                   (ext' (uncurry λ r₀ → uncurry λ r₁ r₂ → uncurry λ r₀' → uncurry λ r₁' r₂'  pp →   ,,≡ (,,≡₁ refl refl (ext λ j → ext λ v → cong (λ xx → ICont*.P TQ j xx i) (WIfolduniq (_⇒*_.f fr) (_⇒*_.f gq) (λ _ → _≡⇒*_.f βcomm) j _)) pp) (,,≡₂ refl refl (ext λ j → ext λ v → cong (λ xx → ICont*.P TQ j xx i) (WIfolduniq (_⇒*_.f fr) (_⇒*_.f gq) (λ _ → _≡⇒*_.f βcomm) j _)) pp) (trans (foo _ _ _) (cong₃ (λ xx yy zz → Pathfold (ICont*.S SP) (λ j s i' → ICont*.P SP j s (inj₁ i')) (λ j s j′ → ICont*.P SP j s (inj₂ j′)) TQ (_⇒*_.f fr) (_⇒*_.r fr) (proj₂ x xx yy) i zz) ((,,≡₁ refl refl (ext λ j → ext λ v → cong (λ xx → ICont*.P TQ j xx i) (WIfolduniq (_⇒*_.f fr) (_⇒*_.f gq) (λ _ → _≡⇒*_.f βcomm) j _)) pp)) (,,≡₂ refl refl (ext λ j → ext λ v → cong (λ xx → ICont*.P TQ j xx i) (WIfolduniq (_⇒*_.f fr) (_⇒*_.f gq) (λ _ → _≡⇒*_.f βcomm) j _)) pp) (trans (subst-removable (λ s' → ICont*.P TQ r₀ s' i) (WIfolduniq (_⇒*_.f fr) (_⇒*_.f gq) (λ z → _≡⇒*_.f βcomm) r₀ (proj₂ x r₀ r₁)) r₂) (,,≡₃ refl refl (ext λ j → ext λ v → cong (λ xx → ICont*.P TQ j xx i) (WIfolduniq (_⇒*_.f fr) (_⇒*_.f gq) (λ _ → _≡⇒*_.f βcomm) j _)) pp)))))) (cong₂ (λ xx yy → _⇒*_.r fr (proj₁ x , xx) i yy) (ext λ i' → ext λ z →  WIfolduniq (_⇒*_.f fr) (_⇒*_.f gq) (λ _ → _≡⇒*_.f βcomm) _ _) (trans (subst-removable (λ s' → ICont*.P TQ _ s' i) (_≡⇒*_.f βcomm x) p) (sym (subst-removable (λ s' → ICont*.P TQ _ s' i)(WIfolduniq (_⇒*_.f fr) (_⇒*_.f gq) (λ z → _≡⇒*_.f βcomm) _ (sup _ x)) p)))))) 
 
 
 

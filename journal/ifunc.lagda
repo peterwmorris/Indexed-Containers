@@ -256,7 +256,8 @@ observe that this is equivalent to the equation |FFin′ X n = Σ Nat λ m
 Σ^F : ∀ {J I K} → (J → K) → IFunc* I J → IFunc* I K
 Σ^F {J} f F k = 
    record  {  obj  =  λ A → Σ* j ∶ J *Σ (f j ≡ k × obj* F A j) 
-           ;  mor  =  λ m → split j & p & x tilps ↦ (j , p , mor* F m j x) !m !s }
+           ;  mor  =  λ {m (j , p , x) → (j , p , mor* F m j x)} 
+           }
  
 \end{code}
 

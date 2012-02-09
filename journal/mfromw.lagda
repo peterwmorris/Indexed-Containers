@@ -375,7 +375,7 @@ module imp (S : Set) (P : S → Set) (A : ℕ → Set) (a : (n : ℕ) → A (suc
 
 \begin{code} 
   ω-cont :  LIM  (  (  λ n → Σ* s ∶ S *Σ (P s → A n))
-                 ,     λ n → split s & f tilps ↦  (s , a n ∘ f) !m !s
+                 ,     λ n → λ { (s , f) → (s , a n ∘ f) } 
                  ) 
           → Σ* s ∶ S *Σ (P s → (LIM (A , a)))
 \end{code}

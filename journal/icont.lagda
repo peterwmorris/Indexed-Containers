@@ -80,7 +80,8 @@ indexed functors
 ⟦_⟧ : ∀ {I} → ICont I → IFunc I
 ⟦_⟧ {I} (S ◁ P) = 
   record  {  obj  = λ A  → Σ* s ∶ S *Σ (P s -*-> A)
-          ;  mor  = λ m  → split s & f tilps ↦ (s , m ⊚ f) !m !s }
+          ;  mor  = λ {m (s , f) → (s , m ⊚ f) }
+          }
 
 \end{code}
 
@@ -155,9 +156,9 @@ _$*_ : ∀ {I J} → ICont* I J → J → ICont I
 %format ⟧⇒* = ⟧ "\mbox{$\!^{\Rightarrow^{\!\star}}$}"
 %format ⟦_⟧⇒*_ = ⟦ _ ⟧⇒* _
 
-\noindent {\bf indent} We will denote the two projections for an
-|ICont| postfix as |_ projS| and |_ projP|. Our methodology of {\bf go
-big on this} reflecting structure on indexed functors as structure on
+\noindent We will denote the two projections for an
+|ICont| postfix as |_ projS| and |_ projP|. Our methodology of 
+reflecting structure on indexed functors as structure on
 indexed containers means we must next consider how to reflect
 morphisms between indexed functors which can be represented by indexed
 containers as morphisms between those indexed containers. We begin by
@@ -180,7 +181,7 @@ Now, if |F| is the extension of an indexed container |T ◁ Q|, we have:
 
 \begin{align*}
            & |⟦ S ◁ P ⟧ ⇒^F ⟦ T ◁ Q ⟧| \hspace{2.2in} (2) \\
- \approx \;  & |(s : S) → Σ* t ∶ T * *Σ (Q t -*-> P s)| \\
+ \approx \;  & |(s : S) → Σ* t ∶ T *Σ (Q t -*-> P s)| \\
  \approx \;  & |Σ* f ∶ S → T *Σ ((s : S) → Q (f s) -*-> P s)|
 \end{align*}
  
@@ -190,7 +191,7 @@ following record type:
 
 \begin{code}
 
-record _⇒_ {I} (C D : ICont I) : Set₁ where
+record _⇒_ {I} (C D : ICont I) : Set where
   constructor _◁_
   field 
     f : C projS → D projS
@@ -198,7 +199,28 @@ record _⇒_ {I} (C D : ICont I) : Set₁ where
 
 \end{code}
 
-\noindent We witness the construction of a natural transformation from
+\noindent 
+|ICont I| forms a category, with morphisms given by |_⇒_|, the identity and
+composition morphisms are given as follows:
+
+%format id^C = id "^{C}"
+%format comp^C = id "^{C}"
+
+\begin{code}
+
+id^C : ∀ {I} {C : ICont I} → C ⇒ C
+id^C = id ◁ (λ _ _ → id)
+
+comp^C : ∀ {I} {C D E : ICont I} → D ⇒ E → C ⇒ D → C ⇒ E
+comp^C (f ◁ r) (g ◁ q) = (f ∘ g) ◁ (λ s i → q s i ∘ r (g s) i)
+
+\end{code}
+
+\noindent
+That |id^C| is the unit of |comp^C|, and that |comp^C| is associtive follows 
+immediately from the corresponding properties od |id| and |_∘_|.
+
+We witness the construction of a natural transformation from
 an indexed container morphisms as follows:
 
 \begin{code}
@@ -209,11 +231,11 @@ an indexed container morphisms as follows:
 
 \end{code}
 
-
-\noindent The representation of natural transformations between
+\noindent
+The representation of natural transformations between
 indexed functors arising from indexed contianers and morphisms between
-the indexed containers themselves is actually a bijection. This, in
-turn, opens the way to reasoning about natural transformations by
+the indexed containers themselves is actually a bijection. This
+ opens the way to reasoning about natural transformations by
 reasoning about indexed container morphisms. Technically, this
 bijection is stated as follows:
 
@@ -244,7 +266,7 @@ The isomorphism is proved in equations (1) and (2)
 \end{proof}
 
 Having dealt with indexed container morphisms in the singly indexed
-setting {\bf mention this strategy}, we now turn to the doubly indexed
+setting, we now turn to the doubly indexed
 setting. First of all, we define the morphisms between two doubly
 indexed containers.
 
@@ -263,13 +285,29 @@ record _⇒*_ {I J} (C D : ICont* I J) : Set₁ where
 
 \end{code}
 
+
+%format id^C* = id "^{C\star}"
+%format comp^C* = id "^{C\star}"
+
 %format projf  = "\!." f
 %format projr  = "\!." r
 %format projf*  = "\!." f 
 %format projr*  = "\!." r 
-%format un*  = "\!"  
+%format un*  = "\!" 
+
 
 %if style == code 
+
+\begin{code}
+
+id^C* : ∀ {I J} {C : ICont* I J} → C ⇒* C
+id^C* = (λ j → id) ◁* (λ s i → id)
+
+comp^C* : ∀ {I J} {C D E : ICont* I J} → D ⇒* E → C ⇒* D → C ⇒* E
+comp^C* (f ◁* r) (g ◁* q) = (λ j → f j ∘ g j) ◁* (λ s i → q s i ∘ r (g _ s) i) 
+
+\end{code}
+
 
 \begin{code}
 
@@ -296,7 +334,7 @@ _projr* m j = _⇒*_.r m
 %format >>=^C = >>= ^C
 %format _>>=^C_ = _ >>=^C _
 
-{\bf full and faith} Having defined indexed containers and indexed
+Having defined indexed containers and indexed
 containers morphisms as representations of indexed functors and the
 natural transfortmations between them, we now turn our attention to
 the relative monad structure on indexed functors, reindexing of
@@ -314,7 +352,7 @@ equip |ICont| with a relative monadic structure:
 _>>=^C_ : ∀ {I J} → ICont I → ICont* J I → ICont J
 _>>=^C_ {I} (S ◁ P) (T ◁* Q) =  
      (IFunc.obj ⟦ S ◁ P ⟧ T) 
-  ◁  split s & f tilps j !* ↦ Σ  (Σ* i ∶ I *Σ P s i) (split i & p tilps ↦ Q i (f i p) j !m !s) !m !s  
+  ◁  λ {(s , f) j → Σ  (Σ* i ∶ I *Σ P s i) (λ { (i , p) → Q i (f i p) j}) }  
 
 \end{code}
 
@@ -373,7 +411,7 @@ module DelSigPi {I J K : Set} where
   Σ^C : (J → K) → ICont* I J → ICont* I K
   Σ^C f (S ◁* P) = λ* λ k →  
        (Σ* j ∶ J *Σ (f j ≡ k × S j)) 
-    ◁  split j & eq & s tilps ↦ P j s !m !s
+    ◁  λ { (j , eq , s) → P j s }
  
   Π^C : (J → K) → ICont* I J → ICont* I K
   Π^C f (S ◁* P) =  λ* λ k →  
@@ -436,8 +474,8 @@ _⟨_⟩C {I} {J} (S ◁ P) (T ◁* Q) =
   let  PI  : S  → I  → Set            ;  PI  s  i  = P s (inj₁ i) 
        PJ  : S  → J  → Set            ;  PJ  s  j  = P s (inj₂ j) 
   in   IFunc.obj ⟦ S ◁ PJ ⟧ T ◁     
-            (split s & f tilps i !* ↦ PI s i 
-         ⊎  (Σ* j ∶ J *Σ (Σ* p ∶ PJ s j *Σ Q j (f j p) i)) !m !s)
+            (λ {(s , f) i → PI s i
+         ⊎  (Σ* j ∶ J *Σ (Σ* p ∶ PJ s j *Σ Q j (f j p) i))})
 
 \end{code}
 
@@ -469,14 +507,24 @@ a map⊎ b = λ c -> Data.Sum.map a b c
 As with indexed functors, this construction is functorial in its second 
 argument, and lifts container morphisms in this way:
 
+%if style==code
+
+\begin{code}
+
+{-
+
+\end{code}
+
+%endif 
+
 \begin{code}
 
 _⟨_⟩CM :  ∀  {I J} (C : ICont (I ⊎ J)) {D E : ICont* I J} → 
                     D      ⇒*        E        
              → C ⟨  D ⟩C   ⇒    C ⟨  E ⟩C  
 C ⟨ γ ⟩CM = 
-  (  split s & f tilps ↦ (s , λ j p → γ projf* $$ j $$ (f j p)) !m !s) ◁ 
-     split s & f tilps i !* ↦ id map⊎ (split j & p & q tilps ↦ (j , p , γ projr* $$ j $$ (f j p) $$ i $$ q) !m !s) !m !s 
+  (  λ {(s , f) → (s , λ j p → γ projf* $$ j $$ (f j p))}) ◁ 
+     λ {(s , f) i → id map⊎ λ { (j , p , q) → (j , p , γ projr* $$ j $$ (f j p) $$ i $$ q) } } 
 
 \end{code}
 
@@ -485,11 +533,21 @@ C ⟨ γ ⟩CM =
 
 \begin{code}
 
+-}
+
+_⟨_⟩CM :  ∀  {I J} (C : ICont (I ⊎ J)) {D E : ICont* I J} → 
+                    D      ⇒*        E        
+             → C ⟨  D ⟩C   ⇒    C ⟨  E ⟩C  
+C ⟨ γ ⟩CM = 
+  (  λ {(s , f) → (s , λ j p → γ projf* $$ j $$ (f j p))}) ◁ 
+     λ {(s , f) i → id map⊎ (λ jpq → (proj₁ jpq , proj₁ (proj₂ jpq) , (γ projr* $$ proj₁ jpq $$ f (proj₁ jpq) (proj₁ (proj₂ jpq)) $$ i $$ proj₂ (proj₂ jpq) ))) } 
+
+
 _⟨_⟩CM* :  ∀  {I J K} (C : ICont* (I ⊎ J) K) {D E : ICont* I J} → 
                     D       ⇒*         E        
              → C ⟨  D ⟩C*   ⇒*    C ⟨  E ⟩C*  
-C ⟨ γ ⟩CM* = (λ k → split s & f tilps ↦ (s , λ j p → γ projf* $$ j $$ (f j p)) !m !s) ◁* 
-              λ {k} → split s & f tilps i !* ↦ (id map⊎ (split j & p & q tilps ↦ (j , p , γ projr* $$ j $$ (f j p) $$ i $$ q) !m !s)) !m !s 
+C ⟨ γ ⟩CM* = (λ {k (s , f) → (s , λ j p → γ projf* $$ j $$ (f j p))}) ◁* 
+              λ { (s , f)  i → (id map⊎ (λ jpq → (proj₁ jpq , proj₁ (proj₂ jpq) , (γ projr* $$ proj₁ jpq $$ f (proj₁ jpq) (proj₁ (proj₂ jpq)) $$ i $$ proj₂ (proj₂ jpq) )))) } 
  
 \end{code}
 

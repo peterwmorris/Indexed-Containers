@@ -9,7 +9,6 @@ open import Function
 
 open import common
 open import tt
-open import func
 
 \end{code}
 
@@ -55,7 +54,7 @@ definition.
 \begin{code}
 ⟦_⟧ : Cont → Func
 ⟦ S ◁ P ⟧ = record  { obj  = λ A → Σ* s ∶ S *Σ (P s → A)
-                    ; mor  = λ m → split s & f tilps ↦ (s , m ∘ f)  !m !s 
+                    ; mor  = λ m → λ { (s , f) → (s , m ∘ f) } 
                     }
 
 \end{code} For example the list functor arises from a container whose

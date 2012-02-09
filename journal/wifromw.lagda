@@ -62,7 +62,7 @@ their} indices:
 
 WI′ :  {I : Set} (S : I → Set) 
        (P : (i : I) (s : S i) → I → Set) → Set
-WI′ {I} S P = W (Σ* i ∶ I *Σ S i) (split i & s tilps ↦ Σ* i′ ∶ I *Σ P i s i′ !m !s)
+WI′ {I} S P = W (Σ* i ∶ I *Σ S i) (λ { (i , s) → Σ* i′ ∶ I *Σ P i s i′})
 
 \end{code}
 
@@ -76,7 +76,7 @@ node:
 
 WIl :  {I : Set} (S : I → Set) 
        (P : (i : I) (s : S i) → I → Set) → Set
-WIl {I} S P = W (I × (Σ* i ∶ I *Σ S i)) (split i′ & i & s tilps ↦ Σ* i′ ∶ I *Σ P i s i′ !m !s)
+WIl {I} S P = W (I × (Σ* i ∶ I *Σ S i)) (λ { (i′ , i , s) → Σ* i′ ∶ I *Σ P i s i′})
 
 \end{code}
 
@@ -102,7 +102,7 @@ module label {I : Set} {S : I → Set} {P : (i : I) → S i → I → Set} where
   lup (sup ((i , s) , f)) = sup ((i , (i , s)) , (λ p → lup (f p)))
 
   ldown : I → WI′ S P → WIl S P 
-  ldown i (sup (s , f)) = sup ((i , s) , split i′ & p tilps ↦ ldown i′ (f (i′ , p)) !m !s)
+  ldown i (sup (s , f)) = sup ((i , s) , λ { (i′ , p) → ldown i′ (f (i′ , p)) })
 
 \end{code} 
 
@@ -158,8 +158,8 @@ function extensionality to define the constructor |supi|:
 \begin{code}
 
   supi : obj* ⟦ S ◁* P ⟧* (WI S P)  -**-> WI S P
-  supi (s , f) =  (  sup ((_ , s) , split i & p tilps ↦ proj₁ (f i p) !m !s)) 
-                  ,  cong (λ x → sup ((_ , _ , s) , x)) (ext split i & p tilps ↦ proj₂ (f i p) !m !s)
+  supi {i} (s , f) =  (  sup ((_ , s) , λ { (i , p) → proj₁ (f i p) })) 
+                  ,  cong (λ x → sup ((i , i , s) , x)) (ext (λ ip → proj₂ (f _ (proj₂ ip))))
 
 \end{code}
 

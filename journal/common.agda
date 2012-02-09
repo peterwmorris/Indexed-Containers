@@ -21,29 +21,6 @@ unc : ∀ {l l' l''} {A : Set l} {B : A → Set l'} {C : Σ A B → Set l''} →
       ((p : Σ A B) → C p)
 unc = uncurry
 
-ids : ∀ {l} {A : Set l} → A → A
-ids = id 
-
-idt : ∀ {l} {A : Set l} → A → A
-idt = id 
-
-infixr 102 ↦_!m
-
-↦_!m : ∀ {l} {A : Set l} → A → A
-↦_!m = id 
-
-infixr 103 split_!s
-
-split_!s : ∀ {l} {A : Set l} → A → A
-split_!s = id 
-
-infixr 101 unc
-infixr 102 ids
-infixr 102 idt
-
-syntax unc (λ x → t) = x & t
-syntax ids (λ x → t) = x tilps t 
-syntax idt (λ x → t) = x !* t 
 
 _$$_ : ∀ {l l'} {A : Set l} {B : A → Set l'} →
       ((x : A) → B x) → ((x : A) → B x)
@@ -51,6 +28,7 @@ f $$ x = f x
 
 _-**->_ : {I : Set} -> (A B : I -> Set) -> Set
 _-**->_ {I} A B = {i : I} -> A i -> B i
+
 
 
 subst₂′ : ∀ {a b p} {A : Set a} {B : A → Set b} (P : (a : A) → B a → Set p) →

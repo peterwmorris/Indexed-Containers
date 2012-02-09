@@ -33,13 +33,6 @@ module paper where
 
 %format . = "."
 %format $$ = "\!\!" 
-%format split = \ ( "\!"
-%format tilps = "\!\!" )
-%format & = "\!" , "\!"
-%format ↦ =  →
-%format !* = "\!" 
-%format !s = "\!"
-%format !m = "\!"
 
 \begin{document}
 

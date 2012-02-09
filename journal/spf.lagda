@@ -7,7 +7,7 @@
 
 module spf where
 
-open import Level
+open import Level hiding (zero ; suc)
 open import Data.Empty
 open import Data.Unit hiding (_≟_)
 open import Data.Bool hiding (_≟_)
@@ -194,8 +194,8 @@ morphisms |bindpres| and |bindpres⁻¹|:
 
 module blah {I J : Set} (F : ISPT J) (G : SPF I J) where
 
-{-
-
+ postulate
+ 
 \end{code}
 
 %endif
@@ -206,27 +206,6 @@ module blah {I J : Set} (F : ISPT J) (G : SPF I J) where
   bindpres⁻¹  :  (⟦ F ⟧^T >>=^C ⟦ G ⟧^T*)  ⇒ (⟦ F >>=^T G ⟧^T) 
 
 \end{code}
-
-
-
-%if style == newcode
-
-\begin{code}
-
-bindpres : ∀ {I J} → (F : ISPT J) (G : SPF I J) → (⟦ F >>=^T G ⟧^T) ⇒ (⟦ F ⟧^T >>=^C ⟦ G ⟧^T*)
-bindpres (η^T i) G = 
-  (  λ s → _ , (λ i′ eqi → subst (λ i' → ⟦ G i' ⟧^T projS) eqi s)) 
-  ◁  λ s i′ → split ieq & p tilps ↦ subst₂′ (λ i' s' → ICont.P ⟦ G i' ⟧^T s' i′) (sym (proj₂ ieq)) (subst-removable (λ i' → ICont.S ⟦ G i' ⟧^T) (proj₂ ieq) s) p !m !s
-bindpres (Δ^T f F j) G = bindpres (F (f j)) G
-bindpres (Σ^T f F j) G = split j & jeq & s tilps ↦ (j , (jeq , {!!})) , {!!} !m !s ◁ {!!}
-bindpres (Π^T f F j) G = {!!}
-bindpres (μ^T F j) G = {!!}
-
--}
-
-\end{code}
-
-%endif
 
 \end{proof}
 
