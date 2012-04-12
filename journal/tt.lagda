@@ -21,12 +21,16 @@ open import Relation.Nullary
 
 open import common
 
+postulate dotdotdot : ∀ {l} {A : Set l} → A
+
 _≡_ : {l : Level} {A : Set l} → A → A → Set
 a ≡ b = a ≅ b
 
 \end{code}
 
 %endif
+
+%format dotdotdot = "\ldots"
 
 \subsection{Type Theory}
 
@@ -118,10 +122,12 @@ heterogeneous equality.  This can be defined in Agda via a data-type:
 
 \begin{code}
 
-data _≅′_ {A : Set} (x : A) : {B : Set} → B → Set where
+data _≅′_  {A  :  Set} (x : A)  : 
+           {B  :  Set} → B  → Set where
   refl : x ≅′ x
 
-subst′ : {A : Set} (P : A → Set) {x y : A} → x ≅′ y → P x → P y
+subst′ :  {A : Set} (P : A → Set) {x y : A} → 
+          x ≅′ y → P x → P y
 subst′ P refl p = p  
 
 \end{code}
@@ -172,6 +178,13 @@ identity proofs:
 %if style == newcode
 
 \begin{code}
+
+  postulate exti :  {f g : {a : A} → B a} → 
+                    ({a : A} → f {a} ≡ g {a}) → (λ {a} → f {a}) ≡ (λ {a} → g {a})
+
+  exti⁻¹ :  {f g : {a : A} → B a} → (λ {a} → f {a}) ≡ (λ {a} → g {a}) →
+            ({a : A} → f {a} ≡ g {a}) 
+  exti⁻¹ refl = refl
 
 open EXT public
 

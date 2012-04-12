@@ -29,7 +29,9 @@ f $$ x = f x
 _-**->_ : {I : Set} -> (A B : I -> Set) -> Set
 _-**->_ {I} A B = {i : I} -> A i -> B i
 
-
+cong′ : ∀ {a b} {A : Set a} {B : Set b}
+       (f : A → B) {x y} → x ≅ y → f x ≅ f y
+cong′ f refl = refl
 
 subst₂′ : ∀ {a b p} {A : Set a} {B : A → Set b} (P : (a : A) → B a → Set p) →
           ∀ {x₁ x₂ y₁ y₂} → x₁ ≅ x₂ → y₁ ≅ y₂ → P x₁ y₁ → P x₂ y₂

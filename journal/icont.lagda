@@ -145,8 +145,8 @@ _$*_ : ∀ {I J} → ICont* I J → J → ICont I
 
 %endif
 
-%format ^C = "^{\text{\tiny C}}"
-%format ^C* = "^{\text{\tiny C}^{\star}}"
+%format ^C = "^{\text{\tiny$" C "$}}"
+%format ^C* = "^{\text{\tiny$" C "$}^{\star}}"
 %format ⇒ = "\Rightarrow" ^C
 %format _⇒_ = _ ⇒ _
 %format ⇒* = "\Rightarrow" ^C*
@@ -187,7 +187,8 @@ Now, if |F| is the extension of an indexed container |T ◁ Q|, we have:
  
 \noindent We will use this last line as the definition for indexed
 container morphisms. This definition can be implemented by the
-following record type:
+following record type, containing a function on shapes and a family of
+contravariant indexed functions on positions:
 
 \begin{code}
 
@@ -203,8 +204,9 @@ record _⇒_ {I} (C D : ICont I) : Set where
 |ICont I| forms a category, with morphisms given by |_⇒_|, the identity and
 composition morphisms are given as follows:
 
-%format id^C = id "^{C}"
-%format comp^C = id "^{C}"
+%format id^C = id ^C
+%format _comp^C_ = _"\circ" ^C _
+%format comp^C = "\mathbin{\circ" ^C "}"
 
 \begin{code}
 
@@ -217,8 +219,73 @@ comp^C (f ◁ r) (g ◁ q) = (f ∘ g) ◁ (λ s i → q s i ∘ r (g s) i)
 \end{code}
 
 \noindent
-That |id^C| is the unit of |comp^C|, and that |comp^C| is associtive follows 
-immediately from the corresponding properties od |id| and |_∘_|.
+That |id^C| is the left and right unit of |comp^C|, and that |comp^C| 
+is associative follows immediately from the corresponding properties of |id|
+and |_∘_|.
+
+We will use a notion of equality for container morphisms that incudes a proof that their shape and position functions are point-wise equal:
+
+%format projf  = "\!." f
+%format projr  = "\!." r
+
+%if style==code
+
+\begin{code}
+
+_projf :  ∀ {I} {C D : ICont I} (m : C ⇒ D) → C projS → D projS
+_projf = _⇒_.f
+
+_projr : ∀ {I} {C D : ICont I} (m : C ⇒ D) (s : C projS) → (D projP $$ (m projf $$ s)) -*-> (C projP $$ s)
+_projr = _⇒_.r
+
+\end{code}
+
+%endif
+
+%format ≡⇒ = "\mathbin{\equiv^{\Rightarrow}}"
+%format _≡⇒_ = _ "\equiv^{\Rightarrow}" _
+
+\begin{code}
+
+record _≡⇒_  {I} {C D : ICont I} (m n : C ⇒ D) : Set where
+  constructor _◁_
+  field
+    feq : (s : C projS) → m projf $$ s ≡ n projf $$ s 
+    req : (s : C projS) (i : I) (p : D projP $$ (m projf $$ s) $$ i) → 
+            m projr $$ s $$ i $$ p ≡ 
+              n projr $$ s $$ i $$ subst (λ s' → D projP $$ s' $$ i) (feq s) p
+
+\end{code}
+
+\noindent
+In the presence of extensional equality, we can prove that this is equivalent to
+the propositional equality on |_⇒_|, but it will prove simpler later to use 
+this definition.
+
+%format lhd = _◁_
+
+%if style==code
+
+\begin{code}
+
+postulate ext′ :  ∀ {l l'} {A A' : Set l} {B : A → Set l'} {B' : (a : A') → Set l'}  {f : (a : A) → B a} {g : (a : A') → B' a} → 
+                  ((a : A) (a' : A') → a ≅ a' → f a ≅ g a') → f ≅ g
+
+cong₃ : ∀ {a b c d} {A : Set a} {B : A → Set b} {C : ∀ x → B x → Set c}
+          {D : ∀ x → (y : B x) → C x y → Set d}
+          {x y u v s t}
+        (f : (x : A) (y : B x) (z : C x y) → D x y z) → x ≅ y → u ≅ v → s ≅ t → f x u s ≅ f y v t
+cong₃ f refl refl refl = refl
+
+
+≡⇒→≡ : ∀ {I} {C D : ICont I} (m n : C ⇒ D) → m ≡⇒ n → m ≡ n
+≡⇒→≡ {I} {C} {D} (f ◁ r) (f′ ◁ r′) (feq ◁ req)= cong₂ lhd (ext feq) (ext′ λ s s′ seq → ext′ λ i i′ ieq → ext′ λ p p′ peq → trans (req s i p) (cong₃ r′ seq ieq (trans (subst-removable (λ s' → ICont.P D s' i) (feq s) p) peq)))
+  where lhd : (f : C projS → D projS) → ((s : C projS) (i : I) →
+                D projP $$ (f s) $$ i → C projP $$ s $$ i) → C ⇒ D
+        lhd = _◁_
+
+\end{code}
+%endif
 
 We witness the construction of a natural transformation from
 an indexed container morphisms as follows:
@@ -237,7 +304,7 @@ indexed functors arising from indexed contianers and morphisms between
 the indexed containers themselves is actually a bijection. This
  opens the way to reasoning about natural transformations by
 reasoning about indexed container morphisms. Technically, this
-bijection is stated as follows:
+bijection is captured by the following statement:
 
 \begin{proposition}
 
@@ -246,7 +313,7 @@ The functor |(⟦_⟧ , ⟦_⟧⇒) : ICont I → IFunc I | is full and faithful
 \end{proposition}
 
 \begin{proof}
-The isomorphism is proved in equations (1) and (2)
+The isomorphism is proved in equations (1) and (2).
 
 %%\begin{code}
 %%
@@ -286,11 +353,11 @@ record _⇒*_ {I J} (C D : ICont* I J) : Set₁ where
 \end{code}
 
 
-%format id^C* = id "^{C\star}"
-%format comp^C* = id "^{C\star}"
+%format ^C* = "^{\text{\tiny{$" C "$}}\star}"
+%format id^C* = id ^C*
+%format _comp^C*_ = _"\circ" ^C* _
+%format comp^C* = "\mathbin{\circ" ^C* "}"
 
-%format projf  = "\!." f
-%format projr  = "\!." r
 %format projf*  = "\!." f 
 %format projr*  = "\!." r 
 %format un*  = "\!" 
@@ -303,28 +370,33 @@ record _⇒*_ {I J} (C D : ICont* I J) : Set₁ where
 id^C* : ∀ {I J} {C : ICont* I J} → C ⇒* C
 id^C* = (λ j → id) ◁* (λ s i → id)
 
-comp^C* : ∀ {I J} {C D E : ICont* I J} → D ⇒* E → C ⇒* D → C ⇒* E
-comp^C* (f ◁* r) (g ◁* q) = (λ j → f j ∘ g j) ◁* (λ s i → q s i ∘ r (g _ s) i) 
+_comp^C*_ : ∀ {I J} {C D E : ICont* I J} → D ⇒* E → C ⇒* D → C ⇒* E
+(f ◁* r) comp^C* (g ◁* q) = (λ j → f j ∘ g j) ◁* (λ s i → q s i ∘ r (g _ s) i) 
 
 \end{code}
 
+%format ≡⇒* = "\mathbin{\equiv^{\Rightarrow^{\star}}}"
+%format _≡⇒*_ = _ "\equiv^{\Rightarrow^{\star}}" _
 
 \begin{code}
 
 un* : ∀ {I J} → ICont* I J → J → ICont I
 un* (S ◁* P) j = S j ◁ P j
 
-_projf :  ∀ {I} {C D : ICont I} (m : C ⇒ D) → C projS → D projS
-_projf = _⇒_.f
-
-_projr : ∀ {I} {C D : ICont I} (m : C ⇒ D) (s : C projS) → (D projP $$ (m projf $$ s)) -*-> (C projP $$ s)
-_projr = _⇒_.r
 
 _projf* :  ∀ {I J} {C D : ICont* I J} (m : C ⇒* D) (j : J) → C projS* $$ j → D projS* $$ j
 _projf* m j = _⇒*_.f m j 
 
 _projr* : ∀ {I J} {C D : ICont* I J} (m : C ⇒* D) (j : J) (s : C projS* $$ j) → (D projP* $$ j $$ (m projf* $$ j $$ s)) -*-> (C projP* $$ j $$ s)
 _projr* m j = _⇒*_.r m  
+
+record _≡⇒*_  {I} {J} {C D : ICont* I J} (m n : C ⇒* D) : Set where
+  constructor _◁*_
+  field
+    feq : (j : J) (s : C projS* $$ j) → m projf* $$ j $$ s ≡ n projf* $$ j $$ s 
+    req : (j : J) (s : C projS* $$ j) (i : I) (p : D projP* $$ j $$ (m projf* $$ j $$ s) $$ i) → 
+            m projr* $$ j $$ s $$ i $$ p ≡ 
+              n projr* $$ j $$ s $$ i $$ subst (λ s' → D projP* $$ j $$ s' $$ i) (feq j s) p
 
 \end{code}
 
@@ -340,7 +412,7 @@ natural transfortmations between them, we now turn our attention to
 the relative monad structure on indexed functors, reindexing of
 indexed functors (and the associated adjoints), and parameterised
 inital algebras of indexed functors. Our goal in the rest of this
-section is to reflect {\bf reflect?} each of these structures within
+section is to encode each of these structures within
 indexed containers. We begin by showing that, as with |IFunc|, we can
 equip |ICont| with a relative monadic structure:
 
@@ -367,7 +439,8 @@ The triple |(ICont , η^C , _>>=^C_)| is a relative monad.
 \begin{proof}
 
 Instead of proving this directly, we observe that the |η^C| and |_>>=^C_|
-are preserved under |⟦_⟧|, i.e.:
+are preserved under the extension functor, and by the full and faithfulness of
+|⟦_⟧| we can import the result from |IFunc| into |ICont|:
 
 \begin{align*}
 |⟦ η^C i ⟧| && \approx &&& |η^F i| \\
@@ -378,7 +451,7 @@ These facts follow from the extensionality of our propositional
 equality, the associativity of |Σ| and the terminality of |⊤|. By the
 full and faithful nature of the embedding |⟦_⟧|, we can then reuse the
 result that |(IFunc , η^F , _>>=^F_)| is a relative monad to establish
-the theorem. {\bf qed marker and mention use of ff before}
+the theorem. 
 
 \end{proof}
 
@@ -453,12 +526,12 @@ These can be proved simply by employing the associativity of |Σ|.
 %format ✧ = "\lozenge"
 
 %format ⟩C = ] ^C
-%format ⟩C*  = ] "^{\text{\tiny{C}}^{\star}}"
+%format ⟩C*  = ] ^C*
 %format _⟨_⟩C = _ ⟨ _ ⟩C
 %format _⟨_⟩C* = _ ⟨ _ ⟩C*
 %format ⟩CM = ] ^C
 %format _⟨_⟩CM = _ ⟨ _ ⟩CM 
-%format ⟩CM* = ] "^{\text{\tiny{C}}^{\star}}"
+%format ⟩CM* = ] ^C*
 %format _⟨_⟩CM* = _ ⟨ _ ⟩CM* 
 
 %format PI = P "^{" I "}"

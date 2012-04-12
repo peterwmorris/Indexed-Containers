@@ -3,7 +3,7 @@
 
 \begin{code}
 
-{-# OPTIONS --universe-polymorphism #-}
+{-# OPTIONS --universe-polymorphism --no-termination-check #-}
 
 module termcoalg where
 
@@ -51,15 +51,22 @@ data MI  {I : Set} (S : I → Set)
          (PI : (i : I) → S i → I → Set) : I → Set where
   sup : obj* ⟦ S ◁* PI ⟧* (λ i → ∞ (MI S PI i))  -**-> MI S PI 
 
-sup⁻¹ :  {I : Set} {S : I → Set} {PI : (i : I) → S i → I → Set} →
-          MI S PI -**-> obj* ⟦ S ◁* PI ⟧* (MI S PI)
+sup⁻¹ : ∀  {I S} {PI : (i : I) → S i → I → Set} →
+           MI S PI -**-> obj* ⟦ S ◁* PI ⟧* (MI S PI)
 sup⁻¹ (sup (s , f)) = s , λ i p → ♭ (f i p)
 
 \end{code}
 
+%format supm = sup
+
 %if style == newcode
 
 \begin{code}
+
+supm :  {I : Set} {S : I → Set} 
+        {PI : (i : I) → S i → I → Set} →
+        obj* ⟦ S ◁* PI ⟧* (λ i → ∞ (MI S PI i))  -**-> MI S PI
+supm = sup
 
 unsup : {I : Set} {S : I → Set} {PI : (i : I) → S i → I → Set} → 
           {P : (i : I) → MI S PI i → Set} → ({i : I} (sf : Σ* s ∶ S i *Σ ((i′ : I) → PI i s i′ → ∞ (MI S PI i′))) → P i (sup sf)) → {i : I} → (x : MI S PI i) → P i x
@@ -86,8 +93,8 @@ The equality between infinite objects will be bi-simulation, for instance |MI|,
 types are bi-similar if they have the same node shape, and all their sub-trees 
 are bi-similar:
 
-%format _≈MI_ = _ ≈MI _
-%format ≈MI = "\approx^{" MI "}" 
+%format _≈MI_ = _ "\approx^{" MI "}" _
+%format ≈MI = "\mathbin{\approx^{" MI "}}" 
 
 \begin{code}
 
@@ -156,7 +163,26 @@ MIunfold α j x | s , f = sup (s , λ j′ p → ♯ MIunfold α j′ (f j′ p)
 
 \end{code}
 
-We also require that |MIunfold| is unique, {\em i.e.} any morphism that makes the diagram above should be provably equal (again upto bi-simulation) to |MIunfold α|. This seems to be easy to show:
+We also require that |MIunfold| is unique, {\em i.e.} any morphism that makes the diagram above should be provably equal (again upto bi-simulation) to |MIunfold α|. To state this property we need to lift the bi-simulation |_≈MI_| through the extension of an indexed container, to say what is it for two elements in the extension to be bi-similar:
+
+%format _⟦⟧MI=_ = _ "\approx^{" ⟦ _ ⟧ MI  "}" _
+%format ⟦⟧MI= = "\mathbin{\approx^{" ⟦ _ ⟧ MI "}}" 
+
+
+
+\begin{code}
+
+_⟦⟧MI=_ : ∀  {J : Set} {S : J → Set} 
+             {PJ : (j : J) → S j → J → Set} {j : J} → 
+             (x y : obj* ⟦ S ◁* PJ ⟧* (MI S PJ) j) → Set
+_⟦⟧MI=_ {J} {S} {PJ} {j} (s , f) (s′ , f′) = 
+  Σ (s ≡ s′) λ eq →  {j′ : J} (p : PJ j s j′) → 
+                     f _ p ≈MI f′ _ (subst (λ s → PJ j s j′) eq p)
+
+\end{code}
+
+\noindent
+The uniqueness property is then given by:
 
 %format sup' = sup
 
@@ -172,19 +198,22 @@ We also require that |MIunfold| is unique, {\em i.e.} any morphism that makes th
 
 \begin{code}
 
-MIunfolduniq : ∀ {J} {X : J → Set} {S PJ} 
+MIunfoldUniq : ∀ {J} {X : J → Set} {S PJ} 
                  (α : X -*-> obj* ⟦ S ◁* PJ ⟧* X) → (β : X -*-> MI {J} S PJ) →
-                 ((j : J) (x : X j) → sup' ((mor* ⟦ S ◁* PJ ⟧* β ⊚ α) j x) ≈MI β j x) → 
-                 (j : J) → (x : X j) → MIunfold α j x ≈MI β j x
-MIunfolduniq α β commβ i x with commβ i x 
-MIunfolduniq α β commβ i x | commix with β i x 
-MIunfolduniq α β commβ i x  | sup {._} {._} {g} y 
-                            | sup .(proj₁ (α i x) , g) = 
-  sup (λ p → ♯ ≈MItrans (MIunfolduniq α β commβ _ _) (♭ (y p)))
+                 (  (j : J) (x : X j) → 
+                    (sup⁻¹ (β j x)) ⟦⟧MI= ((mor* ⟦ S ◁* PJ ⟧* β ⊚ α) j x)) → 
+                 (j : J) → (x : X j) → β j x ≈MI MIunfold α j x 
+
+MIunfoldUniq α β commβ i x with commβ i x
+MIunfoldUniq α β commβ i x | commix with β i x
+MIunfoldUniq α β commβ i x | refl , y | sup (.(proj₁ (α i x)) , g) = 
+  sup (λ p → ♯ ≈MItrans (y p) (MIunfoldUniq α β commβ _ _))
+
+
 
 \end{code}
 
-However, Agda rejects this definition due to the recursive call not being guarded immediately by the |♯|, instead it is also under the appeal to the transitivity of bi-simulation. We can persuade the system this is ok my fusing the definition of |≈MItrans| with this one in a cumbersome but straight forward way, for details see the source of this paper.
+However, Agda rejects this definition due to the recursive call not being guarded immediately by the |♯|, instead it is also under the appeal to the transitivity of bi-simulation. We can persuade the system this is productive by fusing the definition of |≈MItrans| with this |MIunfoldUniq| in a cumbersome but straight forward way, for details see the source of this paper.
 
 %if style == code
 
@@ -192,25 +221,27 @@ However, Agda rejects this definition due to the recursive call not being guarde
 
 -}
 
-Munfolddiag : ∀ {I} {X : I → Set} S PI (α : X -*-> obj* ⟦ S ◁* PI ⟧* X) → (β : X -*-> MI {I} S PI) → Set
-Munfolddiag {I} {X} S PI α β = 
-  (i : I) (x : X i) → (sup' ((mor* ⟦ S ◁* PI ⟧* β ⊚ α) i x)) ≈MI (β i x)
+MIunfoldDiag : ∀  {J} {X : J → Set} S PJ 
+                  (α : X -*->  obj* ⟦ S ◁* PJ ⟧* X) 
+                  (β : X -*->  MI {J} S PJ) → Set
+MIunfoldDiag {J} {X} S PJ α β = 
+  (j : J) (x : X j) → _⟦⟧MI=_ {J} {S} {PJ} {j} (sup⁻¹ (β j x)) ((mor* ⟦ S ◁* PJ ⟧* β ⊚ α) j x)
 
 
-Munfolduniq' : ∀ {I} {X : I → Set} {S PI} 
-                (α : X -*-> obj* ⟦ S ◁* PI ⟧* X) → (β : X -*-> MI {I} S PI) →
-                Munfolddiag S PI α β → (i : I) → {t : MI S PI i} → (x : X i) →
-                (β i x) ≈MI t → (MIunfold α i x) ≈MI t
-Munfolduniq' α β comm i x bb with comm i x
-Munfolduniq' α β comm i x bb | commix with β i x 
-Munfolduniq' α β comm i x (sup bb) | sup {._} {._} {g} y | sup .(proj₁ (α i x) , g) = 
-  sup (λ p → ♯ (Munfolduniq' α β comm _ (proj₂ (α i x) _ _) (≈MItrans (♭ (y p)) (♭ (bb p)))))
+MIunfoldUniq' : ∀ {I} {X : I → Set} {S PI} 
+                  (α : X -*-> obj* ⟦ S ◁* PI ⟧* X) → (β : X -*-> MI {I} S PI) →
+                  MIunfoldDiag S PI α β → (i : I) → {t : MI S PI i} → (x : X i) →
+                  t ≈MI (β i x) → t ≈MI (MIunfold α i x)
+MIunfoldUniq' α β comm i x bb with comm i x
+MIunfoldUniq' α β comm i x bb | commix with β i x 
+MIunfoldUniq' α β comm i x (sup bb) | refl , y | sup (.(proj₁ (α i x)) , g) = 
+  sup (λ p → ♯ (MIunfoldUniq' α β comm _ (proj₂ (α i x) _ _) (≈MItrans (♭ (bb p)) (y p))))
 
-Munfolduniq : ∀ {I} {X : I → Set} {S PI} 
-                (α : X -*-> obj* ⟦ S ◁* PI ⟧* X) → (β : X -*-> MI {I} S PI) →
-                Munfolddiag S PI α β → (i : I) → (x : X i) →
-                (MIunfold α i x) ≈MI (β i x)
-Munfolduniq α β comm i x = Munfolduniq' α β comm i x ≈MIrefl
+MIunfoldUniq : ∀ {I} {X : I → Set} {S PI} 
+                 (α : X -*-> obj* ⟦ S ◁* PI ⟧* X) → (β : X -*-> MI {I} S PI) →
+                 MIunfoldDiag S PI α β → (i : I) → (x : X i) →
+                 (β i x) ≈MI (MIunfold α i x)
+MIunfoldUniq α β comm i x = MIunfoldUniq' α β comm i x ≈MIrefl
 
 \end{code}
 
@@ -230,7 +261,8 @@ data Path  {I J : Set} (S : J → Set)
            : (j : J) → MI S PJ j → I → Set where
   path : ∀  {j s f i} →     
                PI j s i 
-            ⊎  (Σ* j′ ∶ J *Σ (Σ* p ∶ PJ j s j′ *Σ Path S PI PJ j′ (♭ (f j′ p)) i)) 
+            ⊎  (  Σ* j′ ∶ J *Σ 
+                  (Σ* p ∶ PJ j s j′ *Σ Path S PI PJ j′ (♭ (f j′ p)) i)) 
             → Path S PI PJ j (sup (s , f)) i 
 
 \end{code}
@@ -252,9 +284,11 @@ containers is built from |WI|-types as follows.
 \begin{code}
 
 out^C : ∀ {I J} → (F : ICont* (I ⊎ J) J) → ν^C F ⇒* F ⟨ ν^C F ⟩C* 
-out^C {I} {J} (S ◁* P) = 
-      (  λ {_ (sup (s , f)) → (s , (λ j p → ♭ (f j p)))})
-  ◁*     λ {(sup x) i′ p → path p} 
+out^C {I} {J} (S ◁* P) = (λ _ → sup⁻¹) ◁* outr
+  where  outr :  {j : J} (s : (ν^C (S ◁* P) projS*) $$ j) →
+                 ((((S ◁* P) ⟨ ν^C (S ◁* P) ⟩C*) projP*) $$ j $$ sup⁻¹ s) -*->
+                 ((ν^C (S ◁* P) projP*) $$ j $$ s)
+         outr (sup s) i′ p = path p 
 
 \end{code}
 
@@ -279,9 +313,10 @@ in^C' {I} {J} (S ◁* P) = (λ {_ (s , f) → sup (s , λ i x → ♯ (f i x))})
 %endif
 
 \begin{proposition}
-|(ν^C F . out^C F)| is terminal in the category of parametrized |F|-coalgebras of indexed containers. Further, by full and faithfulness, |(⟦ ν^C F ⟧* , ⟦ out^C F ⟧⇒*)| will also be terminal in the indexed functor case.
+|(ν^C F . out^C F)| is the terminal object in the category of parametrized |F|-coalgebras of indexed containers. By full and faithfulness, |(⟦ ν^C F ⟧* , ⟦ out^C F ⟧⇒*)| will also be terminal in the indexed functor case.
 \end{proposition}
 
+\begin{proof}
 Mirroring the initial algebras, the coiteration for this terminal co-algebra employs the coiteration of |MI| for the shape maps. The position map takes a |Path| and builds a |Q| position by applying the position map from the coalgebra at every step in the path --- note that this position map is {\em inductive} in its path argument.
 
 \begin{code}
@@ -294,10 +329,10 @@ unfold^C {I} {J} (S ◁* P) {T ◁* Q} (f ◁* r) = funfold ◁* runfold
            funfold = MIunfold f
            runfold :  {j : J} (t : T j) 
                       (i : I) → Path S PI PJ j (funfold j t) i → Q j t i 
-           runfold t i (path (inj₁ x)) = 
-             r t i (inj₁ x)
-           runfold t i (path (inj₂ (j , (p , q)))) = 
-             r t i (inj₂ (j , p , runfold (proj₂ (f _ t) j p) i q))
+           runfold t i (path p) = 
+             r t i (   [   (λ x →  inj₁ x)
+                       ,   (λ y →  inj₂   (  _ , proj₁ (proj₂ y) 
+                                          ,  runfold (proj₂ (f _ t) _ _) i (proj₂ (proj₂ y)))) ] p)
 
 \end{code}
 
@@ -316,11 +351,28 @@ We must then show that |unfold^C| is the unique morphism that makes the followin
 \]
 
 \noindent
+As with the initial algebra case, this follows immediately from the definition:
+
+\begin{code}
+
+unfoldComm : ∀  {I J} {F : ICont* (I ⊎ J) J} (G : ICont* I J) 
+                (α : G ⇒* F ⟨ G ⟩C*) →
+                (out^C F comp^C* unfold^C F α) ≡⇒*
+                  ((F ⟨ (unfold^C F α) ⟩CM*) comp^C* α)       
+unfoldComm (S ◁* P) (f ◁* r) = (λ j s → refl) ◁* (λ j s i p → refl)
+
+\end{code}
+
+\noindent
+We also have to show that the |unfold^C| is {\em unique}; that is, any morphism that makes the 
+above diagram commute must be equal to |unfold^C F α|.
+
 In order to show this in Agda, we are going to have to assume a second extensionality principle, namely that if two |MI| trees are bi-similar, then they are in fact equal:
 
 \begin{code}
 
-postulate MIext : ∀ {J S PJ} {j : J} {x y : MI S PJ j} → x ≈MI y → x ≅ y
+postulate MIext : ∀  {J S PJ} {j : J} {x y : MI S PJ j} →
+                     x ≈MI y → x ≅ y
 
 \end{code}
 
@@ -329,7 +381,8 @@ The inverse of this princple is obviously true:
 
 \begin{code}
 
-MIext⁻¹ : ∀ {J S PJ} {j : J} {x y : MI S PJ j} → x ≅ y → x ≈MI y
+MIext⁻¹ : ∀  {J S PJ} {j : J} {x y : MI S PJ j} → 
+             x ≅ y → x ≈MI y
 MIext⁻¹ refl = ≈MIrefl
 
 \end{code}
@@ -337,14 +390,52 @@ MIext⁻¹ refl = ≈MIrefl
 \noindent
 It is reasonable to assume that any language with fully fledged support for co-inductive types {\em and} extensional equality would admit such an axiom.
 
-We can now show that unfold indeed makes the diagram above commute:
+We can now state the property that |unfold^C| is, indeed, unique:
+
+%if style == code
 
 \begin{code}
 
-unfoldComm : ∀  {I J} {F : ICont* (I ⊎ J) J} (G : ICont* I J) 
-                (α : G ⇒* F ⟨ G ⟩C*) →
-                (comp^C* (out^C F) (unfold^C F α)) ≡
-                  (comp^C* (F ⟨ (unfold^C F α) ⟩CM*) α)       
-unfoldComm (S ◁* P) (f ◁* r) = {!!}
+{-
 
 \end{code}
+
+%endif
+
+\begin{code}
+
+unfoldUniq : ∀  {I J} {F : ICont* (I ⊎ J) J} (G : ICont* I J) 
+                (α : G ⇒* F ⟨ G ⟩C*) (β : G ⇒* ν^C F) → 
+                (out^C F comp^C* β)  ≡⇒* (F ⟨ β ⟩CM* comp^C* α) →
+                β  ≡⇒* (unfold^C F α)
+
+\end{code}
+
+\noindent
+The proof that the shape maps agree follows from the proof that |MIunfold| is unique, subject to mediating between the propositional equality, and bi-simulation for |MI|, which makes the proof term rather opaque. The proof that the position maps agree follows the same inductive structure as |runfold|. 
+
+%if style == code
+
+\begin{code}
+
+-}
+
+ext⁻¹₂′ :  ∀ {l l' l''} {A A' : Set l} {B : A → Set l'} {B' : A' → Set l'} {C : A → Set l''} {C' : A' → Set l''} {f : (a : A) → B a → C a} {g : (a : A') → B' a → C' a} → A ≡ A' → B ≅ B' → C ≅ C' → f ≅ g →
+                  ((a : A) (a' : A') → a ≅ a' → (b : B a) (b' : B' a') → b ≅ b' → f a b ≅ g a' b') 
+ext⁻¹₂′ refl refl refl refl a .a refl  b .b refl = refl
+
+unfoldUniq : ∀  {I J} {F : ICont* (I ⊎ J) J} (G : ICont* I J) 
+                (α : G ⇒* F ⟨ G ⟩C*) (β : G ⇒* ν^C F) → 
+                (out^C F comp^C* β)  ≡⇒* (F ⟨ β ⟩CM* comp^C* α) →
+                β  ≡⇒* (unfold^C F α)
+unfoldUniq {I} {J} {F} G (αf ◁* αr) (βf ◁* βr) (feq ◁* req) =  (λ j s → MIext (MIunfoldUniq αf βf (λ j′ s′ → cong proj₁ (feq j′ s′) , (λ {j″} p″ → MIext⁻¹ (trans (ext⁻¹₂′ refl (ext (λ a → cong (λ zz → ICont*.P F j′ (proj₁ zz) (inj₂ a)) (feq j′ s′) )) refl (cong proj₂ (feq j′ s′)) j″ j″ refl p″ (subst (λ zz → ICont*.P F j′ (proj₁ zz) (inj₂ j″)) (feq j′ s′) p″) (sym (subst-removable (λ zz → ICont*.P F j′ (proj₁ zz) (inj₂ j″)) (feq j′ s′) p″))) (cong (λ pp → βf j″ (proj₂ (αf j′ s′) j″ pp)) (trans (subst-removable (λ zz → ICont*.P F j′ (proj₁ zz) (inj₂ j″)) (feq j′ s′) p″) (sym (subst-removable (λ s' → ICont*.P F j′ s' (inj₂ j″)) (cong proj₁ (feq j′ s′)) p″)))))
+   )) j s)) ◁* {!ext⁻¹!} 
+
+--(λ j s → MIext (MIunfoldUniq αf βf (λ j s → cong proj₁ (feq j s)) , ?)) ◁* {!!}
+
+\end{code}
+
+%endif
+
+\end{proof}
+

@@ -61,6 +61,8 @@ data WI  {J : Set} (S : J → Set)
 |(WI S PJ , sup)| is the initial object in the category of |⟦ S ◁ PJ ⟧|-algebras.
 \end{proposition}
 
+\begin{proof}
+
 We show this by constructing the iteration operator |WIfold|, a morphism in the 
 category of |⟦ S ◁ PJ ⟧|-algebras from our candidate initial algebra to any 
 other algebra. Such that the following diagram commutes:
@@ -79,10 +81,11 @@ In fact we can use this specification as the definition of |WIfold|:
 
 \begin{code}
 
-WIfold :  ∀  {J} {X : J → Set} {S : J → Set} 
-             {PJ : (j : J) → S j → J → Set} →
-             obj* ⟦ S ◁* PJ ⟧* X -*-> X → WI S PJ -*-> X
-WIfold {S = S} {PJ = PJ} α j (sup ._ x) = α j (mor*  ⟦ S ◁* PJ ⟧* (WIfold α) j x) 
+WIfold :  ∀        {J} {S X : J → Set} {PJ} 
+             obj*  ⟦ S ◁* PJ ⟧* X -*-> X → 
+                   WI S PJ -*-> X
+WIfold {S = S} {PJ = PJ} α j (sup ._ x) = 
+   α j (mor*  ⟦ S ◁* PJ ⟧* (WIfold α) j x) 
 
 \end{code}
 
@@ -90,36 +93,29 @@ WIfold {S = S} {PJ = PJ} α j (sup ._ x) = α j (mor*  ⟦ S ◁* PJ ⟧* (WIfol
 We also require that |WIfold| is \emph{unique}, that is we must show that any 
 morphism |β| which makes the diagram above commute must be equal to |WIfold α|:
 
-%if style==code
-
 \begin{code}
 
-{-
-
-\end{code}
-
-%endif
-
-\begin{code}
-
-WIfolduniq : ∀  {J} {X : J → Set} {S : J → Set} 
-             {PJ : (j : J) → S j → J → Set} 
-             (α : obj* ⟦ S ◁* PJ ⟧* X -*-> X) →
-             (β : WI S PJ -*-> X) → (β ⊚ sup) ≡ (α ⊚ mor* ⟦ S ◁* PJ ⟧* β) →
-             β ≡ WIfold α
-WIfolduniq α β commβ  = ext λ j → ext λ { (sup ._ (s , g)) → 
-  trans (ext⁻¹ (ext⁻¹ commβ j)  (s , g)) 
+WIfoldUniq′ : ∀  {J} {X : J → Set} {S : J → Set} 
+                 {PJ : (j : J) → S j → J → Set} 
+                 (α : obj* ⟦ S ◁* PJ ⟧* X -*-> X) 
+                 (β : WI S PJ -*-> X) → 
+                 (β ⊚ sup) ≡ (α ⊚ mor* ⟦ S ◁* PJ ⟧* β) →
+                 (j : J) (x : WI S PJ j) → β j x ≡ WIfold α j x
+WIfoldUniq′ α β commβ j (sup .j (s , g)) = 
+  trans (ext⁻¹ (ext⁻¹ commβ j) (s , g)) 
     (cong (λ f → α j (s , f)) 
-      (ext λ j′ → ext λ x′ →  
-         ext⁻¹ (ext⁻¹ (WIfolduniq α β commβ) j′) (g j′ x′))) }  
+      (ext λ j′ → ext λ x′ → WIfoldUniq′ α β commβ j′ (g j′ x′)))   
 
 \end{code}
+
+\noindent
+The above definition proves that |β| and |WIfold α| are pointwise equal, by employing |ext| we can show that |WIfoldUniq′| implies that they are extensionally equal.
+
+\end{proof}
 
 %if style==code
 
 \begin{code}
-
--}
 
 sup⁻¹ : {J : Set} {S : J → Set} {PJ : (j : J) → S j → J → Set} 
         {j : J} {C : WI S PJ j → Set} → 
@@ -130,18 +126,18 @@ sup⁻¹ m (sup ._ x) = m x
 -- annoyingly I'm going to have to leve this other version of uniq here, 
 -- because I don't want to redo the proof in initalgok
 
-WIfolduniq : ∀  {J} {X : J → Set} {S PJ} 
+WIfoldUniq : ∀  {J} {X : J → Set} {S PJ} 
              (α : obj* ⟦ S ◁* PJ ⟧* X -*-> X) →
              (β : WI S PJ -*-> X) → 
              ((j : J) (x : obj* ⟦ S ◁* PJ ⟧* (WI {J} S PJ) j) → β j (sup _ x) ≡ α j (proj₁ x , (λ j′ p → β j′ (proj₂ x j′ p)))) →
              ((j : J) (x : WI S PJ j) → β j x ≡ WIfold α j x)
-WIfolduniq α β commβ j (sup ._ y) = trans (commβ j y) (cong (λ f → α j (proj₁ y , f)) (ext (λ j′ → ext (λ p → WIfolduniq α β commβ j′ (proj₂ y j′ p)))))
+WIfoldUniq α β commβ j (sup ._ y) = trans (commβ j y) (cong (λ f → α j (proj₁ y , f)) (ext (λ j′ → ext (λ p → WIfoldUniq α β commβ j′ (proj₂ y j′ p)))))
 
 \end{code}
 
 %endif
 
-\noindent This mirrors the construction for plain containers, where we
+This proof mirrors the construction for plain containers, where we
 can view ordinary |W|-types as the initial algebra of a container
 functor.  Positions in an indexed |W|-type are given by the paths through
 such a tree which terminate in a non-recursive |PI|-position:
@@ -288,8 +284,6 @@ fold^C {I} {J} (S ◁* P) {T ◁* Q} (f ◁* r) = ffold ◁* rfold
 
 -}
 
-postulate dotdotdot : ∀ {l} {A : Set l} → A
-
 \end{code}
 
 %endif
@@ -314,43 +308,27 @@ Or, equivalently:
 \begin{code}
 foldComm : ∀  {I J} {F : ICont* (I ⊎ J) J} (G : ICont* I J) 
               (α : F ⟨ G ⟩C* ⇒* G) →
-              (comp^C* (fold^C F α) (in^C F)) ≡
-                (comp^C* α (F ⟨ (fold^C F α) ⟩CM*))           
+              (fold^C F α comp^C* in^C F) ≡⇒*
+                (α comp^C* F ⟨ (fold^C F α) ⟩CM*)           
+foldComm {F} G α = (λ j x → refl)  ◁* (λ j x i p → refl)
 \end{code}
 
-
-%if style == newcode
-
-\begin{code}
-
-foldComm = dotdotdot
-
-{-
-
-\end{code}
-
-%endif
 
 \noindent
-The proof of |foldComm| follows immediately from function extenstionality. All that remains for us to show in order to prove that |(μ^C F , in^C F)| is the initial parametrised |F|-algebra is to show that |fold^C F α| is \emph{unique} for any |α|. That is any morphism |β : μ^C F ⇒* G|, that makes the above diagram commute, must be |fold^C F α|:
+All that remains for us to show in order to prove that |(μ^C F , in^C F)| is the initial parametrised |F|-algebra is to show that |fold^C F α| is \emph{unique} for any |α|. That is any morphism |β : μ^C F ⇒* G|, that makes the above diagram commute, must be |fold^C F α|:
 
 \begin{code}
 foldUniq : ∀  {I J} {F : ICont* (I ⊎ J) J} (G : ICont* I J) 
               (α : F ⟨ G ⟩C* ⇒* G) (β : μ^C F ⇒* G) → 
-              (comp^C* β (in^C F))  ≡ (comp^C* α (F ⟨ β ⟩CM*)) →
-              β  ≡ (fold^C F α)
+              (β comp^C* in^C F)  ≡⇒* (α comp^C* F ⟨ β ⟩CM*) →
+              β  ≡⇒* (fold^C F α)
+foldUniq G α β (feq ◁* req) = WIfoldUniq (α projf*) (β projf*) feq ◁* dotdotdot
 \end{code}
 
 \noindent
 That the shape maps of |β| and |fold^C F α| agree follows from the uniqueness of |WIfold|; while the proof that the position maps agree follows the same inductive structure as |rfold| in the definition of |fold^C|. 
 
 %if style == newcode
-
-\begin{code}
-
--}
-
-\end{code}
 
 \begin{code}
 

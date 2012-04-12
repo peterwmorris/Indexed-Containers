@@ -101,7 +101,7 @@ such that both |idd| is mapped to |id| and |_⊚_| to |_∘_| under the action o
 functor's action on objects, or on morphisms. A morphism between to such 
 indexed functors is a natural transformation:
 
-%format ^F = "^{\text{\tiny F}}"
+%format ^F = "^{\text{\tiny$" F "$}}"
 %format ⇒^F = "\Rightarrow" ^F
 %format _⇒^F_ = _ ⇒ ^F _
 
@@ -193,7 +193,8 @@ IFunc* I J = J → IFunc I
 obj* : ∀ {I J} → IFunc* I J → Fam I → Fam J
 obj* F A j    = IFunc.obj (F j) A
 
-mor* :  ∀ {I J A B} (F : IFunc* I J) → A -*-> B → obj* F A -*-> obj* F B
+mor* : ∀  {I J A B} (F : IFunc* I J) → 
+          A -*-> B → obj* F A -*-> obj* F B
 mor* F m j  = IFunc.mor (F j) m 
 
 \end{code}
@@ -206,7 +207,7 @@ setting, too:
 %format obj* = 
 %format mor* = 
 
-%format ^F* = "^{\text{\tiny F}^{\star}}"
+%format ^F* = "^{\text{\tiny$" F "$}^{\star}}"
 %format =*=>^F = "\Rightarrow" ^F*
 %format _=*=>^F_ = _ "\Rightarrow" ^F* _
 
@@ -445,9 +446,9 @@ F ⟨ γ ⟩M = IFunc.mor F [ (λ _ a → a) , γ ]
 \noindent
 Each of these definitions generalises to |IFunc*|:
 
-%format ⟩F*  = ] "^{\text{\tiny{F}}^{\star}}"
+%format ⟩F*  = ] "^{\text{\tiny{$" F "$}}^{\star}}"
 %format _⟨_⟩F* = _ ⟨ _ ⟩F*
-%format ⟩M*  = ] "^{\text{\tiny{F}}^{\star}}"
+%format ⟩M*  = ] "^{\text{\tiny{$" F "$}}^{\star}}"
 %format _⟨_⟩M* = _ ⟨ _ ⟩M*
 
 \begin{code}

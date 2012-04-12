@@ -21,6 +21,8 @@ open import Relation.Nullary
 
 open import common
 open import tt
+open import ifunc
+open import icont
 
 sup₁≡ : ∀  {S P} → {s s' : S} {f : P s → W S P} {f' : P s' → W S P} → 
            (sup (s , f)) ≡ (sup (s' , f')) → s ≡ s'
@@ -76,7 +78,8 @@ node:
 
 WIl :  {I : Set} (S : I → Set) 
        (P : (i : I) (s : S i) → I → Set) → Set
-WIl {I} S P = W (I × (Σ* i ∶ I *Σ S i)) (λ { (i′ , i , s) → Σ* i′ ∶ I *Σ P i s i′})
+WIl {I} S P = W  (I × (Σ* i ∶ I *Σ S i)) 
+                 (λ { (i′ , i , s) → Σ* i′ ∶ I *Σ P i s i′})
 
 \end{code}
 
@@ -124,19 +127,13 @@ define the |WI|-type as follows:
 
 WI :  {I : Set} (S : I → Set) 
       (P : (i : I) (s : S i) → I → Set) → I → Set
-WI S P i = Σ (WI′ S P) λ x → lup {_} {S} {P} x ≡ ldown {_} {S} {P} i x 
+WI S P i = 
+  Σ* x ∶ (WI′ S P) *Σ 
+   lup {_} {S} {P} x ≡ ldown {_} {S} {P} i x
 
 \end{code}
 
-%if style == newcode
 
-\begin{code}
-
-module supm {I : Set} {S : I → Set} {P : (i : I) (s : S i) → I → Set} where  
-
-\end{code}
-
-%endif
 
 %format supi = sup
 
@@ -144,80 +141,77 @@ Having built the |WI|-type from the |W|-type, we must next build the
 constructor |supi| which makes elements of |WI|-types. We rely on
 function extensionality to define the constructor |supi|:
 
-%if style == newcode
-
 \begin{code}
 
-  open import ifunc
-  open import icont
+supi : ∀ {J S PJ} → obj* ⟦ S ◁* PJ ⟧* (WI {J} S PJ)  -*-> WI S PJ
+supi {J} {S} {PJ} j (s , f) =  
+  (  sup ((_ , s) , λ { (j , p) → proj₁ (f j p) })) 
+  ,  cong (λ x → sup ((j , j , s) , x)) (ext (λ ip → proj₂ (f _ (proj₂ ip))))
 
 \end{code}
 
-%endif
+\begin{proposition}
+|(WI S PJ , supi)| is the initial object in the category of |⟦ S ◁* PJ ⟧|-algebras.
+\end{proposition}
+
+\begin{proof}
+
+We must once again show that for any |⟦ S ◁* PJ ⟧|-algebra |(X , α)| where |α : obj*  ⟦ S ◁* PJ ⟧* X -*-> X| there is a unique mediating morphism |WIfold : WI S PJ -*-> X|. It is simple enough to define |WIfold|:
 
 \begin{code}
 
-  supi : obj* ⟦ S ◁* P ⟧* (WI S P)  -**-> WI S P
-  supi {i} (s , f) =  (  sup ((_ , s) , λ { (i , p) → proj₁ (f i p) })) 
-                  ,  cong (λ x → sup ((i , i , s) , x)) (ext (λ ip → proj₂ (f _ (proj₂ ip))))
+WIfold : ∀        {J} {S X  : J → Set} {PJ} →
+            obj*  ⟦ S ◁* PJ ⟧* X -*-> X ->
+                  WI S PJ -*-> X
+WIfold α j (sup ((j′ , s) , f) , ok) with proj₁≡ (sup₁≡ ok) 
+WIfold α j (sup ((.j , s) , f) , ok) | refl =  
+ α j (s , (λ j′ p → WIfold α j′ (f (j′ , p) , ext⁻¹ (sup₂≡ ok) (j′ , p))))
 
 \end{code}
 
-The recursion principle then relies on the uniqueness of identity 
-proofs. It's also the case that in its form below |wirec| does not pass Agda's termination checker. The direct encoding via |wrec| would avoid this problem, at the expense of being even more verbose:
+\noindent
+In the form below |WIfold| does not pass Agda's termination checker; The direct encoding via |Wfold| would avoid this problem, at the expense of being even more verbose.
 
-\begin{code}
-
-  wirec : {i : I} (x : WI S P i) (Q : {i : I} → WI S P i → Set)
-          (m :  {i : I} (s : S i) (f : P i s -*-> WI S P)
-                (h : {i′ : I} (p : P i s i′) → Q (f i′ p)) → Q {i} (supi (s , f)))
-          → Q x
-  wirec {i} (sup ((i′ , s) , f) , ok) Q m with proj₁≡ (sup₁≡ ok)
-  wirec {i} (sup ((.i , s) , f) , ok) Q m | refl = 
-    subst Q (cong {B = λ _ → WI S P i} (λ x → sup ((i , s) , f) , x) UIP) 
-      (m s (λ i p → f (i , p) , ext⁻¹ (sup₂≡ ok) (i , p)) 
-           (λ {i′} p → wirec (f (i′ , p) , ext⁻¹ (sup₂≡ ok) (i′ , p)) Q m))
-
-\end{code}
-
-It's then straight forward but labourious to prove the $\beta$ law for |wirec|, which would has type:
-
-%if style == newcode
-
-\begin{code}
-
-{-
-
-\end{code}
-
-%endif
+To show that |WIfold| makes the initial algebra diagram commute, we must employ the |UIP| principle, that any 2 proofs of an equality are equal:
 
 %format βwirec = "\beta" wirec
 
 \begin{code}
 
-  βwirec :  
-           {i : I} (s : S i) (f : P i s -*-> WI I S P) 
-           (Q : {i : I} → WI I S P i → Set)
-           (m :  {i : I} (s : S i) (f : {i′ : I} → P i s i′ → WI I S P i′)
-                 (h : {i′ : I} (p : P i s i′) → Q (f p)) → Q {i} (supi s f))
-           → wirec {i} (supi {I} {S} {P} s f) Q m ≡ m {i} s f (λ {i′} p → wirec (f p) Q m)
+WIcomm : ∀  {J} {S X : J → Set} {PJ} 
+            (α : obj*  ⟦ S ◁* PJ ⟧* X -*-> X)
+            (j : J) → (x : obj* ⟦ S ◁* PJ ⟧* (WI S PJ) j) →
+            WIfold α j (supi {J} {S} {PJ} j x) ≡ 
+             α j (mor* ⟦ S ◁* PJ ⟧* (WIfold α) j x)  
+WIcomm α j (s , f) with proj₁≡
+         (sup₁≡
+          (cong (λ x → sup ((j , j , s) , x))
+           (ext (λ ip → proj₂ (f (proj₁ ip) (proj₂ ip))))))
+WIcomm α j (s , f) | refl = 
+  cong (λ g → α j (s , g)) 
+   (ext λ j′ → ext λ p → 
+    cong (λ eq → WIfold α j′ (proj₁ (f j′ p) , eq)) UIP)
 
+
+WIfoldUniq′ : ∀  {J} {X : J → Set} {S : J → Set} 
+                 {PJ : (j : J) → S j → J → Set} 
+                 (α : obj* ⟦ S ◁* PJ ⟧* X -*-> X) 
+                 (β : WI S PJ -*-> X) → 
+                 (β ⊚ supi) ≡ (α ⊚ mor* ⟦ S ◁* PJ ⟧* β) →
+                 (j : J) (x : WI S PJ j) → β j x ≡ WIfold α j x
+WIfoldUniq′ α β commβ j (sup ((j′ , s) , f) , ok) with proj₁≡ (sup₁≡ ok)
+WIfoldUniq′ α β commβ j (sup ((.j , s) , f) , ok) | refl = 
+  trans  (ext⁻¹ (ext⁻¹ commβ j) (s , _)) 
+         (cong (λ n → α j (s , n)) 
+          (ext λ j′ → ext λ x′ → WIfoldUniq′ α β commβ j′ {!(f ? , ?)!}))  
 \end{code}
 
-%if style == newcode
+\end{proof}
 
-\begin{code}
-
--}
-
-\end{code}
-
-%endif
-
+\noindent
 We can use this proof that |WI|-types can be encoded by |W| to explain
 where |Path| fits in, since it is straight forwardly encoded as a
-|WI|: {\bf should this be in the previous section?}
+|WI|: 
 
 %if style == newcode
 
@@ -236,12 +230,13 @@ Path :  {I J : Set} (S : J → Set)
         (PJ  : (j : J) → S j → J  → Set) 
         (j : J) → WI S PJ j → I → Set 
 Path {I} {J} S PI PJ j w i = WI PathS PathP (j , w) 
-  where PathS : Σ* j ∶ J *Σ WI S PJ j → Set
-        PathS (j , sup (s , f)) = PI j s i ⊎ Σ J (PJ j s)
-        PathP : (jw : Σ* j ∶ J *Σ WI S PJ j) (s : PathS jw) 
-                                                       → Σ* j ∶ J *Σ WI S PJ j → Set
+  where  PathS : Σ* j ∶ J *Σ WI S PJ j → Set
+         PathS (j , sup (s , f)) = PI j s i ⊎ Σ J (PJ j s)
+         PathP :  (jw : Σ* j ∶ J *Σ WI S PJ j) (s : PathS jw) →
+                  Σ* j ∶ J *Σ WI S PJ j → Set
         PathP (j , sup (s , f)) (inj₁ p) (j′ , w′) = ⊥
-        PathP (j , sup (s , f)) (inj₂ (j′′ , p)) (j′ , w′) = (j′′ ≡ j′) × (f j′′ p ≅ w′)
+        PathP (j , sup (s , f)) (inj₂ (j′′ , p)) (j′ , w′) = 
+          (j′′ ≡ j′) × (f j′′ p ≅ w′)
 
 \end{code}
 
@@ -254,6 +249,5 @@ Path {I} {J} S PI PJ j w i = WI PathS PathP (j , w)
 \end{code}
 
 %endif
-{\bf overflow of line length in Agda code}
 The reader will be unsuprised to learn that a similar construction to
-the above allows us to derive |MI|-types from |M|-types.
+the above allows us to derive |MI|-types from |M|-types. The details are, once again, somewhat obfiscated by the experimental treatment of co-induction in Agda, but are in the spirit of the dual of the proof above.
