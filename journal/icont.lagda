@@ -123,6 +123,9 @@ record ICont* (I J : Set) : Set₁ where
 
 \begin{code}
 
+
+infixl 70 _projS _projS* _projP _projP* 
+
 _projS : ∀ {I} → ICont I → Set
 _projS = ICont.S
 
@@ -213,8 +216,9 @@ composition morphisms are given as follows:
 id^C : ∀ {I} {C : ICont I} → C ⇒ C
 id^C = id ◁ (λ _ _ → id)
 
-comp^C : ∀ {I} {C D E : ICont I} → D ⇒ E → C ⇒ D → C ⇒ E
-comp^C (f ◁ r) (g ◁ q) = (f ∘ g) ◁ (λ s i → q s i ∘ r (g s) i)
+_comp^C_ : ∀  {I} {C D E : ICont I} → 
+              D ⇒ E → C ⇒ D → C ⇒ E
+(f ◁ r) comp^C (g ◁ q) = (f ∘ g) ◁ (λ s → q s ⊚ r (g s))
 
 \end{code}
 
@@ -231,6 +235,8 @@ We will use a notion of equality for container morphisms that incudes a proof th
 %if style==code
 
 \begin{code}
+
+infixl 70 _projf _projf* _projr _projr* 
 
 _projf :  ∀ {I} {C D : ICont I} (m : C ⇒ D) → C projS → D projS
 _projf = _⇒_.f
@@ -253,7 +259,7 @@ record _≡⇒_  {I} {C D : ICont I} (m n : C ⇒ D) : Set where
     feq : (s : C projS) → m projf $$ s ≡ n projf $$ s 
     req : (s : C projS) (i : I) (p : D projP $$ (m projf $$ s) $$ i) → 
             m projr $$ s $$ i $$ p ≡ 
-              n projr $$ s $$ i $$ subst (λ s' → D projP $$ s' $$ i) (feq s) p
+              n projr $$ s $$ i $$ (subst (λ s′ → D projP $$ s′ $$ i) (feq s) p)
 
 \end{code}
 
@@ -268,9 +274,6 @@ this definition.
 
 \begin{code}
 
-postulate ext′ :  ∀ {l l'} {A A' : Set l} {B : A → Set l'} {B' : (a : A') → Set l'}  {f : (a : A) → B a} {g : (a : A') → B' a} → 
-                  ((a : A) (a' : A') → a ≅ a' → f a ≅ g a') → f ≅ g
-
 cong₃ : ∀ {a b c d} {A : Set a} {B : A → Set b} {C : ∀ x → B x → Set c}
           {D : ∀ x → (y : B x) → C x y → Set d}
           {x y u v s t}
@@ -278,8 +281,15 @@ cong₃ : ∀ {a b c d} {A : Set a} {B : A → Set b} {C : ∀ x → B x → Set
 cong₃ f refl refl refl = refl
 
 
+cong₄ : ∀ {a b c d e} {A : Set a} {B : A → Set b} {C : ∀ x → B x → Set c}
+          {D : ∀ x → (y : B x) → C x y → Set d}  
+          {E : ∀ x (y : B x) (z : C x y) → D x y z → Set e}
+          {x y v w t u r s}
+        (f : (x : A) (y : B x) (z : C x y) (a : D x y z) → E x y z a) → x ≅ y → v ≅ w → t ≅ u → r ≅ s → f x v t r  ≅ f y w u s
+cong₄ f refl refl refl refl = refl
+
 ≡⇒→≡ : ∀ {I} {C D : ICont I} (m n : C ⇒ D) → m ≡⇒ n → m ≡ n
-≡⇒→≡ {I} {C} {D} (f ◁ r) (f′ ◁ r′) (feq ◁ req)= cong₂ lhd (ext feq) (ext′ λ s s′ seq → ext′ λ i i′ ieq → ext′ λ p p′ peq → trans (req s i p) (cong₃ r′ seq ieq (trans (subst-removable (λ s' → ICont.P D s' i) (feq s) p) peq)))
+≡⇒→≡ {I} {C} {D} (f ◁ r) (f′ ◁ r′) (feq ◁ req)= cong₂ lhd (ext feq) (ext≅ λ {s} {s′} seq → ext≅ λ {i} {i′} ieq → ext≅ λ {p} {p′} peq → trans (req s i p) (cong₃ r′ seq ieq (trans (subst-removable (λ s' → ICont.P D s' i) (feq s) p) peq)))
   where lhd : (f : C projS → D projS) → ((s : C projS) (i : I) →
                 D projP $$ (f s) $$ i → C projP $$ s $$ i) → C ⇒ D
         lhd = _◁_
@@ -348,7 +358,7 @@ record _⇒*_ {I J} (C D : ICont* I J) : Set₁ where
 
 ⟦_⟧⇒* : ∀  {I J} {C D : ICont* I J} (m : C ⇒* D) → 
            ∫ A ** (obj* ⟦ C ⟧* A  -*-> obj* ⟦ D ⟧* A)
-⟦ f ◁* r ⟧⇒* j = ⟦ (f j) ◁ r ⟧⇒  
+⟦ f ◁* r ⟧⇒* j = ⟦ f j ◁ r ⟧⇒  
 
 \end{code}
 
@@ -371,7 +381,7 @@ id^C* : ∀ {I J} {C : ICont* I J} → C ⇒* C
 id^C* = (λ j → id) ◁* (λ s i → id)
 
 _comp^C*_ : ∀ {I J} {C D E : ICont* I J} → D ⇒* E → C ⇒* D → C ⇒* E
-(f ◁* r) comp^C* (g ◁* q) = (λ j → f j ∘ g j) ◁* (λ s i → q s i ∘ r (g _ s) i) 
+(f ◁* r) comp^C* (g ◁* q) = (f ⊚ g) ◁* (λ s → q s ⊚ r (g _ s)) 
 
 \end{code}
 
@@ -567,7 +577,7 @@ _⟨_⟩C* C D = λ* λ k → (C $* k) ⟨ D ⟩C
 
 _map⊎_ : ∀ {a b c d} {A : Set a} {B : Set b} {C : Set c} {D : Set d} →
        (A → C) → (B → D) → (A ⊎ B → C ⊎ D)
-a map⊎ b = λ c -> Data.Sum.map a b c
+a map⊎ b = [ (inj₁ ∘ a) , (inj₂ ∘ b) ]
 
 \end{code}
 
@@ -613,14 +623,14 @@ _⟨_⟩CM :  ∀  {I J} (C : ICont (I ⊎ J)) {D E : ICont* I J} →
              → C ⟨  D ⟩C   ⇒    C ⟨  E ⟩C  
 C ⟨ γ ⟩CM = 
   (  λ {(s , f) → (s , λ j p → γ projf* $$ j $$ (f j p))}) ◁ 
-     λ {(s , f) i → id map⊎ (λ jpq → (proj₁ jpq , proj₁ (proj₂ jpq) , (γ projr* $$ proj₁ jpq $$ f (proj₁ jpq) (proj₁ (proj₂ jpq)) $$ i $$ proj₂ (proj₂ jpq) ))) } 
+     λ {(s , f) i → [ inj₁ , (λ jpq → inj₂ (proj₁ jpq , proj₁ (proj₂ jpq) , (γ projr* $$ proj₁ jpq $$ f (proj₁ jpq) (proj₁ (proj₂ jpq)) $$ i $$ proj₂ (proj₂ jpq) ))) ] } 
 
 
 _⟨_⟩CM* :  ∀  {I J K} (C : ICont* (I ⊎ J) K) {D E : ICont* I J} → 
                     D       ⇒*         E        
              → C ⟨  D ⟩C*   ⇒*    C ⟨  E ⟩C*  
 C ⟨ γ ⟩CM* = (λ {k (s , f) → (s , λ j p → γ projf* $$ j $$ (f j p))}) ◁* 
-              λ { (s , f)  i → (id map⊎ (λ jpq → (proj₁ jpq , proj₁ (proj₂ jpq) , (γ projr* $$ proj₁ jpq $$ f (proj₁ jpq) (proj₁ (proj₂ jpq)) $$ i $$ proj₂ (proj₂ jpq) )))) } 
+              λ { (s , f)  i → [ inj₁ , (λ jpq → inj₂ (proj₁ jpq , proj₁ (proj₂ jpq) , (γ projr* $$ proj₁ jpq $$ f (proj₁ jpq) (proj₁ (proj₂ jpq)) $$ i $$ proj₂ (proj₂ jpq) ))) ] } 
  
 \end{code}
 

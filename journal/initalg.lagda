@@ -3,7 +3,7 @@
 
 \begin{code}
 
-{-# OPTIONS --no-termination-check --universe-polymorphism #-}
+{-# OPTIONS --universe-polymorphism #-}
 
 module initalg where
 
@@ -28,6 +28,7 @@ open import icont
 
 %endif
 
+%format β = "\beta"
 %format commβ = comm β
 
 \section{Initial Algebras of Indexed Containers}
@@ -52,8 +53,6 @@ iteration operator |WIfold| as follows:
 data WI  {J : Set} (S : J → Set) 
          (PJ : (j : J) → S j → J → Set) : J → Set where
   sup : obj* ⟦ S ◁* PJ ⟧* (WI S PJ)  -*-> WI S PJ 
-
-
 
 \end{code}
 
@@ -81,9 +80,9 @@ In fact we can use this specification as the definition of |WIfold|:
 
 \begin{code}
 
-WIfold :  ∀        {J} {S X : J → Set} {PJ} 
+WIfold :  ∀        {J} {S X : J → Set} {PJ} →  
              obj*  ⟦ S ◁* PJ ⟧* X -*-> X → 
-                   WI S PJ -*-> X
+                   WI S PJ  -*-> X 
 WIfold {S = S} {PJ = PJ} α j (sup ._ x) = 
    α j (mor*  ⟦ S ◁* PJ ⟧* (WIfold α) j x) 
 
@@ -95,16 +94,22 @@ morphism |β| which makes the diagram above commute must be equal to |WIfold α|
 
 \begin{code}
 
-WIfoldUniq′ : ∀  {J} {X : J → Set} {S : J → Set} 
-                 {PJ : (j : J) → S j → J → Set} 
-                 (α : obj* ⟦ S ◁* PJ ⟧* X -*-> X) 
-                 (β : WI S PJ -*-> X) → 
-                 (β ⊚ sup) ≡ (α ⊚ mor* ⟦ S ◁* PJ ⟧* β) →
-                 (j : J) (x : WI S PJ j) → β j x ≡ WIfold α j x
-WIfoldUniq′ α β commβ j (sup .j (s , g)) = 
-  trans (ext⁻¹ (ext⁻¹ commβ j) (s , g)) 
-    (cong (λ f → α j (s , f)) 
-      (ext λ j′ → ext λ x′ → WIfoldUniq′ α β commβ j′ (g j′ x′)))   
+WIfoldUniq : ∀  {J} {X : J → Set} {S : J → Set} 
+                {PJ : (j : J) → S j → J → Set} 
+                (α : obj* ⟦ S ◁* PJ ⟧* X -*-> X) 
+                (β : WI S PJ -*-> X) → 
+                ((j : J) (s : obj* ⟦ S ◁* PJ ⟧* (WI S PJ) j) → 
+                  (β j (sup j s)) ≡ (α j (mor* ⟦ S ◁* PJ ⟧* β j s))) →
+                (j : J) (x : WI S PJ j) → β j x ≡ WIfold α j x
+WIfoldUniq α β commβ j (sup .j (s , g)) = begin
+    β j (sup j (s , g))
+  ≅⟨ commβ j (s , g) ⟩ 
+    α j (s , (λ j′ p′ → β j′ (g j′ p′))) 
+  ≅⟨ cong  (λ f → α j (s , f)) 
+           (λ≡ j′ →≡ λ≡ p′ →≡ WIfoldUniq α β commβ j′ (g j′ p′)) ⟩ 
+    α j (s , (λ j′ p′ → WIfold α j′ (g j′ p′)))
+  ∎
+ where open ≅-Reasoning
 
 \end{code}
 
@@ -122,16 +127,6 @@ sup⁻¹ : {J : Set} {S : J → Set} {PJ : (j : J) → S j → J → Set}
         ((x : obj* ⟦ S ◁* PJ ⟧* (WI S PJ) j) → C (sup j x)) →
         (w : WI S PJ j) → C w
 sup⁻¹ m (sup ._ x) = m x
-
--- annoyingly I'm going to have to leve this other version of uniq here, 
--- because I don't want to redo the proof in initalgok
-
-WIfoldUniq : ∀  {J} {X : J → Set} {S PJ} 
-             (α : obj* ⟦ S ◁* PJ ⟧* X -*-> X) →
-             (β : WI S PJ -*-> X) → 
-             ((j : J) (x : obj* ⟦ S ◁* PJ ⟧* (WI {J} S PJ) j) → β j (sup _ x) ≡ α j (proj₁ x , (λ j′ p → β j′ (proj₂ x j′ p)))) →
-             ((j : J) (x : WI S PJ j) → β j x ≡ WIfold α j x)
-WIfoldUniq α β commβ j (sup ._ y) = trans (commβ j y) (cong (λ f → α j (proj₁ y , f)) (ext (λ j′ → ext (λ p → WIfoldUniq α β commβ j′ (proj₂ y j′ p)))))
 
 \end{code}
 
@@ -153,7 +148,18 @@ data Path  {I J : Set} (S : J → Set)
             ⊎  (Σ* j′ ∶ J *Σ (Σ* p ∶ PJ j s j′ *Σ Path S PI PJ j′ (f j′ p) i)) 
             → Path S PI PJ j (sup _ (s , f)) i 
 
+pathh : ∀ {I J : Set} (S : J → Set)  
+          (PI  : (j : J) → S j → I  → Set) 
+          (PJ  : (j : J) → S j → J  → Set) 
+          {j s f i} →               
+               PI j s i 
+            ⊎  (Σ* j′ ∶ J *Σ (Σ* p ∶ PJ j s j′ *Σ Path S PI PJ j′ (f j′ p) i)) 
+           → Path S PI PJ j (sup _ (s , f)) i 
+pathh S PI PJ  x = path x
+
 \end{code}
+
+
 
 \noindent Again this mirrors the partial application construction
 where positions were given by a |PJ| position at the top level, or a
@@ -228,7 +234,7 @@ object. The shape map employs the fold for |WI| directly. For the position map w
 
 -}
 
-Pathfold : ∀  {I J}  (S : J → Set) (PI  :  (j : J) → S j → I  → Set) 
+rfold : ∀  {I J}  (S : J → Set) (PI  :  (j : J) → S j → I  → Set) 
                                    (PJ  :  (j : J) → S j → J  → Set) 
                      (G : ICont* I J) 
                      (f : (i' : J) → Σ (S i') (λ s' → (i0 : J) → PJ i' s' i0 → G projS* $$ i0) → G projS* $$ i')  
@@ -241,18 +247,18 @@ Pathfold : ∀  {I J}  (S : J → Set) (PI  :  (j : J) → S j → I  → Set)
                           (λ j' →
                              Σ (PJ j (proj₁ s') j') (λ p' → G projP* $$ j' $$ (proj₂ s' j' p') $$ i'))) →
               {j : J} (s : WI S PJ j) (i : I) → G projP* $$ j $$ (WIfold f j s) $$ i → Path S PI PJ j s i
-Pathfold S PI PJ G f r (sup ._ (s , g)) i p = path (Data.Sum.map id (λ jpq → (proj₁ jpq , (proj₁ (proj₂ jpq) , Pathfold S PI PJ G f r _ _ (proj₂ (proj₂ jpq))))) (r (s , _) i p))
+rfold S PI PJ G f r (sup ._ (s , g)) i p = path ((id map⊎ (λ jpq → (proj₁ jpq , (proj₁ (proj₂ jpq) , rfold S PI PJ G f r _ _ (proj₂ (proj₂ jpq)))))) (r (s , _) i p))
 
 
 fold^C : ∀  {I J} (F : ICont* (I ⊎ J) J) {G : ICont* I J} → 
             F ⟨ G ⟩C* ⇒* G → μ^C F ⇒* G
-fold^C {I} {J} (S ◁* P) {T ◁* Q} (f ◁* r) = ffold ◁* rfold 
+fold^C {I} {J} (S ◁* P) {T ◁* Q} (f ◁* r) = ffold ◁* rfold'
     where  PI  :  (j : J) → S j → I  → Set ;  PI  j s i   = P j s (inj₁ i) 
            PJ  :  (j : J) → S j → J  → Set ;  PJ  j s j′  = P j s (inj₂ j′)
            ffold = WIfold f
-           rfold :  {j : J} (s : WI S PJ j) 
+           rfold' :  {j : J} (s : WI S PJ j) 
                     (i : I) → Q j (ffold j s) i → Path S PI PJ j s i
-           rfold  = Pathfold S PI PJ (T ◁* Q) f r
+           rfold'  = rfold S PI PJ (T ◁* Q) f r
 
 {-
 
@@ -272,15 +278,15 @@ fold^C {I} {J} (S ◁* P) {T ◁* Q} (f ◁* r) = ffold ◁* rfold
            ffold = WIfold f
            rfold :  {j : J} (s : WI S PJ j) 
                     (i : I) → Q j (ffold j s) i → Path S PI PJ j s i
-           rfold (sup (s , g)) i p  = 
-             path ((id map⊎ (λ { (j , p , q) → (j , p , rfold _ _ q) })) (r (s , _) i p))
+           rfold (sup ._ (s , g)) i p  = 
+             path ((id map⊎ (λ jpq →  (  _ , proj₁ (proj₂ jpq)
+                                      ,  rfold _ _ (proj₂ (proj₂ jpq))))) (r (s , _) i p))
 
 \end{code}
 
 %if style == code
 
 \begin{code} 
-
 
 -}
 
@@ -310,61 +316,109 @@ foldComm : ∀  {I J} {F : ICont* (I ⊎ J) J} (G : ICont* I J)
               (α : F ⟨ G ⟩C* ⇒* G) →
               (fold^C F α comp^C* in^C F) ≡⇒*
                 (α comp^C* F ⟨ (fold^C F α) ⟩CM*)           
-foldComm {F} G α = (λ j x → refl)  ◁* (λ j x i p → refl)
+foldComm {F} G α = (λ j x → refl)  ◁* (λ j x i p → refl ) 
 \end{code}
 
 
 \noindent
 All that remains for us to show in order to prove that |(μ^C F , in^C F)| is the initial parametrised |F|-algebra is to show that |fold^C F α| is \emph{unique} for any |α|. That is any morphism |β : μ^C F ⇒* G|, that makes the above diagram commute, must be |fold^C F α|:
 
+%format αf = α f
+%format αr = α r
+%format βf = β f
+%format βr = β r
+
+\savecolumns
+
 \begin{code}
+
 foldUniq : ∀  {I J} {F : ICont* (I ⊎ J) J} (G : ICont* I J) 
               (α : F ⟨ G ⟩C* ⇒* G) (β : μ^C F ⇒* G) → 
               (β comp^C* in^C F)  ≡⇒* (α comp^C* F ⟨ β ⟩CM*) →
-              β  ≡⇒* (fold^C F α)
-foldUniq G α β (feq ◁* req) = WIfoldUniq (α projf*) (β projf*) feq ◁* dotdotdot
+              β ≡⇒* (fold^C F α)
+foldUniq  {I} {J} {S ◁* P} (T ◁* Q) 
+          (αf ◁* αr) (βf ◁* βr) (feq ◁* req) = 
+    WIfoldUniq αf βf feq ◁* rfoldUniq
+  where 
+    PI  :  (j : J) → S j → I  → Set ;  PI  j s i   = P j s (inj₁ i) 
+    PJ  :  (j : J) → S j → J  → Set ;  PJ  j s j′  = P j s (inj₂ j′)
 \end{code}
 
 \noindent
 That the shape maps of |β| and |fold^C F α| agree follows from the uniqueness of |WIfold|; while the proof that the position maps agree follows the same inductive structure as |rfold| in the definition of |fold^C|. 
 
-%if style == newcode
+%if style == code
+
+
+
+\begin{code}
+    open ≅-Reasoning   
+    rfold′′ :  (j : J) (y : Σ (S j) (λ s → (i' : J) → PJ j s i' → WI S PJ i'))
+               (i : I) (f : (j : J) → WI S PJ j → T j) 
+               (r :  (j' : J) (p' : PJ j (proj₁ y) j') → Q j' (f j' (proj₂ y j' p')) i → Path S PI PJ j' (proj₂ y j' p') i)
+               (p : Q j (αf j (proj₁ y , (λ j' p' → f j' (proj₂ y j' p')))) i) →
+               Path S PI PJ j (sup j y) i
+    rfold′′ j y i f r p = path ((id map⊎ (λ jpq →
+                                proj₁ jpq ,
+                                proj₁ (proj₂ jpq) ,
+                                r (proj₁ jpq) (proj₁ (proj₂ jpq)) (proj₂ (proj₂ jpq)) ))
+                     (αr (proj₁ y , (λ j' p' → f j' (proj₂ y j' p'))) i p))
+    elide : {A : Set} → A → A ; elide = id
+    celide : {A : Set} → A → A ; celide = id
+\end{code}
+
+%endif
+
+%format (elide (x)) = "\dots"
+%format (celide (x)) = cong "\dots"
+
+\restorecolumns
 
 \begin{code}
 
 
-module Pathkk {I J : Set} (S : J → Set)  
-        (PI  : (j : J) → S j → I  → Set) 
-        (PJ  : (j : J) → S j → J  → Set) (i : I) where
+    rfoldUniq :  (j : J) (s : WI S PJ j) (i : I)
+                 (p : Q j (βf j s) i) → 
+                 βr s i p ≅ 
+                   rfold S PI PJ (T ◁* Q) αf αr s i 
+                    (subst (λ s → Q j s i) 
+                      (WIfoldUniq αf βf feq j s) p)
+    rfoldUniq j (sup ._ y) i p with req j y i p
+    rfoldUniq j (sup ._ y) i p | reqjyip with βr (sup j y) i p 
+    rfoldUniq j (sup ._ y) i p | reqjyip | path q = begin 
+             path q -- |βr (sup j y) i p|
+            ≅⟨ cong path reqjyip ⟩ 
+             path ((id map⊎ (λ jpq →  (  proj₁ jpq , proj₁ (proj₂ jpq) 
+                                      ,  βr (proj₂ y (proj₁ jpq) (proj₁ (proj₂ jpq))) i
+                                          (proj₂ (proj₂ jpq)))))
+                   (αr (proj₁ y , (λ j' p' → βf j' (proj₂ y j' p'))) i
+                    (subst (λ s' → Q j s' i) (feq j y) p)))
 
 
-  PathS : Σ J (WI S PJ) → Set
-  PathS (j , sup ._ (s , f)) = PI j s i ⊎ Σ J (PJ j s)
-  PathP : (iw : Σ J (WI S PJ)) (s : PathS iw) → Σ J (WI S PJ) → Set
-  PathP (j , sup ._ (s , f)) (inj₁ p) (j′ , w′) = ⊥
-  PathP (j , sup ._ (s , f)) (inj₂ (j′′ , p)) (j′ , w′) = 
-          (j′′ ≡ j′) × (f j′′ p ≅ w′)
 
-  Pathk : (j : J) → WI S PJ j → Set 
-  Pathk j w = WI PathS PathP (j , w) 
+            ≅⟨ (celide(cong₃ (rfold′′ j y i) (λ≡ j′ →≡ λ≡ s′ →≡ WIfoldUniq αf βf feq j′ s′))) (λ≅ j′ →≅ λ≅ p′ →≅ λ≅ q′ →≅ begin
+                  βr (proj₂ y _ _) _ _ 
+                 ≅⟨ rfoldUniq _ (proj₂ y _ _) i _ ⟩ 
+                  rfold S PI PJ (T ◁* Q) αf αr (proj₂ y _ _) i 
+                   (subst (λ s → Q _ s i) 
+                    (WIfoldUniq αf βf feq _ (proj₂ y _ _)) _) 
+                 ≅⟨ (elide(cong₃ (λ j p → rfold S PI PJ (T ◁* Q) αf αr {j} (proj₂ y j p) i) j′ p′ (trans (subst-removable (λ s → Q _ s i) (WIfoldUniq αf βf feq _ (proj₂ y _ _)) _) q′))) ⟩ 
+                  rfold S PI PJ (T ◁* Q) αf αr (proj₂ y _ _) i _ ∎) (elide(trans (subst-removable (λ s → Q j s i) (feq j y) p) (sym (subst-removable (λ s → Q j s i) (WIfoldUniq αf βf feq _ (sup _ y)) p)))) ⟩ 
+             path ((id map⊎ (λ jpq →  (  proj₁ jpq , proj₁ (proj₂ jpq) 
+                                      ,  rfold S PI PJ (T ◁* Q) αf αr
+                                          (proj₂ y (proj₁ jpq) (proj₁ (proj₂ jpq))) i  
+                                          (proj₂ (proj₂ jpq)))))
+                    (αr (proj₁ y , (λ j p → WIfold αf j (proj₂ y j p))) i
+                     (subst (λ s → Q j s i)
+                      (WIfoldUniq αf βf feq _ (sup _ y)) p)))      
+            ≅⟨ refl ⟩
+             rfold S PI PJ (T ◁* Q) αf αr (sup _ y) i 
+                (subst (λ s → Q _ s i) 
+                 (WIfoldUniq αf βf feq _ (sup _ y)) p) ∎
 
-open Pathkk
-
-{-
-
-pathk : {I J : Set} {S : J → Set}  
-           {PI  : (j : J) → S j → I  → Set} 
-           {PJ  : (j : J) → S j → J  → Set} 
-           → {j : J} → {s : S j} {f : PJ j s -*-> WI S PJ} → {i : I} → 
-           PI j s i  ⊎  (Σ J λ j′ → Σ (PJ j s j′) λ p → Pathk S PI PJ i j′ (f j′ p))        → Pathk S PI PJ i j (sup (s , f)) 
-pathk (inj₁ p) = sup (inj₁ p , λ j ())
-pathk {I} {J} {S} {PI} {PJ} {j} {s} {f} {i} (inj₂ (j′′ , (q , r))) = sup ((inj₂ (j′′ , q)) , sub) 
-  where sub : (jw : Σ J (WI S PJ)) →
-                 (j′′ ≡ proj₁ jw) × (f j′′ q ≅ proj₂ jw) → Pathk S PI PJ i (proj₁ jw) (proj₂ jw) 
-        sub (j′ , w′) (eqj , eqw) = subst (WI _ _) (cong₂ _,_ eqj eqw) r 
-
--}
 
 \end{code}
 
-%endif
+
+
+

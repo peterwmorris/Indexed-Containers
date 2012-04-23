@@ -131,7 +131,7 @@ It is simple to show that this bi-simulation is an equivalence relation.
 \end{proposition}
 
 We must construct a co-iteration operator |MIunfold|, a morphism in the category 
-of |⟦ S ◁* PJ ⟧|-coalgebras from our candidate teminal coalgebra to any other 
+of |⟦ S ◁* PJ ⟧|-coalgebras to our candidate teminal coalgebra from any other 
 coalgebra. Such that the following diagram commutes:
 
 \[
@@ -202,11 +202,11 @@ MIunfoldUniq : ∀ {J} {X : J → Set} {S PJ}
                  (α : X -*-> obj* ⟦ S ◁* PJ ⟧* X) → (β : X -*-> MI {J} S PJ) →
                  (  (j : J) (x : X j) → 
                     (sup⁻¹ (β j x)) ⟦⟧MI= ((mor* ⟦ S ◁* PJ ⟧* β ⊚ α) j x)) → 
-                 (j : J) → (x : X j) → β j x ≈MI MIunfold α j x 
+                 (j : J) (x : X j) → β j x ≈MI MIunfold α j x 
 
 MIunfoldUniq α β commβ i x with commβ i x
 MIunfoldUniq α β commβ i x | commix with β i x
-MIunfoldUniq α β commβ i x | refl , y | sup (.(proj₁ (α i x)) , g) = 
+MIunfoldUniq α β commβ i x | (refl , y) | sup (.(proj₁ (α i x)) , g) = 
   sup (λ p → ♯ ≈MItrans (y p) (MIunfoldUniq α β commβ _ _))
 
 
@@ -286,8 +286,8 @@ containers is built from |WI|-types as follows.
 out^C : ∀ {I J} → (F : ICont* (I ⊎ J) J) → ν^C F ⇒* F ⟨ ν^C F ⟩C* 
 out^C {I} {J} (S ◁* P) = (λ _ → sup⁻¹) ◁* outr
   where  outr :  {j : J} (s : (ν^C (S ◁* P) projS*) $$ j) →
-                 ((((S ◁* P) ⟨ ν^C (S ◁* P) ⟩C*) projP*) $$ j $$ sup⁻¹ s) -*->
-                 ((ν^C (S ◁* P) projP*) $$ j $$ s)
+                 ((((S ◁* P) ⟨ ν^C (S ◁* P) ⟩C*) projP*) $$ j $$ (sup⁻¹ s)) -*->
+                 ((ν^C (S ◁* P)) projP* $$ j $$ s)
          outr (sup s) i′ p = path p 
 
 \end{code}
@@ -330,7 +330,7 @@ unfold^C {I} {J} (S ◁* P) {T ◁* Q} (f ◁* r) = funfold ◁* runfold
            runfold :  {j : J} (t : T j) 
                       (i : I) → Path S PI PJ j (funfold j t) i → Q j t i 
            runfold t i (path p) = 
-             r t i (   [   (λ x →  inj₁ x)
+             r t i (   [   inj₁
                        ,   (λ y →  inj₂   (  _ , proj₁ (proj₂ y) 
                                           ,  runfold (proj₂ (f _ t) _ _) i (proj₂ (proj₂ y)))) ] p)
 
@@ -359,7 +359,7 @@ unfoldComm : ∀  {I J} {F : ICont* (I ⊎ J) J} (G : ICont* I J)
                 (α : G ⇒* F ⟨ G ⟩C*) →
                 (out^C F comp^C* unfold^C F α) ≡⇒*
                   ((F ⟨ (unfold^C F α) ⟩CM*) comp^C* α)       
-unfoldComm (S ◁* P) (f ◁* r) = (λ j s → refl) ◁* (λ j s i p → refl)
+unfoldComm (S ◁* P) (f ◁* r) = (λ j s → refl) ◁* (λ j s i p → refl) 
 
 \end{code}
 

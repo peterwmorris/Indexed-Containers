@@ -22,6 +22,8 @@ open import Relation.Nullary
 open import common
 open import tt
 
+infixr 3 _-*->_ 
+
 \end{code}
 
 %endif

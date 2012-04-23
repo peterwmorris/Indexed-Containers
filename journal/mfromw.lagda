@@ -153,13 +153,14 @@ any object into the terminal object |⊤|):
 %format _om = _ om 
 %format en = "\!^{" n "}"
 %format sen = "\!^{" suc n "}"
+%format ≈ = "\approx"
 
 \noindent
 For the moment denote this chain |F om = ((λ n → F en ⊤) , λ n → F en !)|. 
 We know from Asperti and Longo \cite{aspertilongo} that if |F| is 
 $\omega$-continuous, \emph{i.e.} that for any chain |(A , a)|:
 
-| F (LIM (A, a)) ≅ LIM ((F ∘ A), (F ∘ a)) |
+| F (LIM (A, a)) ≈ LIM ((F ∘ A), (F ∘ a)) |
 
 \noindent then the limit of |F om| will be the terminal co-algebra of
 |F|. To see this we first observe that we there is an isomorphism
@@ -191,9 +192,9 @@ We also note that the tail of |F om| is |((λ n → F (F en ⊤)) , λ n → F (
 
 \begin{align*}
 &&& |F (LIM F om)| & \\
-&\cong&& | LIM (F ∘ (λ n → F en ⊤) , F ∘ (λ n → F en !)) | & \{\mbox{|F| is $\omega$-continuous}\} \\
+&\approx&& | LIM (F ∘ (λ n → F en ⊤) , F ∘ (λ n → F en !)) | & \{\mbox{|F| is $\omega$-continuous}\} \\
 &\equiv&& | LIM ((λ n → F (F en ⊤)) , (λ n → F (F en !))) | & \{\mbox{definition}\}\\
-&\cong&& | LIM F om | & \{\mbox{ |tailLIM | }\} \\
+&\approx&& | LIM F om | & \{\mbox{ |tailLIM | }\} \\
 \end{align*}
 
 \noindent
@@ -360,17 +361,6 @@ the case that |F ≡ ⟦ S ◁ P ⟧ |, that is we must build a function:
 
 \begin{code}
 
-,≡₁ : {A : Set} {B : A → Set} → {t t' : Σ A B} → t ≅ t' → proj₁ t ≅ proj₁ t'
-,≡₁ refl = refl 
-
-,≡₂ : {A : Set} {B : A → Set} → {t t' : Σ A B} → t ≅ t' → proj₂ t ≅ proj₂ t'
-,≡₂ refl = refl 
-
-ext⁻¹' :  {A : Set} {B : A → Set} {f g : (a : A) → B a} → 
-         f ≡ g → ((a : A) (a' : A) → a ≡ a' → f a ≅ g a')
-ext⁻¹' refl a ._ refl = refl
-
-
 module imp (S : Set) (P : S → Set) (A : ℕ → Set) (a : (n : ℕ) → A (suc n) → A n) where
 
 \end{code}
@@ -379,34 +369,43 @@ module imp (S : Set) (P : S → Set) (A : ℕ → Set) (a : (n : ℕ) → A (suc
 
 %format ω-cont = "\omega" -cont
 
-\begin{code} 
+\begin{code}
+ 
   ω-cont :  LIM  (  (  λ n → Σ* s ∶ S *Σ (P s → A n))
-                 ,     λ n → λ { (s , f) → (s , a n ∘ f) } 
-                 ) 
+                 ,     λ n → λ { (s , f) → (s , a n ∘ f) } ) 
           → Σ* s ∶ S *Σ (P s → (LIM (A , a)))
 \end{code}
 
 \noindent
-Note that the shape picked at every point along the chain must be the same, in 
-order to make the diagrams commute. This is the key insight
-into constructing this function. 
-
-%if style == newcode
+Note that the shape picked at every point along the chain that we a given must 
+be the same, in order to make the diagrams commute. This is the key insight
+into constructing this function:
 
 \begin{code}
 
-  ω-cont (f , p) = (proj₁ (f zero)) , (λ x → (λ n → proj₂ (f n) (subst P (foo n) x)) , (λ n → {!!}))
-    where foo : (n : ℕ) → (proj₁ (f 0)) ≡ (proj₁ (f n))
-          foo zero = refl
-          foo (suc n) = trans (foo n) (sym (,≡₁ (p n)))
-          bar : (n : ℕ) (x : P (proj₁ (f 0))) → proj₂ (f n) (subst P (foo n) x) ≅ proj₂ (f 0) x
-          bar zero x = refl
-          bar (suc n) x = trans {!,≡₂ (p n) !} (bar n x)
+  ω-cont (f , p) = 
+   (  proj₁ (f zero) ,  λ x →  
+    (  λ n →  proj₂ (f n) (subst P (f₀≡ n) x))
+    ,  λ n →  begin 
+         a n (proj₂ (f (suc n)) (subst P (f₀≡ (suc n)) x)) 
+        ≅⟨ ext≅⁻¹ (cong (P ∘ proj₁) (p n)) (λ≅ _ →≅ refl)
+              (cong proj₂ (p n)) 
+              (begin 
+                  subst P (f₀≡ (suc n)) x 
+                ≅⟨ subst-removable P (f₀≡ (suc n)) x ⟩ 
+                  x 
+                ≅⟨ sym (subst-removable P (f₀≡ n) x) ⟩ 
+                  subst P (f₀≡ n) x ∎)⟩ 
+         proj₂ (f n) (subst P (f₀≡ n) x) ∎ )
+    where  f₀≡ : (n : ℕ) → (proj₁ (f 0)) ≡ (proj₁ (f n))
+           f₀≡ zero = refl
+           f₀≡ (suc n) = trans (f₀≡ n) (sym (cong proj₁ (p n)))
+           open ≅-Reasoning
 \end{code}
 
-%endif
-
 \end{proof}
+
+It should be obvious that 
 
 Now, since we have established that |M-chain| is isomorphic to the chain of iterations of container functors, and that all container functors are $\omega$-continuous, we know that the terminal co-algebra of a container functor must be the limit of its |M-chain|:
 

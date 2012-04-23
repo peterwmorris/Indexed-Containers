@@ -14,7 +14,7 @@ open import Coinduction
 open import Data.Nat hiding (_⊔_)
 open import Relation.Nullary
 
-infixl 20  _$$_
+infixl 5  _$$_
 
 unc : ∀ {l l' l''} {A : Set l} {B : A → Set l'} {C : Σ A B → Set l''} →
       ((x : A) → (y : B x) → C (x , y)) →

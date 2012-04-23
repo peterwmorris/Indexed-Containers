@@ -23,6 +23,8 @@ open import common
 
 postulate dotdotdot : ∀ {l} {A : Set l} → A
 
+infix 4 _≡_
+
 _≡_ : {l : Level} {A : Set l} → A → A → Set
 a ≡ b = a ≅ b
 
@@ -159,6 +161,9 @@ module EXT {l l'} {A : Set l} {B : A → Set l'} where
 
 %endif
 
+%format λ≡ = λ "^{\text{\tiny$" ≡ "$}}"
+%format →≡ = →
+
 \begin{code}
 
   postulate ext :  {f g : (a : A) → B a} → 
@@ -168,14 +173,12 @@ module EXT {l l'} {A : Set l} {B : A → Set l'} where
            f ≡ g → ((a : A) → f a ≡ g a)
   ext⁻¹ refl a = refl
 
+  syntax ext (λ a → b) = λ≡ a →≡ b  
+
 \end{code}
 
-This creates non-canonical elements of |_≅_|, \emph{i.e.} closed terms in
-equality types which are not |refl|. In order to deal with these
-non-canonical elements, we also rely on axiom |K|, or the uniqueness of
-identity proofs:
-
 %if style == newcode
+
 
 \begin{code}
 
@@ -187,6 +190,56 @@ identity proofs:
   exti⁻¹ refl = refl
 
 open EXT public
+
+module EXT2 {l l′} {A A′ : Set l} {B : A → Set l′}{B′ : A′ → Set l′}   where
+
+\end{code}
+
+%endif
+
+We'll also need a heterogeneous version of the extensionality principle -- this 
+says that two functions of different types are equal iff, when applied to equal 
+arguments they produce equal results. Note that to exploit a heterogeneous 
+equality between functions we must provide a guarantee that the functions have 
+equal domains, and co-domains:
+
+%format ext≅ = ext ≅
+%format ext≅⁻¹ = ext≅ ⁻¹
+
+%format λ≅ = λ "^{\text{\tiny$" ≅ "$}}"
+%format →≅ = →
+
+\begin{code}
+
+  postulate ext≅ :  {f : (a : A) → B a} 
+                    {g : (a′ : A′) → B′ a′} → 
+                    ({a : A} {a′ : A′} →  
+                      a ≅ a′ → f a ≅ g a′) → 
+                    f ≅ g
+  
+  syntax ext≅ (λ a → b) = λ≅ a →≅ b
+
+ext≅⁻¹ :  ∀  {l l′} {A A′ : Set l} 
+             {B : A → Set l′}{B′ : A′ → Set l′}  
+             {f : (a : A) → B a} {g : (a′ : A′) → B′ a′} → 
+             A ≡ A′ → B ≅ B′ → f ≅ g → 
+             {a : A}{a′ : A′} → a ≅ a′ → f a ≅ g a′
+ext≅⁻¹ refl refl refl {a} {.a} refl = refl
+
+\end{code}
+
+
+This creates non-canonical elements of |_≅_|, \emph{i.e.} closed terms in
+equality types which are not |refl|. In order to deal with these
+non-canonical elements, we also rely on axiom |K|, or the uniqueness of
+identity proofs:
+
+%if style == newcode
+
+\begin{code}
+
+open EXT public
+open EXT2 public
 
 module uip {l} {A : Set l} where
 

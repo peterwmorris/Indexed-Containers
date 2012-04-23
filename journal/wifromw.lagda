@@ -24,18 +24,9 @@ open import tt
 open import ifunc
 open import icont
 
-sup₁≡ : ∀  {S P} → {s s' : S} {f : P s → W S P} {f' : P s' → W S P} → 
-           (sup (s , f)) ≡ (sup (s' , f')) → s ≡ s'
-sup₁≡ refl = refl
+sup⁻¹ : ∀  {S P} → W S P → Σ S λ s → P s → W S P
+sup⁻¹ (sup x) = x
 
-sup₂≡ : ∀  {S P} → {s s' : S} {f : P s → W S P} {f' : P s' → W S P} → 
-           (sup (s , f)) ≡ (sup (s' , f')) → f ≅ f'
-sup₂≡ refl = refl
-
-
-proj₁≡ : ∀  {l l'} {S : Set l} {T : S → Set l'} → {s s' : S} {t : T s} {t' : T s'} → 
-            _≡_ {_} {Σ S T} (s , t) (s' , t') → s ≡ s'
-proj₁≡ refl = refl 
 
 \end{code}
 
@@ -146,7 +137,7 @@ function extensionality to define the constructor |supi|:
 supi : ∀ {J S PJ} → obj* ⟦ S ◁* PJ ⟧* (WI {J} S PJ)  -*-> WI S PJ
 supi {J} {S} {PJ} j (s , f) =  
   (  sup ((_ , s) , λ { (j , p) → proj₁ (f j p) })) 
-  ,  cong (λ x → sup ((j , j , s) , x)) (ext (λ ip → proj₂ (f _ (proj₂ ip))))
+  ,  cong (λ x → sup ((j , j , s) , x)) (λ≡ ip →≡ proj₂ (f _ (proj₂ ip)))
 
 \end{code}
 
@@ -163,16 +154,16 @@ We must once again show that for any |⟦ S ◁* PJ ⟧|-algebra |(X , α)| wher
 WIfold : ∀        {J} {S X  : J → Set} {PJ} →
             obj*  ⟦ S ◁* PJ ⟧* X -*-> X ->
                   WI S PJ -*-> X
-WIfold α j (sup ((j′ , s) , f) , ok) with proj₁≡ (sup₁≡ ok) 
+WIfold α j (sup ((j′ , s) , f) , ok) with cong (proj₁ ∘ proj₁ ∘ sup⁻¹) ok
 WIfold α j (sup ((.j , s) , f) , ok) | refl =  
- α j (s , (λ j′ p → WIfold α j′ (f (j′ , p) , ext⁻¹ (sup₂≡ ok) (j′ , p))))
+ α j (s , (λ j′ p → WIfold α j′ (f (j′ , p) , ext⁻¹ (cong (proj₂ ∘ sup⁻¹) ok) (j′ , p))))
 
 \end{code}
 
 \noindent
 In the form below |WIfold| does not pass Agda's termination checker; The direct encoding via |Wfold| would avoid this problem, at the expense of being even more verbose.
 
-To show that |WIfold| makes the initial algebra diagram commute, we must employ the |UIP| principle, that any 2 proofs of an equality are equal:
+To show that |WIfold| makes the initial algebra diagram commute, we must employ the |UIP| principle, that any two proofs of an equality are equal:
 
 %format βwirec = "\beta" wirec
 
@@ -183,15 +174,20 @@ WIcomm : ∀  {J} {S X : J → Set} {PJ}
             (j : J) → (x : obj* ⟦ S ◁* PJ ⟧* (WI S PJ) j) →
             WIfold α j (supi {J} {S} {PJ} j x) ≡ 
              α j (mor* ⟦ S ◁* PJ ⟧* (WIfold α) j x)  
-WIcomm α j (s , f) with proj₁≡
-         (sup₁≡
+WIcomm α j (s , f) with 
+         (cong (proj₁ ∘ proj₁ ∘ sup⁻¹)
           (cong (λ x → sup ((j , j , s) , x))
-           (ext (λ ip → proj₂ (f (proj₁ ip) (proj₂ ip))))))
+           (λ≡ ip →≡ proj₂ (f (proj₁ ip) (proj₂ ip)))))
 WIcomm α j (s , f) | refl = 
   cong (λ g → α j (s , g)) 
-   (ext λ j′ → ext λ p → 
-    cong (λ eq → WIfold α j′ (proj₁ (f j′ p) , eq)) UIP)
+   (λ≡ j′ →≡ λ≡ p →≡ 
+    cong (λ eq → WIfold α j′ (proj₁ (f j′ p) , eq)) UIP≡)
 
+\end{code}
+
+We can also show that the fold is unique:
+
+\begin{code}
 
 WIfoldUniq′ : ∀  {J} {X : J → Set} {S : J → Set} 
                  {PJ : (j : J) → S j → J → Set} 
@@ -199,11 +195,25 @@ WIfoldUniq′ : ∀  {J} {X : J → Set} {S : J → Set}
                  (β : WI S PJ -*-> X) → 
                  (β ⊚ supi) ≡ (α ⊚ mor* ⟦ S ◁* PJ ⟧* β) →
                  (j : J) (x : WI S PJ j) → β j x ≡ WIfold α j x
-WIfoldUniq′ α β commβ j (sup ((j′ , s) , f) , ok) with proj₁≡ (sup₁≡ ok)
-WIfoldUniq′ α β commβ j (sup ((.j , s) , f) , ok) | refl = 
-  trans  (ext⁻¹ (ext⁻¹ commβ j) (s , _)) 
-         (cong (λ n → α j (s , n)) 
-          (ext λ j′ → ext λ x′ → WIfoldUniq′ α β commβ j′ {!(f ? , ?)!}))  
+WIfoldUniq′ α β commβ j (sup ((j′ , s) , f) , ok) 
+  with cong (proj₁ ∘ proj₁ ∘ sup⁻¹) ok
+WIfoldUniq′ α β commβ j (sup ((.j , s) , f) , ok) | refl =  begin 
+    β j (sup ((j , s) , f) , ok)
+  ≅⟨ cong (λ ok′ → β j (sup ((j , s) , f) , ok′)) UIP≡  ⟩
+    β j  (  sup ((j , s) , f) 
+         ,  cong (λ p → sup ((j , j , s) , p))
+             (ext (ext⁻¹ (cong (proj₂ ∘ sup⁻¹) ok))))
+  ≅⟨ (ext⁻¹ (ext⁻¹ commβ j) (s , _))  ⟩ 
+    α j  (s, λ j p → β j  (  f (j , p) 
+                          ,  ext⁻¹ (cong (proj₂ ∘ sup⁻¹) ok) (j , p))) 
+  ≅⟨ (cong   (λ n → α j (s , n)) 
+             (λ≡ j →≡ λ≡ p →≡ 
+               WIfoldUniq′ α β commβ j 
+                (f (j , p) , ext⁻¹ (cong (proj₂ ∘ sup⁻¹) ok) (j , p)))) ⟩ 
+    α j  (s, λ j p → WIfold α j  (  f (j , p) 
+                                 , ext⁻¹ (cong (proj₂ ∘ sup⁻¹) ok) (j , p))) 
+  ∎  
+ where open ≅-Reasoning
 \end{code}
 
 \end{proof}
@@ -234,9 +244,9 @@ Path {I} {J} S PI PJ j w i = WI PathS PathP (j , w)
          PathS (j , sup (s , f)) = PI j s i ⊎ Σ J (PJ j s)
          PathP :  (jw : Σ* j ∶ J *Σ WI S PJ j) (s : PathS jw) →
                   Σ* j ∶ J *Σ WI S PJ j → Set
-        PathP (j , sup (s , f)) (inj₁ p) (j′ , w′) = ⊥
-        PathP (j , sup (s , f)) (inj₂ (j′′ , p)) (j′ , w′) = 
-          (j′′ ≡ j′) × (f j′′ p ≅ w′)
+         PathP (j , sup (s , f)) (inj₁ p) (j′ , w′) = ⊥
+         PathP (j , sup (s , f)) (inj₂ (j′′ , p)) (j′ , w′) = 
+           (j′′ ≡ j′) × (f j′′ p ≅ w′)
 
 \end{code}
 

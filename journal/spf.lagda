@@ -33,7 +33,7 @@ open import termcoalg
 \section{Strictly Positive Families}
 \label{sec:spf}
 
-%format ^T = "^{\text{\tiny T}}"
+%format ^T = "^{\text{\tiny$" T "$}}"
 
 %format η^T = η ^T
 
@@ -51,7 +51,7 @@ open import termcoalg
 
 %format ⟦_⟧^T = ⟦ _ ⟧ ^T
 %format ⟧^T = ⟧ ^T
-%format ^T* = "^{\text{\tiny T}\star}"
+%format ^T* = "^{\text{\tiny$" T "$}\star}"
 %format ⟦_⟧^T* = ⟦ _ ⟧ ^T*
 %format ⟧^T* = ⟧ ^T* 
 
