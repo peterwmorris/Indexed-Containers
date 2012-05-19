@@ -266,7 +266,7 @@ tactic~\cite{sozeau}.
 Indexed containers are designed to provide the mathematical and
 computational infrastructure required to program with inductive
 families. The remarkable fact about indexed containers, and the fact
-underpins their practical usefullness, is that they offer an
+underpins their practical usefulness, is that they offer an
 exceedingly compact way to encapsulate all the information inherent
 within the definition of functors such as |FFin|, |FVec| and |FScLam|,
 |FNeLam| and |FNfLam| and hence within the associated inductive
@@ -300,11 +300,12 @@ indexed W-type derived previously. Moreover the development is fully
 formalized in Agda.
 
 Indexed containers are intimately related to \emph{dependent
-polynomial functors} \cite{HylandGambino}. Indeed, at a very general
+polynomial functors} \cite{HylandGambino}, see also the comprehensive notes \cite{kock2009notes}.
+Indeed, at a very general
 level one could think of indexed containers as the type theoretic
 version of dependent polynomials and vice versa. However, the
 different needs of programmers from category theorists has taken our
-development of indexed contianers in a different direction from that
+development of indexed containers in a different direction from that
 of dependent polynomials. The biggest difference is the Agda
 implementation of our ideas which makes our work much more accessible
 to programmers than the categorical work on dependent polynomials.
@@ -313,7 +314,7 @@ mutual and nested inductive definitions. We have also show that
 indexed containers are closed under parametrized initial algebras and
 coalgebras and reduce the construction of parameterised final
 coalgebras to that of initial algebras. Hence we can apply both the
-inital algebra and final coalgebra construction several times. The
+initial algebra and final coalgebra construction several times. The
 flexibility of indexed containers allows us to also establish closure
 under the adjoints of reindexing. This leads directly to a grammar for
 strictly positive families, which itself is an instance of a strictly
@@ -327,7 +328,7 @@ positions.  Fiore, Gambino, Hyland and Winskel's work on generalized
 species \cite{fiore2008ccb} considers those concepts in a more generic
 setting --- the precise relation of this work to indexed containers
 remains to be explored but it appears that generalised species can be
-hought of as indexed contaioners closed under quotients.
+thought of as indexed containers closed under quotients.
 
 
 Perhaps the earliest publication related to indexed containers occurs
@@ -376,7 +377,7 @@ non-indexed containers. In section \ref{sec:ifunc} we develop the
 concept of an indexed functor, showing that this is a relative monad
 and presenting basic constructions on indexed functors including the
 definition of a parametrized initial algebra. In section
-\ref{sec:icont} we devlop the basic theory of indexed containers and
+\ref{sec:icont} we develop the basic theory of indexed containers and
 relate them to indexed functors. Subsequently in section
 \ref{sec:initalg} we construct initial algebras of indexed containers
 assuming the existence of indexed W-types, this can be dualized to

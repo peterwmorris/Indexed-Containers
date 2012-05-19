@@ -114,16 +114,16 @@ complex syntactic schemes present in the \emph{Calculus of Inductive
 able to encode inductively defined families in a small core language
 which means that we rely only on a small trusted code base. The
 reduction to W-types requires an extensional propositional
-equality. Our current approach using an axiom |ext| is sufficent for
+equality. Our current approach using an axiom |ext| is sufficient for
 proofs but isn't computationally adequate. A more satisfying approach
 would built on \emph{Observational Type Theory} (OTT)
 \cite{alti:ott-conf}.
 
-\todo{Mention Epigram 2?}
+%\todo{Mention Epigram 2?}
 
 The present paper is an annotated Agda script, i.e. all the proofs are
 checked by the Agda system. We have tried hard to integrate the formal
-development with the narrative. In some cases we have surpressed
+development with the narrative. In some cases we have suppressed
 certain details present in the source of the paper to keep the
 material readable.
 
@@ -140,10 +140,10 @@ Tm : (Γ : Con) → Ty Γ → Set
 \end{spec}
 In recent work \cite{txa:catind2} present a categorical semantics for
 this kind of definitions based on dialgebras. However, a presentation
-of strictly positive definitions in the spirit of contaienrs is not
+of strictly positive definitions in the spirit of containers is not
 yet available.
 
-\todo{Discuss the relationship to inductive-recursive definitions.}
+%\todo{Discuss the relationship to inductive-recursive definitions.}
 
 \bibliographystyle{plain}
 \bibliography{ic}

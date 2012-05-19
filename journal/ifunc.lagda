@@ -35,18 +35,17 @@ infixr 3 _-*->_
 %format IFunc.mor = "\!"
 
 While containers provide a robust framework for studying data types
-arising as inital algebras of functors over sets, indexed containers
+arising as initial algebras of functors over sets, indexed containers
 provide an equally robust framework for studying the more refined data
 types which arise as initial algebras of functors over indexed
 sets. Indeed, just as the essence of containers is a compact
-representation of well behaved functors over sets, so the essnce of
+representation of well behaved functors over sets, so the essence of
 indexed containers will be an equally compact representation of
 functors over indexed sets. Given |I : Set| we begin by considering
 the category of families over |I|. Its objects are |I|-indexed
 families of sets |A : I → Set| and its morphisms are given by
 |I|-indexed families of functions. The definitions of morphisms,
-identity morphisms and composition of morphisms in this category are given below:{\bf
-check types vs sets}
+identity morphisms and composition of morphisms in this category ar
 
 %format * = "^{\star}" 
 %format -*-> = "\rightarrow" *
@@ -123,8 +122,8 @@ F ⇒^F G =  ∫ A ** IFunc.obj F A ->> IFunc.obj G A
 
 Our goal is, eventually, to give a representation for indexed functors
 as indexed containers. In doing this, we will also wish to represent
-structure on indexed functors as structure on indexed containers. In
-order to do this, we next look at the structure possesed by indexed
+structure on indexed functors as structure on indexed containers. 
+To achieve this, we next look at the structure possessed by indexed
 functors. The main structure we wish to highlight for 
 |IFunc| is the following is a monad-like structure:
 
@@ -142,7 +141,7 @@ F >>=^F H =
 
 \noindent
 It's clear that |IFunc| cannot be a monad in the usual sense, since it is not 
-an endo-functor, it does how ever fit with the notion of relative monad 
+an endofunctor, it does how ever fit with the notion of relative monad 
 presented by Altenkirch \emph{et al.} Note that in the code above we have 
 elided the use of the lifting functor.
 
@@ -378,7 +377,7 @@ containers) with obvious benefits in terms of tractability.
 
 \subsection{Initial algebras of indexed functors}
 
-We have seen that an |F : IFunc* I I| is an endo-functor on the
+We have seen that an |F : IFunc* I I| is an endofunctor on the
 category |Fam I|.  Using this observation we know that an algebra of
 such a functor is a family |A : Fam I| and a map |α : obj* F A -*->
 A|. A morphism, then, between two such algebras |(A , α)| and |(B ,
@@ -398,8 +397,8 @@ functors in |Set → Set| (for instance |F A = (A → Bool) → Bool|) have init
 algebras that neither do all indexed-functors.
 
 We also know that we cannot iterate the construction of initial
-algebras given above. That is, an endo-functor |IFunc* I I| gives rise
-to an initial algebra in |Fam I|, and we cannot take the inital
+algebras given above. That is, an endofunctor |IFunc* I I| gives rise
+to an initial algebra in |Fam I|, and we cannot take the initial
 algebra of something in |Fam I|. This prevents us from being able to
 define nested, or mutual inductive families in this way.
 
@@ -466,7 +465,7 @@ _⟨_⟩M* F {G} {H} γ = λ k → _⟨_⟩M  (F k) {G} {H} γ
 \end{code}
 
 \noindent A parametrised |F|-algebra for |F : IFunc* (I ⊎ J) J| is
-then simply an algebra for the functor |F ⟨ _ ⟩M*|. That is, it a
+then simply an algebra for the functor |F ⟨ _ ⟩M*|. That is, a
 parameterised |F|-algebra consists of a pair of an 
 indexed-functor |G : IFunc I J| and a natural transformation
 |α : F ⟨ G ⟩F* =*=>^F G|. A morphism between two such algebras 
@@ -483,21 +482,21 @@ such that the follow diagram commutes:
 \noindent As you might expect, a parametrised initial algebra for |F|,
 if it is exists, will be the initial object in the category of
 parametrised |F|-algebras. Alternatively, it is the initial 
-|F ⟨ _ ⟩M*|-algebra. Either way, the parameterised inital
+|F ⟨ _ ⟩M*|-algebra. Either way, the parameterised initial
 algebra construction will map indexed functors to indexed functors and
 hence can be iterated. This means that we can define nested and mutual
 families of data-types, such as the tuple of neutral and normal
 |λ|-terms outlined in the introduction.
 
 However, it is still the case that not all indexed functors in |IFunc*
-(I ⊎ J) I| have parameterised initial algebras. In the analgous
+(I ⊎ J) I| have parameterised initial algebras. In the analogous
 situation for functors on |Set|, we solved this problem by limiting
 ourselves to those functors which can be represented by containers.
 We follow a similar approach in the indexed setting, that is, we
 restrict our attention to those indexed functors which can be
 represented by indexed containers. We show that all indexed containers
-have parameterised initial algebras and that, suprisingly, inital
+have parameterised initial algebras and that, surprisingly, initial
 algebras may be constructed using only the |W|-types used to construct
-inital algebras of containers.
+initial algebras of containers.
 
 

@@ -32,10 +32,10 @@ open import cont
 
 Since we have shown that both |WI| and |MI| types can be reduced to
 their non-indexed counterparts, we can finish the reduction of the
-logical theory of indexed contianers to |W|-types by showing that |M|
+logical theory of indexed containers to |W|-types by showing that |M|
 types can be reduced to |W| types. This is a result from our previous
 work on containers~\cite{alti:cont-tcs}, though in the setting of
-indexed |WI| types, we can give a better expalnation. Before tackling
+indexed |WI| types, we can give a better explanation. Before tackling
 this question directly, we first introduce the basic definitions
 pertaining to final coalgebras and our implementation of them within
 Agda.
@@ -133,7 +133,7 @@ univ pro com x = (λ n → pro n x) , (λ n → com n x)
 
 \noindent
 We are interested in certain $\omega$-chains which can be constructed
-from a functor |F| as follows (where |!| is the unique moprhism from
+from a functor |F| as follows (where |!| is the unique morphism from
 any object into the terminal object |⊤|):
 
 \[
@@ -234,7 +234,7 @@ We now turn to the specific task at hand, namely the construction of
 coalgebras of container functors from the capacity to construct the
 initial algebras of container functors.  In order to do this, we must
 construct the iteration of container functors (to build the chain) and
-show that all container functors are $\omega$ continuous. Since we
+show that all container functors are $\omega$-continuous. Since we
 only need to build iterations of container functors applied to the
 terminal object |⊤|, we build that directly. We define the following
 variation of |W|, cut off at a known depth: 
@@ -291,7 +291,7 @@ WM′ S P = WI S′ P′
 Our candidate for the final coalgebra of |⟦ S ◁ P ⟧| is, then, the limit of the chain |WM S P|, along with 
 the truncation of a tree of depth |suc n| to one of depth |n|.
 This truncation
-is acheived by the repeated application of the morphism part of the
+is achieved by the repeated application of the morphism part of the
 container functor to the unique morphism into the terminal object. Or, more concretely:
 
 \begin{code}
@@ -404,8 +404,6 @@ into constructing this function:
 \end{code}
 
 \end{proof}
-
-It should be obvious that 
 
 Now, since we have established that |M-chain| is isomorphic to the chain of iterations of container functors, and that all container functors are $\omega$-continuous, we know that the terminal co-algebra of a container functor must be the limit of its |M-chain|:
 

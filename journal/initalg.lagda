@@ -41,7 +41,7 @@ indexed by |I ⊎ J|; we will treat these position as two separate
 entities, those positions indexed by |I| -- the recursive positions --
 and those by |J| -- the payload positions.
 
-The shapes of initial algebra we are constructing will be trees with S
+The shapes of the initial algebra we are constructing will be trees with S
 shapes at the nodes and which branch over the recursive |PI|
 positions. We call these trees \emph{indexed} |W|-types, denoted |WI|,
 and they are the initial algebra of the functor |⟦ S ◁ PJ ⟧*|. In
@@ -167,7 +167,7 @@ pair of a |PJ| position and a sub |Q| position. Here the |Q| positions
 are recursive |Path| positions. This reflects the fact that a
 |WI|-type can be thought of as iterated partial application.  
 We can now use |WI|-types, or
-equivalently initial algebras of indexed contianers, to construct the
+equivalently initial algebras of indexed containers, to construct the
 parametrised initial algebra of an indexed container. Firstly we
 construct the carrier of the parameterised initial algebra:
 
@@ -225,8 +225,9 @@ in^C F = sup ◁* λ {_ _ (path p) → p}
 |(μ^C F , in^C F)| is initial in the category of parameterised |F|-algebras of indexed containers. Further, by full and faithfulness, |(⟦ μ^C F ⟧* , ⟦ in^C F ⟧⇒*)| willl also be initial in the indexed functor case.
 \end{proposition}
 
-To show this we must define an interation operator |fold^C| from the initial 
-object. The shape map employs the fold for |WI| directly. For the position map we apply the position map for the algebra, which maps |Q| positions to either a |P| position in the first layer, or a recursive |Q| position --- it is straight forward to recursive employ this prsition map to construct the correspondin |Path| to a |P| position {\em somewhere} in the tree.
+To show this we must define an interaction operator |fold^C| from the
+initial algebra to an arbitrary algebra.
+The shape map employs the fold for |WI| directly. For the position map we apply the position map for the algebra, which maps |Q| positions to either a |P| position in the first layer, or a recursive |Q| position --- it is straightforward to recursively employ this position map to construct the corresponding |Path| to a |P| position {\em somewhere} in the tree.
 
 %if style == newcode
 

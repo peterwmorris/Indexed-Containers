@@ -88,7 +88,7 @@ _projPo (S ◁ P) = P
 The motivation for containers was to find a representation of well
 behaved functors. Since natural transformations are the semantic
 representation of polymorphic functions, it is also natural to seek a
-representation of natural transformations in the langiage of
+representation of natural transformations in the language of
 containers. We showed in our previous work that a natural
 transformation between two functors arising as containers can be
 represented as morphisms between containers as follows.
@@ -111,14 +111,14 @@ transformations as the following definition shows:
 ⟦_⟧⇒ : ∀ {C D} → C ⇒ D → ∫ A ** (Func.obj ⟦ C ⟧ A → Func.obj ⟦ D ⟧ A)
 ⟦ f ◁ r ⟧⇒ (s , g) = f s , g ∘ r s  
 
-\end{code} Rather suprisingly we were able to proove that the
+\end{code} Rather surprisingly we were able to prove that the
 representation of natural transformations as container morphisms is a
 bijection, that is every natural transformation between functors
-arising from containers is uniquely represented as a continaer
+arising from containers is uniquely represented as a container
 morphism.  Technically, this can be stated by saying that Containers
-and their morphisms form a category which is a full and faithfull
+and their morphisms form a category which is a full and faithful
 sub-category of the functor category. We have also shown that the
-category of containers is cartesian closed (\cite{txa:cie10}, and is
+category of containers is cartesian closed (\cite{tax:cie10}, and is
 closed under formation of co-products, products and a number of other
 constructions. Most important of these is the fact that container
 functors (ie functors arising from containers) have initial algebras. Indeed,
@@ -136,7 +136,7 @@ data WW (S : Set) (P : S → Set) : Set where
 
 %format μ = "\mu"
 
-However, we have also shown that for |n|-ary containers (containers
+However, we have also shown that for |n|-ray containers (containers
 with |n| position sets), it is possible to define a
 \emph{parameterised} initial algebra construction |μ : ∀ {n} → Cont
 (suc n) → Cont n|. This allows us to model a broad range of nested and
