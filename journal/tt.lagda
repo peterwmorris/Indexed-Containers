@@ -83,7 +83,7 @@ record Σ′ (A : Set) (B : A → Set) : Set where
 \end{code}
 
 We will, however assume that the type-theory we work in has
-$\Sigma$-types as primative, and has no native support for data-types.
+$\Sigma$-types as primitive, and has no native support for data-types.
 Instead, we only have |W|-types, the empty-type |⊥|, the unit type |tt
 : ⊤| and the booleans |true , false : Bool|. A type theory has |W|
 types if it has a type former |W : (S : Set) (P : S → Set) → Set| with
@@ -112,7 +112,7 @@ readability we will also define functions using Agda's pattern matching
 syntax, rather than encoding them using |wrec|, all of these definitions can 
 be reduced to terms which only use |wrec|.
 
-We'll also require a notion of propositional equality. To simplyfy the
+We'll also require a notion of propositional equality. To simplify the
 presentation of some definitions later on, we will employ a
 heterogeneous equality.  This can be defined in Agda via a data-type:
 
@@ -274,7 +274,7 @@ extensional Type Theory \cite{hofmann1996conservativity}.
 
 We are going to use type theoretic versions of certain category theoretic
 concepts. For example we represent functors by packing up their definition as
-an Agda record. An endo functor on set, is given by:
+an Agda record. An endofunctor on set, is given by:
 
 \begin{code}
 

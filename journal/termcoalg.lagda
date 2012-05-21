@@ -131,7 +131,7 @@ It is simple to show that this bi-simulation is an equivalence relation.
 \end{proposition}
 
 We must construct a co-iteration operator |MIunfold|, a morphism in the category 
-of |⟦ S ◁* PJ ⟧|-coalgebras to our candidate teminal coalgebra from any other 
+of |⟦ S ◁* PJ ⟧|-coalgebras to our candidate terminal coalgebra from any other 
 coalgebra. Such that the following diagram commutes:
 
 \[
@@ -163,7 +163,8 @@ MIunfold α j x | s , f = sup (s , λ j′ p → ♯ MIunfold α j′ (f j′ p)
 
 \end{code}
 
-We also require that |MIunfold| is unique, {\em i.e.} any morphism that makes the diagram above should be provably equal (again upto bi-simulation) to |MIunfold α|. To state this property we need to lift the bi-simulation |_≈MI_| through the extension of an indexed container, to say what is it for two elements in the extension to be bi-similar:
+We also require that |MIunfold| is unique, {\em i.e.} any morphism
+that makes the diagram above commute should be provably equal (again upto bi-simulation) to |MIunfold α|. To state this property we need to lift the bi-simulation |_≈MI_| through the extension of an indexed container, to say what is it for two elements in the extension to be bi-similar:
 
 %format _⟦⟧MI=_ = _ "\approx^{" ⟦ _ ⟧ MI  "}" _
 %format ⟦⟧MI= = "\mathbin{\approx^{" ⟦ _ ⟧ MI "}}" 
@@ -213,7 +214,12 @@ MIunfoldUniq α β commβ i x | (refl , y) | sup (.(proj₁ (α i x)) , g) =
 
 \end{code}
 
-However, Agda rejects this definition due to the recursive call not being guarded immediately by the |♯|, instead it is also under the appeal to the transitivity of bi-simulation. We can persuade the system this is productive by fusing the definition of |≈MItrans| with this |MIunfoldUniq| in a cumbersome but straight forward way, for details see the source of this paper.
+However, Agda rejects this definition due to the recursive call not
+being guarded immediately by the |♯|, instead it is also under the
+appeal to the transitivity of bi-simulation. We can persuade the
+system this is productive by fusing the definition of |≈MItrans| with
+this |MIunfoldUniq| in a cumbersome but straightforward way.
+%, for details see the source of this paper.
 
 %if style == code
 
@@ -249,7 +255,7 @@ MIunfoldUniq α β comm i x = MIunfoldUniq' α β comm i x ≈MIrefl
 
 
 \noindent
-The paths to positions in an indexed |M| tree, are always 
+The paths to positions in an indexed |M|-tree, are always 
 finite -- in fact modulo the use of |♭|, this |Path| is the same as the 
 definition for the initial algebra case.
 
@@ -336,7 +342,7 @@ unfold^C {I} {J} (S ◁* P) {T ◁* Q} (f ◁* r) = funfold ◁* runfold
 
 \end{code}
 
-We must then show that |unfold^C| is the unique morphism that makes the following diagram commmute:
+We must then show that |unfold^C| is the unique morphism that makes the following diagram commute:
 
 \[
 \xymatrix{
@@ -377,7 +383,7 @@ postulate MIext : ∀  {J S PJ} {j : J} {x y : MI S PJ j} →
 \end{code}
 
 \noindent
-The inverse of this princple is obviously true:
+The inverse of this principle is obviously true:
 
 \begin{code}
 

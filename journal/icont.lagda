@@ -310,7 +310,7 @@ an indexed container morphisms as follows:
 
 \noindent
 The representation of natural transformations between
-indexed functors arising from indexed contianers and morphisms between
+indexed functors arising from indexed containers and morphisms between
 the indexed containers themselves is actually a bijection. This
  opens the way to reasoning about natural transformations by
 reasoning about indexed container morphisms. Technically, this
@@ -418,10 +418,10 @@ record _≡⇒*_  {I} {J} {C D : ICont* I J} (m n : C ⇒* D) : Set where
 
 Having defined indexed containers and indexed
 containers morphisms as representations of indexed functors and the
-natural transfortmations between them, we now turn our attention to
+natural transformations between them, we now turn our attention to
 the relative monad structure on indexed functors, reindexing of
 indexed functors (and the associated adjoints), and parameterised
-inital algebras of indexed functors. Our goal in the rest of this
+initial algebras of indexed functors. Our goal in the rest of this
 section is to encode each of these structures within
 indexed containers. We begin by showing that, as with |IFunc|, we can
 equip |ICont| with a relative monadic structure:
@@ -472,7 +472,7 @@ the theorem.
 As with indexed functors, the re-indexing functor |Δ^C| on indexed
 containers is defined by composition, and it has left and right
 adjoints |Σ^C| and |Π^C|. As we shall see, our proof of this fact uses
-the full and faithfullness of the embedding of indexed containers as
+the full and faithfulness of the embedding of indexed containers as
 indexed functors and the fact that reindexing of indexed functors has
 left and right adjoints.
 

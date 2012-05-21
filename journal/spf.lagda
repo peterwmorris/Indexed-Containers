@@ -92,7 +92,7 @@ open DelSigPi
 %endif
 
 We show how to interpret strictly positive families as indexed
-contianers and hence indexed functors.
+containers and hence indexed functors.
 
 \begin{code}
 

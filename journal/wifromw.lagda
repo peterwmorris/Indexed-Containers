@@ -220,7 +220,7 @@ WIfoldUniq′ α β commβ j (sup ((.j , s) , f) , ok) | refl =  begin
 
 \noindent
 We can use this proof that |WI|-types can be encoded by |W| to explain
-where |Path| fits in, since it is straight forwardly encoded as a
+where |Path| fits in, since it is straightforwardly encoded as a
 |WI|: 
 
 %if style == newcode
@@ -259,5 +259,5 @@ Path {I} {J} S PI PJ j w i = WI PathS PathP (j , w)
 \end{code}
 
 %endif
-The reader will be unsuprised to learn that a similar construction to
-the above allows us to derive |MI|-types from |M|-types. The details are, once again, somewhat obfiscated by the experimental treatment of co-induction in Agda, but are in the spirit of the dual of the proof above.
+The reader will be unsurprised to learn that a similar construction to
+the above allows us to derive |MI|-types from |M|-types. The details are, once again, somewhat obfuscated by the experimental treatment of co-induction in Agda, but are in the spirit of the dual of the proof above.
