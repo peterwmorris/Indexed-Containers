@@ -118,7 +118,7 @@ arising from containers is uniquely represented as a container
 morphism.  Technically, this can be stated by saying that Containers
 and their morphisms form a category which is a full and faithful
 sub-category of the functor category. We have also shown that the
-category of containers is cartesian closed (\cite{tax:cie10}, and is
+category of containers is cartesian closed (\cite{txa:cie10}, and is
 closed under formation of co-products, products and a number of other
 constructions. Most important of these is the fact that container
 functors (ie functors arising from containers) have initial algebras. Indeed,

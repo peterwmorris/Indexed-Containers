@@ -269,9 +269,35 @@ open uip public
 
 %endif
 
+\noindent
 With these ingredients we obtain a theory which corresponds to
 extensional Type Theory \cite{hofmann1996conservativity}.
 
+\newcommand{\Llrrarrow}{\Lleftarrow\!\!\!\!\Rrightarrow}
+
+%format <==> = "\Llrrarrow"
+%format _<==>_ = _ <==> _
+
+We will also need to use a notion of |Set| isomorphism, which we denote |_<==>_|
+and which exploits our extensional equality:
+
+%format φ = "\phi"
+%format ψ = "\psi"
+%format φψ = φ ψ
+%format ψφ = ψ φ
+
+\begin{code}
+
+record _<==>_ (A B : Set) : Set where
+ field
+  φ : A → B
+  ψ : B → A
+  φψ : φ ∘ ψ ≡ id
+  ψφ : ψ ∘ φ ≡ id 
+
+\end{code}
+
+\noindent
 We are going to use type theoretic versions of certain category theoretic
 concepts. For example we represent functors by packing up their definition as
 an Agda record. An endofunctor on set, is given by:
@@ -286,7 +312,7 @@ record Func : Set₁ where
 \end{code}
 
 It would also be possible to pack up the functor laws as extra fields
-in these records. We use ends |End| to capture natural
+in these records. We use \emph{ends} to capture natural
 transformations.  Given a bifunctor |F : Setop → Set → Set|, an
 element of |∫ X ** F X X| is equivalent to an element of |f : {X :
 Set} → F X X|, along with a proof:
@@ -303,8 +329,8 @@ setting, the Yoneda lemma can be stated as follows, for any functor
 
 we will make use of this fact later on.
 
-Finally, for readability we will elide certain artifacts in Agda's syntax,
-for instance the quantification of implicit arguments when their types can be
+Finally, for readability we will elide certain artifacts in Agda's syntax;
+for instance, the quantification of implicit arguments when their types can be
 inferred from the context. We will often leave out record projections 
 from notions such as |Func|, allowing the functor to stand for both its action 
 on object and morphism, just as would happen in the category theory 

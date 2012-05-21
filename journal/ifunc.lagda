@@ -249,8 +249,7 @@ image of the function |f|.
 What if the restriction appears on the right of such an equation? As
 an example, consider the successor constructor for |Fin|; here we want
 to build the pattern functor: |FFin′ X (1+ n) = X n|. To do this we
-observe that this is equivalent to the equation |FFin′ X n = Σ Nat λ m
-→ n ≡ 1+ m × X m|. We denote the general construction |Σ^F|, so the
+observe that this is equivalent to the equation |FFin′ X n = Σ* n ∶ ℕ *Σ (n ≡ 1+ m × X m)|. We denote the general construction |Σ^F|, so the
 2nd equation can be written |FFin′ X = Σ^F suc X|:
 
 \begin{code}
@@ -407,11 +406,12 @@ strategy is as follows: First note that for a singly indexed functor
 over a co-product we can eliminate the co-product and curry the
 resulting definition in this way:
 
+
 \begin{align*}
 |IFunc (I ⊎ J)| 
   & \equiv      & |(I ⊎ J → Set) → Set| \\
-  & \approx       & |(I → Set) × (J → Set) → Set|\\
-  & \approx       & |(I → Set) → (J → Set) → Set|\\
+  & \Llrrarrow       & |(I → Set) × (J → Set) → Set|\\
+  & \Llrrarrow       & |(I → Set) → (J → Set) → Set|\\
 \end{align*}
 
 \noindent

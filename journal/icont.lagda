@@ -95,13 +95,12 @@ of |I| as a collection of sorts, then this function assigns to each |i
 |A i|. 
 
 Analogously to the generalisation of singly indexed functors to doubly
-indexed functors, we can generalise {\bf vs extend} singly indexed
+indexed functors, we can generalise singly indexed
 containers to doubly indexed containers. Indeed, a doubly indexed
 container, that is an element of |ICont* I J|, is simply a function
 from |J| to |ICont I|. Unpacking the definition of such a function
 gives us the following definition of a doubly indexed container and
-its extension to a doubly indexed functor: {\bf extension of a
-container}
+its extension as a doubly indexed functor: 
 
 \begin{code}
 record ICont* (I J : Set) : Set₁ where
@@ -173,9 +172,9 @@ do this in the singly indexed case as follows:
 \begin{align*}
                 & |⟦ S ◁ P ⟧ ⇒^F F| & \hspace{1in} (1) \\
   \equiv  \;    & |∫ X ** Σ* s ∶ S *Σ (P s -*-> X) → F X| & \{\mbox{by definition}\} \\
-  \approx  \;    & |∫ X ** (s : s) → (P s -*-> X) → F X| & \{\mbox{currying}\} \\
-  \approx   \;    & |(s : S) → ∫ X ** (P s -*-> X) → F X| & \{\mbox{commuting end and pi} \} \\
-  \approx   \;    & |(s : S) → F (P s)| & \{\mbox{Yoneda}\} \\
+  \Llrrarrow  \;    & |∫ X ** (s : s) → (P s -*-> X) → F X| & \{\mbox{currying}\} \\
+  \Llrrarrow   \;    & |(s : S) → ∫ X ** (P s -*-> X) → F X| & \{\mbox{commuting end and pi} \} \\
+  \Llrrarrow   \;    & |(s : S) → F (P s)| & \{\mbox{Yoneda}\} \\
 \end{align*}
 
 
@@ -184,8 +183,8 @@ Now, if |F| is the extension of an indexed container |T ◁ Q|, we have:
 
 \begin{align*}
            & |⟦ S ◁ P ⟧ ⇒^F ⟦ T ◁ Q ⟧| \hspace{2.2in} (2) \\
- \approx \;  & |(s : S) → Σ* t ∶ T *Σ (Q t -*-> P s)| \\
- \approx \;  & |Σ* f ∶ S → T *Σ ((s : S) → Q (f s) -*-> P s)|
+ \Llrrarrow \;  & |(s : S) → Σ* t ∶ T *Σ (Q t -*-> P s)| \\
+ \Llrrarrow \;  & |Σ* f ∶ S → T *Σ ((s : S) → Q (f s) -*-> P s)|
 \end{align*}
  
 \noindent We will use this last line as the definition for indexed
@@ -449,15 +448,38 @@ The triple |(ICont , η^C , _>>=^C_)| is a relative monad.
 \begin{proof}
 
 Instead of proving this directly, we observe that the |η^C| and |_>>=^C_|
-are preserved under the extension functor, and by the full and faithfulness of
-|⟦_⟧| we can import the result from |IFunc| into |ICont|:
+are preserved under the extension functor, that is that yhe following natural isomorhisms hold: 
 
-\begin{align*}
-|⟦ η^C i ⟧| && \approx &&& |η^F i| \\
-|⟦ C >>=^C D ⟧| && \approx &&& |⟦ C ⟧* >>=^F ⟦ D ⟧| \\
-\end{align*}
+%if style == code
 
-These facts follow from the extensionality of our propositional
+\begin{code}
+
+{-
+
+\end{code}
+
+%endif
+
+\begin{code}
+
+∫ X **  ⟦ η^C i ⟧ X       <==>  η^F i  X
+     
+∫ X **  ⟦ C >>=^C D ⟧  X  <==>  (⟦ C ⟧* >>=^F ⟦ D ⟧)  X      
+
+\end{code}
+
+%if style == code
+
+\begin{code}
+
+-}
+
+\end{code}
+
+%endif
+
+\noindent
+Which follows from the extensionality of our propositional
 equality, the associativity of |Σ| and the terminality of |⊤|. By the
 full and faithful nature of the embedding |⟦_⟧|, we can then reuse the
 result that |(IFunc , η^F , _>>=^F_)| is a relative monad to establish
@@ -521,14 +543,29 @@ open DelSigPi
 
 Again we appeal to the full and faithfulness of |⟦_⟧| and show instead
 that |⟦_⟧| also preserves these constructions. That, is we want to
-show that the following three statements hold:
+show that the following three natural isomorphisms hold:
 
-\begin{align*}
-|⟦ Σ^C f F j ⟧| && \approx &&& |Σ^F f ⟦ F ⟧* j| \\
-|⟦ Δ^C f F j ⟧| && \equiv &&& |Δ^F f ⟦ F ⟧* j| \\
-|⟦ Π^C f F j ⟧| && \approx &&& |Π^F f ⟦ F ⟧* j| \\
-\end{align*}
+%if style = code
 
+\begin{Code}
+
+{-
+
+\end{code}
+
+%endif
+
+\begin{code}
+
+∫ X **  ⟦ Σ^C f F j ⟧  X  <==>  Σ^F f ⟦ F ⟧* j  X
+
+∫ X **  ⟦ Δ^C f F j ⟧  X  <==>  Δ^F f ⟦ F ⟧* j  X
+
+∫ X **  ⟦ Π^C f F j ⟧  X  <==>  Π^F f ⟦ F ⟧* j  X
+
+\end{code}
+
+\noindent
 These can be proved simply by employing the associativity of |Σ|.
 
 \end{proof}

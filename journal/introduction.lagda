@@ -7,7 +7,7 @@
 module introduction where
 
 open import Data.Unit
-open import Data.Product
+open import Product
 open import Data.Sum
 open import Data.Maybe
 open import Relation.Binary.HeterogeneousEquality
@@ -22,9 +22,12 @@ open import tt
 
 %endif
 
+%format Σ* = "(\!"
+%format ∶ = :
+%format *Σ = "\!)" × 
+
+
 \section{Introduction}
-
-
 
 
 \noindent Inductive datatypes are a central feature of modern Type Theory
@@ -96,7 +99,9 @@ any natural number |n| a type |Fin n| which has exactly |n|
 elements. |Fin| can be used where, in conventional reasoning, we
 assume a finite set, e.g. when dealing with a finite address space or
 a finite set of variables. The inductive definition of |Fin| refines
-the type of natural numbers: \begin{code}
+the type of natural numbers: 
+
+\begin{code}
 
 data Fin : ℕ → Set where
   zero  : ∀ {n}              → Fin (suc n)
@@ -122,9 +127,9 @@ function projecting the nth element out of vector:
 
 \begin{code} 
 _!!_ : {A : Set} → {n : ℕ} → Vec A n → Fin n → A 
-      [] !! () 
-(a ∷ as) !! zero  = a 
-(a ∷ as) !! suc n = as !! n 
+[]        !! () 
+(a ∷ as)  !! zero  = a 
+(a ∷ as)  !! suc n = as !! n 
 
 \end{code} 
 
@@ -189,10 +194,10 @@ over |Nat| whose initial algebras are |Fin| and |Lam|, respectively:
 \begin{code}
 
 FFin : (ℕ → Set) → ℕ → Set
-FFin X n = Σ ℕ λ m → (n ≡ suc m) × (⊤ ⊎ X m)
+FFin X n = Σ* m ∶ ℕ *Σ  (n ≡ suc m) × (⊤ ⊎ X m)
 
 FVec : (A : Set) → (ℕ → Set) → ℕ → Set
-FVec A X n = n ≡ zero ⊎ Σ ℕ λ m → (n ≡ suc m) × (A × X m)
+FVec A X n = n ≡ zero ⊎ (Σ* m ∶ ℕ *Σ (n ≡ suc m) × (A × X m))
 
 FScLam : (ℕ → Set) → ℕ → Set
 FScLam X n = Fin n ⊎ (X n × X n) ⊎ (X ∘ suc) n
