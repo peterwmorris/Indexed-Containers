@@ -203,7 +203,7 @@ WIfoldUniq′ α β commβ j (sup ((.j , s) , f) , ok) | refl =  begin
     β j  (  sup ((j , s) , f) 
          ,  cong (λ p → sup ((j , j , s) , p))
              (ext (ext⁻¹ (cong (proj₂ ∘ sup⁻¹) ok))))
-  ≅⟨ (ext⁻¹ (ext⁻¹ commβ j) (s , _))  ⟩ 
+  ≅⟨ ext⁻¹ (ext⁻¹ commβ j) (s , _) ⟩ 
     α j  (s, λ j p → β j  (  f (j , p) 
                           ,  ext⁻¹ (cong (proj₂ ∘ sup⁻¹) ok) (j , p))) 
   ≅⟨ (cong   (λ n → α j (s , n)) 

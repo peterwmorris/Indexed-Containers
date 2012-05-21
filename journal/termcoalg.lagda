@@ -412,7 +412,7 @@ unfoldUniq : ∀  {I J} {F : ICont* (I ⊎ J) J} (G : ICont* I J)
 \end{code}
 
 \noindent
-The proof that the shape maps agree follows from the proof that |MIunfold| is unique, subject to mediating between the propositional equality, and bi-simulation for |MI|, which makes the proof term rather opaque. The proof that the position maps agree follows the same inductive structure as |runfold|. 
+The proof that the shape maps agree follows from the proof that |MIunfold| is unique, and the proof that the position maps agree follows the same inductive structure as |runfold|. Unfortunately, because Agda lacks full support for both co-induction and extensional equality it is not feasible to complete the proof terms for these propositions in our Agda development. The main obstacle remains mediating between bi-simulation, the (functional) extensional equality and Agda's built-in notion of equality. We have completed this proof on paper, however, and we are hopeful that soon we may be in a position to complete these proof terms in a system where the built-in equality is sensible for both functions and co-inductive types.
 
 %if style == code
 
