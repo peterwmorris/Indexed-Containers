@@ -82,12 +82,15 @@ sup' (s , f) = sup (s , (λ i x → ♯ (f i x)))
 \noindent
 Here, we employ Agda's approach to coprogramming (e.g. see
 \cite{txa:mpc2010g}), where we mark (possibly) infinite subtrees with
-|∞|. The type |∞ A| as a suspended computation of type |A|. |♯ : A → ∞ A| delays
+|∞|. The type |∞ A| is a suspended computation of type |A|, and |♯ : A → ∞ A| delays
 a value of type |A| and |♭ : ∞ A → A| forces a computation. A simple syntactic 
 test then ensures that co-recursive programs 
 total --- recursive calls must be immediately {\em guarded} by a |♯| 
-constructor. This technology is 
-currently at an experimental stage.
+constructor. 
+\footnote{Agda's approach to coinduction is at an experimental stage and has some known issues, e.g. see 
+\cite{altenkirch2010termination}}.
+% This technology is 
+% at an experimental stage.
 
 The equality between infinite objects will be bi-simulation, for instance |MI|, 
 types are bi-similar if they have the same node shape, and all their sub-trees 
@@ -151,7 +154,7 @@ coalgebra. Such that the following diagram commutes:
 \]
 
 \noindent
-The following definition of |MIunfold| should obviously make the diagram commute
+The following definition of |MIunfold|  makes the diagram commute
 up-to bisimulation.
 
 \begin{code}
@@ -215,10 +218,11 @@ MIunfoldUniq α β commβ i x | (refl , y) | sup (.(proj₁ (α i x)) , g) =
 \end{code}
 
 However, Agda rejects this definition due to the recursive call not
-being guarded immediately by the |♯|, instead it is also under the
-appeal to the transitivity of bi-simulation. We can persuade the
-system this is productive by fusing the definition of |≈MItrans| with
-this |MIunfoldUniq| in a cumbersome but straightforward way.
+being guarded immediately by the |♯|, however, it is productive due to
+the fact that the proof of transitivity of bisimulation is
+contractive.  We can persuade the system this is productive by fusing
+the definition of |≈MItrans| with this |MIunfoldUniq| in a cumbersome
+but straightforward way.
 %, for details see the source of this paper.
 
 %if style == code
@@ -273,9 +277,9 @@ data Path  {I J : Set} (S : J → Set)
 
 \end{code}
 
-Just as with parameterised initial algebras of indexed containers are
+Just as parameterised initial algebras of indexed containers are
 built from |WI|-types, so parameterised terminal coalgebras of indexed
-containers is built from |WI|-types as follows.
+containers are built from |WI|-types as follows.
 
 \begin{code}
 
@@ -323,7 +327,7 @@ in^C' {I} {J} (S ◁* P) = (λ {_ (s , f) → sup (s , λ i x → ♯ (f i x))})
 \end{proposition}
 
 \begin{proof}
-Mirroring the initial algebras, the coiteration for this terminal co-algebra employs the coiteration of |MI| for the shape maps. The position map takes a |Path| and builds a |Q| position by applying the position map from the coalgebra at every step in the path --- note that this position map is {\em inductive} in its path argument.
+Mirroring the case of initial algebras, the coiteration for this terminal co-algebra employs the coiteration of |MI| for the shape maps. The position map takes a |Path| and builds a |Q| position by applying the position map from the coalgebra at every step in the path --- note that this position map is {\em inductive} in its path argument.
 
 \begin{code}
 

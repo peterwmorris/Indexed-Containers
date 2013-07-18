@@ -203,8 +203,8 @@ arguments they produce equal results. Note that to exploit a heterogeneous
 equality between functions we must provide a guarantee that the functions have 
 equal domains, and co-domains:
 
-%format ext≅ = ext ≅
-%format ext≅⁻¹ = ext≅ ⁻¹
+%format ext≅ = exteq
+%format ext≅⁻¹ = exteq ⁻¹
 
 %format λ≅ = λ "^{\text{\tiny$" ≅ "$}}"
 %format →≅ = →
@@ -300,7 +300,7 @@ record _<==>_ (A B : Set) : Set where
 \noindent
 We are going to use type theoretic versions of certain category theoretic
 concepts. For example we represent functors by packing up their definition as
-an Agda record. An endofunctor on set, is given by:
+an Agda record. An endofunctor on |Set|, is given by:
 
 \begin{code}
 
@@ -312,7 +312,7 @@ record Func : Set₁ where
 \end{code}
 
 It would also be possible to pack up the functor laws as extra fields
-in these records. We use \emph{ends} to capture natural
+in these records. We use \emph{ends} \cite{MacLane} to capture natural
 transformations.  Given a bifunctor |F : Setop → Set → Set|, an
 element of |∫ X ** F X X| is equivalent to an element of |f : {X :
 Set} → F X X|, along with a proof:
@@ -334,5 +334,5 @@ for instance, the quantification of implicit arguments when their types can be
 inferred from the context. We will often leave out record projections 
 from notions such as |Func|, allowing the functor to stand for both its action 
 on object and morphism, just as would happen in the category theory 
-literature. The reader should be reassured that the paper is a
-literate Agda file, available from the final author's webpage.
+literature. % The reader should be reassured that the paper is a
+% literate Agda file, available from the final author's webpage.

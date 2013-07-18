@@ -34,7 +34,12 @@ open import tt
 (e.g. COQ~\cite{CIC}) or functional programming (e.g. 
 Haskell\footnote{Here we shall view Haskell as an approximation of strong
   functional programming as proposed by Turner \cite{sfp} and ignore
-non-termination.}). Examples include the natural numbers al Peano:
+non-termination.}). Examples include the natural numbers ala Peano:
+\footnote{We are using Agda to represent constructions in Type Theory. Indeed, 
+the source of this document is a literate Agda file which is available online. 
+\cite{alti:ic-code}. For an overview over Agda see \cite{agda-wiki}, in particular the 
+tutorials and the reference manual which explain how to read the code included in this paper.}
+
 \begin{code}
 
 data ℕ : Set where
@@ -136,10 +141,10 @@ _!!_ : {A : Set} → {n : ℕ} → Vec A n → Fin n → A
 In contrast, the corresponding function |_!!_ : {A : Set} → List A → ℕ →
 A| is not definable in a total language like Agda.
 
-Finally we can define the notion of a well-scoped lambda term with
+Finally, we can define the family of a well-scoped lambda terms
 |ScLam| which assigns to a natural number |n| the set of $\lambda$-terms
 with at most |n| free variables |ScLam n|. DeBruijn variables are now
-modelled by elements of |Fin n| replacing |Nat| in the previous,
+modeled by elements of |Fin n| replacing |Nat| in the previous,
 unindexed definition of $\lambda$-terms |Lam|.
 
 \begin{code}
@@ -222,7 +227,7 @@ FNf X Y n = (Y ∘ suc) n ⊎ X n
 \end{code} 
 
 We can construct |NeLam| and |NfLam| by an elimination procedure:
-first we define a parametrized initial algebra |NeLam' : (ℕ → Set) → ℕ
+first we define a parameterized initial algebra |NeLam' : (ℕ → Set) → ℕ
 → Set| so that |NeLam' Y| is the initial algebra of |λ X → FNe X Y|
 and then |NfLam| is the initial algebra of |λ Y → FNf (NeLam' Y) Y|.
 Symmetrically we derive |NeLam|. Compare this with the encoding in
@@ -258,20 +263,20 @@ data STLam (Γ : List Ty) : Ty → Set where
 \end{code}
 
 \noindent Types like this can be used to implement a tag-free,
-terminating evaluator~\cite{bsn}. To obtain the corresponding functors
+terminating evaluator~\cite{bsn}. Obtaining the corresponding functors
 is a laborious but straightforward exercise.  As a result of examples
 such as the above, inductive families have become the backbone of
 dependently typed programming as present in Epigram or
 Agda~\cite{Agda}. Coq also supports the definition of inductive
 families but programming with them is rather hard --- a situation
-which has been improved by the new \texttt{Program}
+which has been improved by the \texttt{Program}
 tactic~\cite{sozeau}. 
 
 
 Indexed containers are designed to provide the mathematical and
 computational infrastructure required to program with inductive
 families. The remarkable fact about indexed containers, and the fact
-underpins their practical usefulness, is that they offer an
+which underpins their practical usefulness, is that they offer an
 exceedingly compact way to encapsulate all the information inherent
 within the definition of functors such as |FFin|, |FVec| and |FScLam|,
 |FNeLam| and |FNfLam| and hence within the associated inductive
@@ -279,7 +284,7 @@ families |Fin|, |Vec|, |ScLam|, |NeLam| and |NfLam|.  The second
 important thing about indexed containers is that not only can they be
 used to represent functors, but the canonical constructions on
 functors can be internalised to become constructions on the indexed
-containers which represent those functors. As a result, we get a
+containers which represent those functors. As a result, we get a compositional
 combinator language for inductive families as opposed to simply a
 syntactic definitional format for inductive families. 
 
@@ -311,11 +316,11 @@ level one could think of indexed containers as the type theoretic
 version of dependent polynomials and vice versa. However, the
 different needs of programmers from category theorists has taken our
 development of indexed containers in a different direction from that
-of dependent polynomials. The biggest difference is the Agda
-implementation of our ideas which makes our work much more accessible
+of dependent polynomials. In this vein an important contribution is the Agda
+implementation of our ideas which makes our work more useful
 to programmers than the categorical work on dependent polynomials.
-Secondary differences are the use of indexed containers to model
-mutual and nested inductive definitions. We have also show that
+We also focus on syntactic constructions such using indexed containers  to model
+mutual and nested inductive definitions. As a consequence we show that
 indexed containers are closed under parametrized initial algebras and
 coalgebras and reduce the construction of parameterised final
 coalgebras to that of initial algebras. Hence we can apply both the
@@ -347,7 +352,7 @@ applied indexed (and unindexed) containers, under the name
 interfaces such as command-response interfaces in a number of
 publications.
 
-Recently, the implementation of Generalized Algebraic Datatypes 
+The implementation of Generalized Algebraic Datatypes 
 (GADTs)~\cite{Hinze:GADT} 
 allows |Fin| and |Lam| to be encoded in Haskell:
 \begin{verbatim}
@@ -372,6 +377,11 @@ proxies for say, natural numbers, means that computation must be
 imported to the type level. This is a difficult problem and probably
 limits the use of GADTs as a model of inductive families.
 
+Since the publication of the LICS paper, indexed containers have been used 
+as a base for the generic definition of datatypes for Epigram 2, \cite{chapman2010gentle}
+and to develop the theory of ornaments \cite{mcbride2010ornamental}.
+In recent work it has been shown that indexed containers are sufficent
+to express all \emph{small} inductive-recursive definitions.
 
 \subsection{Overview over the paper}
 \label{sec:overview-over-paper}
@@ -384,10 +394,11 @@ and presenting basic constructions on indexed functors including the
 definition of a parametrized initial algebra. In section
 \ref{sec:icont} we develop the basic theory of indexed containers and
 relate them to indexed functors. Subsequently in section
-\ref{sec:initalg} we construct initial algebras of indexed containers
+\ref{sec:initalg} we construct parametrized initial algebras of indexed containers
 assuming the existence of indexed W-types, this can be dualized to
-showing the existence of terminal coalgebras from indexed M-types 
-\ref{sec:termcoalg}. Both requirements, indexed W-types and indexed
+showing the existence of parametrized terminal coalgebras of indexed
+containers from indexed M-types 
+in section \ref{sec:termcoalg}. Both requirements, indexed W-types and indexed
 M-types can be derived from ordinary W-types, this is shown in section
 \ref{sec:w-enough}. Finally, we define a syntax from strictly positive
-families and interpret this using indexed containers \ref{sec:spf}.
+families and interpret this using indexed containers in section \ref{sec:spf}.

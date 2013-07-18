@@ -23,8 +23,9 @@ open import tt
 
 Initial algebra semantics is useful for providing a generic analysis
 of inductive types based upon concepts such as constructors,
-functorial map and structured recursion operators. However, it cannot
-say whether inductive types actually exist, and it falls short of
+functorial map and structured recursion operators. However, it does not
+cover the question
+which inductive types actually exist, and it falls short of
 providing a systematic characterisation of generic operations such as
 equality or the zipper~\cite{huet:zipper,conor:derivative}. To address
 this problem, we proposed in previous work to consider only a certain
@@ -118,7 +119,7 @@ arising from containers is uniquely represented as a container
 morphism.  Technically, this can be stated by saying that Containers
 and their morphisms form a category which is a full and faithful
 sub-category of the functor category. We have also shown that the
-category of containers is cartesian closed (\cite{txa:cie10}, and is
+category of containers is cartesian closed \cite{txa:cie10}, and is
 closed under formation of co-products, products and a number of other
 constructions. Most important of these is the fact that container
 functors (ie functors arising from containers) have initial algebras. Indeed,
@@ -136,8 +137,8 @@ data WW (S : Set) (P : S → Set) : Set where
 
 %format μ = "\mu"
 
-However, we have also shown that for |n|-ray containers (containers
-with |n| position sets), it is possible to define a
+However, we have also shown that for |n|-ary containers (containers
+with |n| position sets) which we denote as |Cont n|., it is possible to define a
 \emph{parameterised} initial algebra construction |μ : ∀ {n} → Cont
 (suc n) → Cont n|. This allows us to model a broad range of nested and
 mutual types as containers. Further details can be found in the paper

@@ -38,11 +38,11 @@ We will now examine how to construct the parameterised initial algebra
 of an indexed container of the form |F : ICont* (I ⊎ J) J|. The shapes of such
 a container are an |J|-indexed family of |Set|s and the positions are
 indexed by |I ⊎ J|; we will treat these position as two separate
-entities, those positions indexed by |I| -- the recursive positions --
-and those by |J| -- the payload positions.
+entities, those positions indexed by |J| -- the recursive positions --
+and those by |I| -- the payload positions.
 
 The shapes of the initial algebra we are constructing will be trees with S
-shapes at the nodes and which branch over the recursive |PI|
+shapes at the nodes and which branch over the recursive |PJ|
 positions. We call these trees \emph{indexed} |W|-types, denoted |WI|,
 and they are the initial algebra of the functor |⟦ S ◁ PJ ⟧*|. In
 Agda, we can implement the |WI| constructor and its associated 
@@ -64,7 +64,7 @@ data WI  {J : Set} (S : J → Set)
 
 We show this by constructing the iteration operator |WIfold|, a morphism in the 
 category of |⟦ S ◁ PJ ⟧|-algebras from our candidate initial algebra to any 
-other algebra. Such that the following diagram commutes:
+other algebra such that the following diagram commutes:
 
 \[
 \xymatrix{
@@ -132,7 +132,7 @@ sup⁻¹ m (sup ._ x) = m x
 
 %endif
 
-This proof mirrors the construction for plain containers, where we
+This proof mirrors the construction for ordinary containers, where we
 can view ordinary |W|-types as the initial algebra of a container
 functor.  Positions in an indexed |W|-type are given by the paths through
 such a tree which terminate in a non-recursive |PI|-position:
@@ -162,9 +162,8 @@ pathh S PI PJ  x = path x
 
 
 \noindent Again this mirrors the partial application construction
-where positions were given by a |PJ| position at the top level, or a
-pair of a |PJ| position and a sub |Q| position. Here the |Q| positions
-are recursive |Path| positions. This reflects the fact that a
+where positions were given by a |PI| position at the top level, or a
+pair of a |PJ| position and a recursive |Path| position. This reflects the fact that a
 |WI|-type can be thought of as iterated partial application.  
 We can now use |WI|-types, or
 equivalently initial algebras of indexed containers, to construct the
@@ -222,10 +221,10 @@ in^C F = sup ◁* λ {_ _ (path p) → p}
 \end{code}
 
 \begin{proposition}
-|(μ^C F , in^C F)| is initial in the category of parameterised |F|-algebras of indexed containers. Further, by full and faithfulness, |(⟦ μ^C F ⟧* , ⟦ in^C F ⟧⇒*)| willl also be initial in the indexed functor case.
+|(μ^C F , in^C F)| is initial in the category of parameterised |F|-algebras of indexed containers. Further, by full and faithfulness, |(⟦ μ^C F ⟧* , ⟦ in^C F ⟧⇒*)| will also be initial in the indexed functor case.
 \end{proposition}
 
-To show this we must define an interaction operator |fold^C| from the
+To show this we must define an operator |fold^C| from the
 initial algebra to an arbitrary algebra.
 The shape map employs the fold for |WI| directly. For the position map we apply the position map for the algebra, which maps |Q| positions to either a |P| position in the first layer, or a recursive |Q| position --- it is straightforward to recursively employ this position map to construct the corresponding |Path| to a |P| position {\em somewhere} in the tree.
 
@@ -297,7 +296,7 @@ fold^C {I} {J} (S ◁* P) {T ◁* Q} (f ◁* r) = ffold ◁* rfold
 
 
 \noindent
-We also need to show that the following diagram commutes for any parametrised algebra |( G , α )|:
+We also need to show that the following diagram commutes for any parametrised F-algebra |( G , α )|:
 
 \[
 \xymatrix{
@@ -347,7 +346,7 @@ foldUniq  {I} {J} {S ◁* P} (T ◁* Q)
 
 \noindent
 That the shape maps of |β| and |fold^C F α| agree follows from the uniqueness of |WIfold|; while the proof that the position maps agree follows the same inductive structure as |rfold| in the definition of |fold^C|. 
-
+\footnote{Some parts of the Agda proof are hidden and denoted by $\dots$.}
 %if style == code
 
 
@@ -376,7 +375,6 @@ That the shape maps of |β| and |fold^C F α| agree follows from the uniqueness 
 \restorecolumns
 
 \begin{code}
-
 
     rfoldUniq :  (j : J) (s : WI S PJ j) (i : I)
                  (p : Q j (βf j s) i) → 

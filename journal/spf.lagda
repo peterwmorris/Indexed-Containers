@@ -170,7 +170,7 @@ monadlaw2 (ν^T F j) G H = cong (λ F → ν^T F j) (ext (λ j → trans (monadl
 
 \begin{proposition} 
 |(ISPT , η^T , _>>=^T_)| is a \emph{relative monad} on the 
-lifting functor |↑ : Seti → Setsi|. Moreover, this structure is preserved under the translation to containers |⟦_⟧^T|.
+lifting functor |↑ : Set → Set₁|. Moreover, this structure is preserved under the translation to containers |⟦_⟧^T|.
 \end{proposition}
 
 \begin{proof}

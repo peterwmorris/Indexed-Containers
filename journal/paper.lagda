@@ -57,16 +57,16 @@ module paper where
   We show that the syntactically rich notion of strictly positive
   families can be reduced to a core type theory with a fixed number of
   type constructors exploiting the novel notion of indexed containers.
-  As a result, we show indexed containers capture strictly positive families
-  in much the same way that containers capture strictly positive
+  As a result, we show indexed containers provide normal forms for strictly positive families
+  in much the same way that containers provide normal forms for strictly positive
   types. Interestingly, this step from containers to indexed
   containers is achieved without having to extend the core type
-  theory. 
+  theory.
 %Other applications of indexed containers include
 %  datatype-generic programming and reasoning about polymorphic
 %  functions. 
-The construction presented here has been formalized using
-  the Agda system.
+Most of the construction presented here has been formalized using
+  the Agda system -- the missing bits are due to the current shortcomings of the Agda system.
 
 \end{abstract}
 

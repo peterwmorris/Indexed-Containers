@@ -45,7 +45,7 @@ functors over indexed sets. Given |I : Set| we begin by considering
 the category of families over |I|. Its objects are |I|-indexed
 families of sets |A : I → Set| and its morphisms are given by
 |I|-indexed families of functions. The definitions of morphisms,
-identity morphisms and composition of morphisms in this category ar
+identity morphisms and composition of morphisms in this category are
 
 %format * = "^{\star}" 
 %format -*-> = "\rightarrow" *
@@ -84,6 +84,8 @@ Fam I = I → Set
 
 \noindent
 We call this category |Fam I|.
+\footnote{This should not be confused with the usual notion of the category 
+of families over a given base category, i.e. the families fibration.}
 An |I|-indexed functor is then a functor from |Fam I| to |Set|, given by:
 
 \begin{code}
@@ -142,7 +144,7 @@ F >>=^F H =
 \noindent
 It's clear that |IFunc| cannot be a monad in the usual sense, since it is not 
 an endofunctor, it does how ever fit with the notion of relative monad 
-presented by Altenkirch \emph{et al.} Note that in the code above we have 
+presented by \cite{alti:relmonads}. Note that in the code above we have 
 elided the use of the lifting functor.
 
 %format Seti = Set "_{i}"
@@ -151,7 +153,7 @@ elided the use of the lifting functor.
 
 \begin{proposition} 
 |(IFunc , η^F , _>>=^F_)| is a \emph{relative monad}\cite{alti:relmonads} on the 
-lifting functor |↑ : Seti → Setsi|.
+lifting functor |↑ : Set → Set₁|.
 \end{proposition}
 
 \begin{proof}
@@ -180,7 +182,7 @@ to study functors mapping indexed sets to indexed sets. We will
 therefore define a type |IFunc*| of such doubly indexed functors and
 then investigate the structure possessed by such functors.
 Fortunately |IFunc*| can easily be derived from |IFunc| as
-follows. Firstly, note that the opposite of the Kleisli category
+follows. Firstly, note that the opposite of the Kleisli category of the relative monad
 associated with |IFunc| has objects |I , J : Set| and morphisms given
 by |J|-indexed families of |I|-indexed functors. We denote this notion
 of indexed functor |IFunc*| and note that, as required, inhabitants of
@@ -340,7 +342,7 @@ which is a simple proof.
 
 In abstracting over all possible values for the extra indexing information |Π^F|
 allows for the construction of infinitely branching trees, such as rose trees. 
-We also note that finite co-products and products can be derived from |Σ^F| and 
+We also note that finite coproducts and products can be derived from |Σ^F| and 
 |Π^F| respectively:
 
 
@@ -369,7 +371,7 @@ F ×^F G = Π^F _ λ b → if b then F else G
 \end{code}
 
 \noindent Clearly these are simply the constantly |⊤| and |⊥| valued
-functors, and the point-wise product and co-product of
+functors, and the point-wise product and coproduct of
 functors. However, encoding them using |Σ^F| and |Π^F| allows us to
 keep to a minimum the language of indexed functors (and hence indexed
 containers) with obvious benefits in terms of tractability.
@@ -391,7 +393,7 @@ A|. A morphism, then, between two such algebras |(A , α)| and |(B ,
 
 \noindent
 If it exists then the initial algebra of |F| is the initial object of the 
-category of |F|-algebras spelt out above. It follows from the fact that not all
+category of |F|-algebras spelled out above. It follows from the fact that not all
 functors in |Set → Set| (for instance |F A = (A → Bool) → Bool|) have initial 
 algebras that neither do all indexed-functors.
 
@@ -403,7 +405,7 @@ define nested, or mutual inductive families in this way.
 
 We finish our study of indexed functors by tackling this problem. Our
 strategy is as follows: First note that for a singly indexed functor
-over a co-product we can eliminate the co-product and curry the
+over a coproduct we can eliminate the coproduct and curry the
 resulting definition in this way:
 
 
@@ -416,7 +418,7 @@ resulting definition in this way:
 
 \noindent
 This gives us partial application for indexed 
-functors of the form |IFunc (I ⊎ J)|. Spelt out concretely we have:
+functors of the form |IFunc (I ⊎ J)|. Spelled out concretely we have:
 
 
 %format ⟨ = [
@@ -485,7 +487,7 @@ parametrised |F|-algebras. Alternatively, it is the initial
 |F ⟨ _ ⟩M*|-algebra. Either way, the parameterised initial
 algebra construction will map indexed functors to indexed functors and
 hence can be iterated. This means that we can define nested and mutual
-families of data-types, such as the tuple of neutral and normal
+families of datatypes, such as the tuple of neutral and normal
 |λ|-terms outlined in the introduction.
 
 However, it is still the case that not all indexed functors in |IFunc*

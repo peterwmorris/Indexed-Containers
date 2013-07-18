@@ -161,7 +161,7 @@ WIfold α j (sup ((.j , s) , f) , ok) | refl =
 \end{code}
 
 \noindent
-In the form below |WIfold| does not pass Agda's termination checker; The direct encoding via |Wfold| would avoid this problem, at the expense of being even more verbose.
+In the form below |WIfold| does not pass Agda's termination checker; the direct encoding via |Wfold| would avoid this problem, at the expense of being even more verbose.
 
 To show that |WIfold| makes the initial algebra diagram commute, we must employ the |UIP| principle, that any two proofs of an equality are equal:
 

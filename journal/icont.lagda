@@ -91,7 +91,7 @@ A| consists of a shape |s : S| and a morphism |P s -*-> A| of
 |I|-indexed sets. This latter function assigns to each |i : I|,
 and each position |p : P s i| an element of |A i|. If we think
 of |I| as a collection of sorts, then this function assigns to each |i
-: I|-sorted position, an |i|-sorted piece of data, ie an element of
+: I|-sorted position, an |i|-sorted piece of data, i.e. an element of
 |A i|. 
 
 Analogously to the generalisation of singly indexed functors to doubly
@@ -226,7 +226,7 @@ That |id^C| is the left and right unit of |comp^C|, and that |comp^C|
 is associative follows immediately from the corresponding properties of |id|
 and |_∘_|.
 
-We will use a notion of equality for container morphisms that incudes a proof that their shape and position functions are point-wise equal:
+We will use a notion of equality for container morphisms that includes a proof that their shape and position functions are pointwise equal:
 
 %format projf  = "\!." f
 %format projr  = "\!." r
@@ -416,7 +416,7 @@ record _≡⇒*_  {I} {J} {C D : ICont* I J} (m n : C ⇒* D) : Set where
 %format _>>=^C_ = _ >>=^C _
 
 Having defined indexed containers and indexed
-containers morphisms as representations of indexed functors and the
+container morphisms as representations of indexed functors and the
 natural transformations between them, we now turn our attention to
 the relative monad structure on indexed functors, reindexing of
 indexed functors (and the associated adjoints), and parameterised
@@ -448,7 +448,7 @@ The triple |(ICont , η^C , _>>=^C_)| is a relative monad.
 \begin{proof}
 
 Instead of proving this directly, we observe that the |η^C| and |_>>=^C_|
-are preserved under the extension functor, that is that yhe following natural isomorhisms hold: 
+are preserved under the extension functor, that is that the following natural isomorphisms hold: 
 
 %if style == code
 
