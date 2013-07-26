@@ -294,7 +294,7 @@ syntactic definitional format for inductive families.
 \label{sec:related-work}
 
 This paper is an expanded and revised version of the LICS paper by the
-first and 3rd author \cite{alti:lics09}. In the present paper we have
+first and 4th author \cite{alti:lics09}. In the present paper we have
 integrated the Agda formalisation in the main development, which in
 many instances required extending it. We have made explicit the use of
 relative monads which was only hinted at in the conference version
@@ -402,3 +402,8 @@ in section \ref{sec:termcoalg}. Both requirements, indexed W-types and indexed
 M-types can be derived from ordinary W-types, this is shown in section
 \ref{sec:w-enough}. Finally, we define a syntax from strictly positive
 families and interpret this using indexed containers in section \ref{sec:spf}.
+
+\subsection*{Acknowledgements}
+
+The authors would like to especially thank Peter Hancock whose ideas
+and influence permeate this paper.

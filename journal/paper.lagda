@@ -45,7 +45,7 @@ module paper where
 \title{Indexed Containers}
 \author{Thorsten Altenkirch 
    \and Neil Ghani 
-   \and Peter Hancock 
+%  \and Peter Hancock 
    \and Conor McBride 
    \and Peter Morris}
 \date{\today}
