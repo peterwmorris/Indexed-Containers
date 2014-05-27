@@ -45,7 +45,7 @@ module paper where
 \title{Indexed Containers}
 \author{Thorsten Altenkirch 
    \and Neil Ghani 
-%  \and Peter Hancock 
+  \and Peter Hancock 
    \and Conor McBride 
    \and Peter Morris}
 \date{\today}
@@ -62,10 +62,7 @@ module paper where
   types. Interestingly, this step from containers to indexed
   containers is achieved without having to extend the core type
   theory.
-%Other applications of indexed containers include
-%  datatype-generic programming and reasoning about polymorphic
-%  functions. 
-Most of the construction presented here has been formalized using
+ Most of the construction presented here has been formalized using
   the Agda system -- the missing bits are due to the current shortcomings of the Agda system.
 
 \end{abstract}
