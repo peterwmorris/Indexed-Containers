@@ -334,7 +334,7 @@ E.g. in the case of |TFin| we derive the container
 TFinC : ICont*  ⊥ ℕ
 TFinC =  ⟦ TFin ⟧^T* 
 \end{code}
-the next step is to constuct the associated indexed functor:
+the next step is to construct the associated indexed functor:
 \begin{code}
 TFinF : IFunc*  ⊥ ℕ
 TFinF = ⟦ TFinC ⟧*

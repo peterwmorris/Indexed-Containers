@@ -111,7 +111,7 @@ open label
 %endif
 
 The property of a pre-tree being type correct can be stated as its two
-possible labellings being equal. That is we can use |W|-types to
+possible labelings being equal. That is we can use |W|-types to
 define the |WI|-type as follows:
 
 \begin{code}

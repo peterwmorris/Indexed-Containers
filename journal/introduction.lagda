@@ -34,7 +34,7 @@ open import tt
 (e.g. COQ~\cite{CIC}) or functional programming (e.g. 
 Haskell\footnote{Here we shall view Haskell as an approximation of strong
   functional programming as proposed by Turner \cite{sfp} and ignore
-non-termination.}). Examples include the natural numbers ala Peano:
+non-termination.}). Examples include the natural numbers a la Peano:
 \footnote{We are using Agda to represent constructions in Type Theory. Indeed, 
 the source of this document is a literate Agda file which is available online. 
 \cite{alti:ic-code}. For an overview over Agda see \cite{agda-wiki}, in particular the 
@@ -398,7 +398,7 @@ limits the use of GADTs as a model of inductive families.
 Since the publication of the LICS paper, indexed containers have been used 
 as a base for the generic definition of datatypes for Epigram 2, \cite{chapman2010gentle}
 and to develop the theory of ornaments \cite{mcbride2010ornamental}.
-In recent work it has been shown that indexed containers are sufficent
+In recent work it has been shown that indexed containers are sufficient
 to express all \emph{small} inductive-recursive definitions.
 
 \subsection{Overview over the paper}
@@ -437,7 +437,3 @@ containers and a complete formalisation of these more elementary
 results would have introduced significant technical complications
 distracting from our central purpose.
 
-\subsection*{Acknowledgements}
-
-The authors would like to especially thank Peter Hancock whose ideas
-and influence permeate this paper.
