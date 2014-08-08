@@ -127,7 +127,7 @@ as indexed containers. In doing this, we will also wish to represent
 structure on indexed functors as structure on indexed containers. 
 To achieve this, we next look at the structure possessed by indexed
 functors. The main structure we wish to highlight for 
-|IFunc| is the following is a monad-like structure:
+|IFunc| is the following monad-like structure:
 
 \begin{code}
 
@@ -147,10 +147,10 @@ an endofunctor, but a functor from the category of small sets whose objects are 
 to the category of large sets whose objects are |Set₁|. However, it is an \emph{relative monad}
 in the sense of \cite{alti:relmonads} relative to the embedding functor |↑ : Set → Set₁|.  That is 
 we have 
-\begin{code}
+\begin{spec}
 η^F : ∀ {I} → ↑ I → IFunc I
 _>>=^F_ : ∀ {I J} → IFunc I → (↑ I → IFunc J) → IFunc J
-\end{code}
+\end{spec}
 Note that in the code above we have elided the use of the lifting
 functor.  The usual monad laws can be stated almost verbatim in this
 setting. On a more conceptual level a relative monad is a monoid in
@@ -171,12 +171,13 @@ lifting functor |↑ : Set → Set₁|.
 To prove the structure is a relative 
 monad we observe that the following equalities hold up to 
 Agda's $\beta\eta$-equality, and our postulate |ext|.
+(|IFunc*| is defined below).
 
 For |F : IFunc I|, |G : IFunc* J I|, |H : IFunc* K J|:
 \begin{align}
 |H i|                 &\quad& \equiv &&\quad& |(η^F i) >>=^F H|               \\
 |F|                   && \equiv &&& |F >>=^F η^F|                 \\
-|(F >>=^F G) >>=^F F| && \equiv &&& |F >>=^F (λ i → (G i) >>=^F H)| 
+|(F >>=^F G) >>=^F H| && \equiv &&& |F >>=^F (λ i → (G i) >>=^F H)| 
 \end{align}
 
 \end{proof}
@@ -187,9 +188,11 @@ For |F : IFunc I|, |G : IFunc* J I|, |H : IFunc* K J|:
 
 \noindent
 
-So far our indexed functors represent functors |Fam I| to |Set|.  Of
-course, really we want to study functors |Fam I| to |Fam J| as we want
-to study functors mapping indexed sets to indexed sets. We will
+So far our indexed functors represent functors |Fam I| to
+|Set|. However, since we want to construct fixpoints we are really
+interested in functors from |Fam I| to |Fam I|, or actually to be
+able to take partial fixpoints, in functors from  |Fam (J ⊎ I)| to 
+|Fam I|. Hence to be appropriately general, we want to study functors |Fam I| to |Fam J|. We will
 therefore define a type |IFunc*| of such doubly indexed functors and
 then investigate the structure possessed by such functors.
 Fortunately |IFunc*| can easily be derived from |IFunc| as
@@ -262,7 +265,7 @@ image of the function |f|.
 What if the restriction appears on the right of such an equation? As
 an example, consider the successor constructor for |Fin|; here we want
 to build the pattern functor: |FFin′ X (1+ n) = X n|. To do this we
-observe that this is equivalent to the equation |FFin′ X n = Σ* n ∶ ℕ *Σ (n ≡ 1+ m × X m)|. We denote the general construction |Σ^F|, so the
+observe that this is equivalent to the equation |FFin′ X n = Σ* m ∶ ℕ *Σ (n ≡ 1+ m × X m)|. We denote the general construction |Σ^F|, so the
 2nd equation can be written |FFin′ X = Σ^F suc X|:
 
 \begin{code}
@@ -403,6 +406,7 @@ A|. A morphism, then, between two such algebras |(A , α)| and |(B ,
 \]
 
 \noindent
+This defines the category of |F|-algebras.
 If it exists then the initial algebra of |F| is the initial object of the 
 category of |F|-algebras spelled out above. It follows from the fact that not all
 functors in |Set → Set| (for instance |F A = (A → Bool) → Bool|) have initial 

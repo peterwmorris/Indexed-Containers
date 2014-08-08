@@ -85,17 +85,27 @@ p 15. I believe Petersson and Synek trees are solutions to equations T A = (s : 
 
 p 17. In Proposition 3. ICont I and IFunc I is in italic. Similarly in Prop 6 on p 19 and 7 on p 21. Are these not theorems of the same notions in Agda code?
 
-  REPLY: 
+  REPLY: Fixed.
 
 p 23. In section 6 it is shown how to construct M-types and MI-types. I find this chapter a bit less satisfactory than the main part of the paper, since the authors make use of Agda's approach to coprogramming, which, as the authors point out (footnote 5) is at an experimental stage.
 
+  REPLY: See earlier comment.
+
 p 26. Here the authors postulate a second extensionality principle: that bisimilar MI-trees are equal.
+
+  REPLY: We explain the reason for this assumption in the paper now.
 
 p 31. As mentioned above the omega-continuity of strictly positive functors is well-known and thus the fact that we thus can terminal coalgebras in type theory as omega-limits. This fact was for example exploited by Lindström 1989 for encoding non-wellfounded sets in Martin-Löf type theory. Other authors which exploited this omega-continuity for different purposes include Abramsky, Hallnäs, and Mendler in the 1980s.
 
+  REPLY: We have already addressed this point earlier.
+
 p 34. As I see it chapter 8 contains the key result of the whole paper. However, the authors state "We now turn to the question of defining a grammar for generating indexed containers". Would it not be more natural to say that "we now introduce a notion of strict positivity suitable for generating inductive families, and show that they all such functors can be encoded as indexed container functors"?
 
+  REPLY: We followed the suggestion of the referee (but replaced notion by grammar).
+
 p 36. In the conclusion it is stated that indexed containers is an alternative to "the complex syntactic schemes present in the CIC or in the Agda and Epigram systems". This is misleading for several reasons. First of all, although the syntactic schemes for inductive families may appear complex, they cease to be so when they are internalized as types of codes for indexed inductive (and inductive-recursive) definitions as in the paper on indexed induction-recursion paper by Dybjer and Setzer 2003. In fact these types seem related to indexed containers, and it would be interesting to investigate the exact relationship. Another problem is that it might be hard to work with indexed containers in practical proof assistants such as CIC or Agda, since a certain amount of coding would be needed. It's better to say that indexed container is a way to provide a theoretical foundation rather than a practical alternative of the inductive families in Agda or Coq.
+
+  REPLY: We removed the word complex and clarified that we are only referring to inductive families and we comment on the relation to Dybjer-Setzer codes.
 
 Referee: 2
 
@@ -130,6 +140,9 @@ and is not proved in the companion Agda code.  For example, Propositions
 than Agda code.  Right now, the paper is a bit vague on what the reader
 can expect to find in the formalization.
 
+    REPLY: We have added a paragraph in the overview section detailing
+    what has and what hasn't formally verified.
+
 2) There is one specific instance of this that I would very much like to
 see addressed: In the companion Agda code, all of the category theoretic
 definitions are missing their laws: a functor is just an action on
@@ -140,6 +153,8 @@ consists of functions *with a proof of naturality*, but then the uses of
 \Pi later on (e.g. on page 9 at the very bottom) supply only the
 underlying function.  I think the paper should be more direct about what
 is going on.
+
+   REPLY: We have tried to explain this in the added paragraph.
 
 Aside from the clarity, the other issue I would like explained here is
 why you get away without including the laws.  That is, as far as I can
@@ -154,6 +169,8 @@ have not been formalized in Agda, like the calculation on page 16 that
 container morphisms capture all natural transformations between
 containers?).
 
+	REPLY: This is correct. We have commnted on this in the new paragraph.	
+
 3) I think Section 8 stops a little early: while I believe that you have
 achieved your goals, I think it would help many readers to drive the
 point home by taking one of these definitions (T_vec, maybe), and
@@ -165,39 +182,59 @@ expanding definitions, and mediating between
 recursion-principle-with-uniqueness and the dependent elimination rule,
 right?
 
+	REPLY: We have added the derivation of the type Fin but left the derivation of the constructors and elimnators to the reader because it is routine.
 
 Small comments
 
 page 3: I don't understand the "We can construct NeLam by an elimination
 procedure" sentence.
 
+       REPLY: We removed the word "elimination procedure".
+
 page 8: When you say "It would also be possible to pack up the functor
 laws as extra fields in these records." you could clarify that this is
 not what you do in the code.
+
+    REPLY: This is now addressed by our summary.
 
 When you say "An element of \Pi X. F X X is ... together with ..." it's
 confusing, because in the code an element of this is just the family of
 morphisms, and when you use the notation later on, e.g. at the bottom of
 page 9, you use it to mean just the family of morphisms.
 
+    REPLY: This is now addressed by our summary.
+
 page 8: It would help to explain the end's proof component; saying that
 the equation is in F A B and that you write 'A' and 'B' for the identity
 functions at A and B would be helpful, because in the presence of your
 overloading functor application, this is a little confusing.
 
+   REPLY: We have added a footnote explaining that we use the standard abuse of notation here.
+
 page 11: typo "is the following is a monad like structure"
+
+     REPLY: fixed.
 
 page 11: there's an F in (3) that should be an H
 
+     REPLY: fixed.
+  
 page 11: There are IFunc*'s in the "Proof" but IFunc* hasn't been
 introduced yet
 
+    REPLY: We added a comment to this effect (instead of breaking the flow of the explanation).
+
 page 11: You might note that this proof has not been formalized in Agda.
+
+    REPLY: This is now addressed by our summary.
 
 page 11: The paragraph towards the bottom about "the opposite of the
 Kleisli category of ..." seems like an unnecessarily high-powered
 explanation for what is really a simply shuffling around of
 quantifiers.
+
+    REPLY: Even though we agree with the referee's remark, we prefer the more high level explanation
+    since it is more precise.
 
 page 11: The development of IFunc* is interesting, but the motivation
 for the doubly-indexed functors could be made clearer (expanding on the
@@ -206,25 +243,41 @@ page 11).  Somehow it didn't come across at this point that the whole
 point is that you want functors (I -> Set) -> (I -> Set) to take the
 initial algebra of.
 
+	REPLY: We have added some explanation along those lines.
+
 page 12: in the second definition of FFin', the Sigma should bind m, not n.
+
+          REPLY: fixed.
 
 page 13: the "simple proof" of adjointness isn't in the code
 
+     REPLY: Indeed, this is not specific to indexed containers we haven't formalized it.
+
 page 13: I am not sure what "the category of F-algebras spelled out
 above" is referring to
+
+       REPLY: We have added a sentence.
 
 page 24: for the definition of "lifting bisumulation through the
 extension of an indexed container" at the bottom of the page: given the
 postulate MIext that comes later (bisimulation is equality), isn't this
 equivalent to the identity type between 'x' and 'y'?
 
+	REPLY: This is correct but it is good to know that we don't need the postulate at this point.
+	   
 page 25: "are built from WI-types" should be "are built from "MI-types"
 at the bottom.
+
+             REPLY: fixed.
 
 page 34: Could you formalize the proof that this definition of M is
 correct, in the sense that it satisfies the rules for the one you
 defined using coinductive datatypes earlier?  This is only in prose
 currently.
+
+	REPLY: The answer is yes but we don't want to expand the
+	paper. It doesn't add anything substantial to the development
+	of indexed containers.
 
 Code: In Agda 2.3.2.1, the file icont.lagda doesn't load for me unless i
       delete some proof text that is marked wrong, so it is getting
@@ -236,5 +289,9 @@ Code: In Agda 2.3.2.1, the file icont.lagda doesn't load for me unless i
          when scope checking the declaration
            ∫ X ** ⟦ Σ^C f F j ⟧ X <==> Σ^F f ⟦ F ⟧* j X
 
+    REPLY: fixed.
+
       initialalg.lagda: WIfold doesn't termination-check, though I
       suppose this is resolved by Section 7.
+
+   REPLY: indeed.

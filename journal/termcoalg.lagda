@@ -279,7 +279,7 @@ data Path  {I J : Set} (S : J → Set)
 
 Just as parameterised initial algebras of indexed containers are
 built from |WI|-types, so parameterised terminal coalgebras of indexed
-containers are built from |WI|-types as follows.
+containers are built from |MI|-types as follows.
 
 \begin{code}
 
@@ -403,33 +403,22 @@ It is reasonable to assume that any language with fully fledged support for co-i
 
 We can now state the property that |unfold^C| is, indeed, unique:
 
-%if style == code
-
-\begin{code}
-
-{-
-
-\end{code}
-
-%endif
-
-\begin{code}
+\begin{spec}
 
 unfoldUniq : ∀  {I J} {F : ICont* (I ⊎ J) J} (G : ICont* I J) 
                 (α : G ⇒* F ⟨ G ⟩C*) (β : G ⇒* ν^C F) → 
                 (out^C F comp^C* β)  ≡⇒* (F ⟨ β ⟩CM* comp^C* α) →
                 β  ≡⇒* (unfold^C F α)
 
-\end{code}
+\end{spec}
 
 \noindent
 The proof that the shape maps agree follows from the proof that |MIunfold| is unique, and the proof that the position maps agree follows the same inductive structure as |runfold|. Unfortunately, because Agda lacks full support for both co-induction and extensional equality it is not feasible to complete the proof terms for these propositions in our Agda development. The main obstacle remains mediating between bi-simulation, the (functional) extensional equality and Agda's built-in notion of equality. We have completed this proof on paper, however, and we are hopeful that soon we may be in a position to complete these proof terms in a system where the built-in equality is sensible for both functions and co-inductive types.
 
 %if style == code
 
-\begin{code}
+\begin{spec}
 
--}
 
 ext⁻¹₂′ :  ∀ {l l' l''} {A A' : Set l} {B : A → Set l'} {B' : A' → Set l'} {C : A → Set l''} {C' : A' → Set l''} {f : (a : A) → B a → C a} {g : (a : A') → B' a → C' a} → A ≡ A' → B ≅ B' → C ≅ C' → f ≅ g →
                   ((a : A) (a' : A') → a ≅ a' → (b : B a) (b' : B' a') → b ≅ b' → f a b ≅ g a' b') 
@@ -444,7 +433,7 @@ unfoldUniq {I} {J} {F} G (αf ◁* αr) (βf ◁* βr) (feq ◁* req) =  (λ j s
 
 --(λ j s → MIext (MIunfoldUniq αf βf (λ j s → cong proj₁ (feq j s)) , ?)) ◁* {!!}
 
-\end{code}
+\end{spec}
 
 %endif
 

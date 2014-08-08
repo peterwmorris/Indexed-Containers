@@ -555,7 +555,7 @@ show that the following three natural isomorphisms hold:
 
 %endif
 
-\begin{code}
+\begin{spec}
 
 ∫ X **  ⟦ Σ^C f F j ⟧  X  <==>  Σ^F f ⟦ F ⟧* j  X
 
@@ -563,7 +563,7 @@ show that the following three natural isomorphisms hold:
 
 ∫ X **  ⟦ Π^C f F j ⟧  X  <==>  Π^F f ⟦ F ⟧* j  X
 
-\end{code}
+\end{spec}
 
 \noindent
 These can be proved simply by employing the associativity of |Σ|.

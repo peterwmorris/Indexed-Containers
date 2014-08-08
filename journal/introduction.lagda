@@ -228,8 +228,8 @@ FNf X Y n = (Y ∘ suc) n ⊎ X n
 
 \end{code} 
 
-We can construct |NeLam| and |NfLam| by an elimination procedure:
-first we define a parameterized initial algebra |NeLam' : (ℕ → Set) → ℕ
+We can construct |NeLam| and |NfLam| as follows:
+first we define a parametrized initial algebra |NeLam' : (ℕ → Set) → ℕ
 → Set| so that |NeLam' Y| is the initial algebra of |λ X → FNe X Y|
 and then |NfLam| is the initial algebra of |λ Y → FNf (NeLam' Y) Y|.
 Symmetrically we derive |NeLam|. Compare this with the encoding in
@@ -420,6 +420,22 @@ in section \ref{sec:termcoalg}. Both requirements, indexed W-types and indexed
 M-types can be derived from ordinary W-types, this is shown in section
 \ref{sec:w-enough}. Finally, we define a syntax from strictly positive
 families and interpret this using indexed containers in section \ref{sec:spf}.
+
+The sources of this paper are a literate Agda file, that is we have
+formally verified the constructions using Agda. There are some
+exceptions: the propositions 1 - 5 in are only done on paper and
+|MIext|, that bisimilarity of |MI| trees implies extensional equality
+is postulated instead of proven. We also have omitted the functor laws
+and naturality laws from the formal development --- we never rely on
+assuming that something is a functor or a natural
+transformation. These laws are of a particular simple form for indexed
+containers and hence we implicitly prove them when needed, e.g. in
+proposition 10. The propositions which do rely on these assumptions,
+e.g. proposition 3, are only done on paper. The reason for these
+omissions is that the purpose of the paper is to introduce indexed
+containers and a complete formalisation of these more elementary
+results would have introduced significant technical complications
+distracting from our central purpose.
 
 \subsection*{Acknowledgements}
 

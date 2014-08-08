@@ -63,7 +63,7 @@ module paper where
   containers is achieved without having to extend the core type
   theory.
  Most of the construction presented here has been formalized using
-  the Agda system -- the missing bits are due to the current shortcomings of the Agda system.
+  the Agda system.
 
 \end{abstract}
 

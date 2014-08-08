@@ -25,7 +25,7 @@ postulate dotdotdot : ∀ {l} {A : Set l} → A
 
 infix 4 _≡_
 
-_≡_ : {l : Level} {A : Set l} → A → A → Set
+_≡_ : {l : Level} {A : Set l} → A → A → Set l
 a ≡ b = a ≅ b
 
 \end{code}
