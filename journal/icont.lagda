@@ -317,7 +317,7 @@ bijection is captured by the following statement:
 
 \begin{proposition}
 
-The functor |(⟦_⟧ , ⟦_⟧⇒) : ICont I → IFunc I | is full and faithful.
+The functor \mbox{\rm |(⟦_⟧ , ⟦_⟧⇒) : ICont I → IFunc I |} is full and faithful.
 
 \end{proposition}
 

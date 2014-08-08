@@ -143,9 +143,20 @@ F >>=^F H =
 
 \noindent
 It's clear that |IFunc| cannot be a monad in the usual sense, since it is not 
-an endofunctor, it does how ever fit with the notion of relative monad 
-presented by \cite{alti:relmonads}. Note that in the code above we have 
-elided the use of the lifting functor.
+an endofunctor, but a functor from the category of small sets whose objects are elements of |Set| 
+to the category of large sets whose objects are |Set₁|. However, it is an \emph{relative monad}
+in the sense of \cite{alti:relmonads} relative to the embedding functor |↑ : Set → Set₁|.  That is 
+we have 
+\begin{code}
+η^F : ∀ {I} → ↑ I → IFunc I
+_>>=^F_ : ∀ {I J} → IFunc I → (↑ I → IFunc J) → IFunc J
+\end{code}
+Note that in the code above we have elided the use of the lifting
+functor.  The usual monad laws can be stated almost verbatim in this
+setting. On a more conceptual level a relative monad is a monoid in
+the category of functors similar to ordinary monads being monoids in
+the category of endofunctors --- for details please see
+\cite{alti:relmonads}.  And indeed we can show:
 
 %format Seti = Set "_{i}"
 %format Setsi = Set "_{i+1}" 
@@ -401,7 +412,7 @@ We also know that we cannot iterate the construction of initial
 algebras given above. That is, an endofunctor |IFunc* I I| gives rise
 to an initial algebra in |Fam I|, and we cannot take the initial
 algebra of something in |Fam I|. This prevents us from being able to
-define nested, or mutual inductive families in this way.
+define nested  inductive families in this way.
 
 We finish our study of indexed functors by tackling this problem. Our
 strategy is as follows: First note that for a singly indexed functor

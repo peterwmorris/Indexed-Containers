@@ -377,14 +377,15 @@ unfoldComm (S ◁* P) (f ◁* r) = (λ j s → refl) ◁* (λ j s i p → refl)
 We also have to show that the |unfold^C| is {\em unique}; that is, any morphism that makes the 
 above diagram commute must be equal to |unfold^C F α|.
 
-In order to show this in Agda, we are going to have to assume a second extensionality principle, namely that if two |MI| trees are bi-similar, then they are in fact equal:
-
+ In order to show this in Agda, we are assuming a second extensionality principle
+\footnote{It should be possible to verify this formally but we didn't manage to complete the proof. We have checked it on paper.}
+, namely that if two |MI| trees are bi-similar, then they are in fact equal:
 \begin{code}
-
 postulate MIext : ∀  {J S PJ} {j : J} {x y : MI S PJ j} →
                      x ≈MI y → x ≅ y
 
 \end{code}
+
 
 \noindent
 The inverse of this principle is obviously true:
