@@ -437,3 +437,8 @@ containers and a complete formalisation of these more elementary
 results would have introduced significant technical complications
 distracting from our central purpose.
 
+\subsection*{Acknowledgements}
+\label{sec:acknowledgements}
+
+We would like to thank the anonymous reference for useful comments and suggestions.
+
