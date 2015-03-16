@@ -25,7 +25,7 @@ postulate dotdotdot : ∀ {l} {A : Set l} → A
 
 infix 4 _≡_
 
-_≡_ : {l : Level} {A : Set l} → A → A → Set
+_≡_ : {l : Level} {A : Set l} → A → A → Set l
 a ≡ b = a ≅ b
 
 \end{code}
@@ -105,6 +105,9 @@ wrec Q (sup (s , f)) m = m s f (λ p → wrec Q (f p) m)
 \end{code}
 
 \noindent
+Agda comes with a predicative hierarchy of types where |Set| = |Set₀| is the lowest universe. 
+We sometimes define structures containing sets whose type is |Set₁|.
+
 As a notational convenience, we will continue to define extra Agda data-types
 in the rest of the paper, but in the end we will show how each of these can
 be reduced to a theory that contains only |W|. For compactness, and
@@ -144,9 +147,11 @@ a ≡′ b = a ≅ b
 
 \end{code}
 
-It is also known that homogeneous and heterogeneous equality have the
-same strength, so all the definitions employing our equality could
-also be encoded in a theory with only homogeneous equality. This is an
+Alternatively, we could have defined |_≅′_ | using |Σ| and homogenous equality.
+% It is also known that homogeneous and heterogeneous equality have the
+% same strength, so all the definitions employing our equality could
+% also be encoded in a theory with only homogeneous equality. 
+This is an
 intensional equality, but we want to work in a setting with
 extensional type-theory, so we extend the propositional equality with
 this extensionality axiom:
@@ -270,8 +275,10 @@ open uip public
 %endif
 
 \noindent
-With these ingredients we obtain a theory which corresponds to
-extensional Type Theory \cite{hofmann1996conservativity}.
+With these ingredients we obtain a theory which captures extensional
+type theory in the sense that any intensional type which is inhabited
+in extensional type theory is also inhabited in intensional type
+theory with extensionality and |K| \cite{hofmann1996conservativity}.
 
 \newcommand{\Llrrarrow}{\Lleftarrow\!\!\!\!\Rrightarrow}
 
@@ -316,6 +323,7 @@ in these records. We use \emph{ends} \cite{MacLane} to capture natural
 transformations.  Given a bifunctor |F : Setop → Set → Set|, an
 element of |∫ X ** F X X| is equivalent to an element of |f : {X :
 Set} → F X X|, along with a proof:
+\footnote{For simplicity we adopt here the standard convention to overload the object and morphism part of |F|.}
 
 \[ \mbox{|{A B : Set} (g : A → B) → F g B (f {B}) ≡ F A g (f {A})|} \]
 

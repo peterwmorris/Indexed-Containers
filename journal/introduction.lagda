@@ -34,7 +34,7 @@ open import tt
 (e.g. Coq~\cite{CIC}) or functional programming (e.g. 
 Haskell\footnote{Here we shall view Haskell as an approximation of strong
   functional programming as proposed by Turner \cite{sfp} and ignore
-non-termination.}). Examples include the natural numbers ala Peano:
+non-termination.}). Examples include the natural numbers a la Peano:
 \footnote{We are using Agda to represent constructions in Type Theory. Indeed, 
 the source of this document is a literate Agda file which is available online, 
 \cite{alti:ic-code}. For an overview over Agda see \cite{agda-wiki}, in particular the 
@@ -70,7 +70,9 @@ data Lam : Set where
 %format FLam = F "_{" Lam "}"
 
 \noindent An elegant way to formalize and reason about inductive types
-is to model them as the initial algebra of an endofunctor. We can
+is to model them as the initial algebra of an endofunctor.
+\footnote{This requires a type theory with an extensional propositional equality.}
+We can
 define the signature functors corresponding to each of the above examples
 as follows:
 
@@ -226,8 +228,8 @@ FNf X Y n = (Y ∘ suc) n ⊎ X n
 
 \end{code} 
 
-We can construct |NeLam| and |NfLam| by an elimination procedure:
-first we define a parameterized initial algebra |NeLam' : (ℕ → Set) → ℕ
+We can construct |NeLam| and |NfLam| as follows:
+first we define a parametrized initial algebra |NeLam' : (ℕ → Set) → ℕ
 → Set| so that |NeLam' Y| is the initial algebra of |λ X → FNe X Y|
 and then |NfLam| is the initial algebra of |λ Y → FNf (NeLam' Y) Y|.
 Symmetrically we derive |NeLam|. Compare this with the encoding in
@@ -305,52 +307,68 @@ recursively as done in the conference paper (section
 \ref{sec:termcoalg}).  We have also formalized the derivation of
 indexed W-types from ordinary W-types (section \ref{wifromw}). The
 derivation of M-types from W-types (section \ref{sec:mfromw}) was
-already given in \cite{alti:cont-tcs} is revisited here exploiting the
+already given in \cite{alti:cont-tcs} and is revisited here exploiting the
 indexed W-type derived previously. Moreover the development is fully
 formalized in Agda.
 
 Indexed containers are intimately related to \emph{dependent
-polynomial functors} \cite{HylandGambino}, see also the comprehensive notes \cite{kock2009notes}.
-Indeed, at a very general
-level one could think of indexed containers as the type theoretic
-version of dependent polynomials and vice versa. However, the
-different needs of programmers from category theorists has taken our
-development of indexed containers in a different direction from that
-of dependent polynomials. In this vein an important contribution is the Agda
-implementation of our ideas which makes our work more useful
-to programmers than the categorical work on dependent polynomials.
-We also focus on syntactic constructions such using indexed containers  to model
-mutual and nested inductive definitions. As a consequence we show that
-indexed containers are closed under parametrized initial algebras and
-coalgebras and reduce the construction of parameterised final
-coalgebras to that of initial algebras. Hence we can apply both the
-initial algebra and final coalgebra construction several times. The
-flexibility of indexed containers allows us to also establish closure
-under the adjoints of reindexing. This leads directly to a grammar for
-strictly positive families, which itself is an instance of a strictly
-positive family (section \ref{sec:spf}) --- see also our previous work
-\cite{alti:cats07,alti:jcats07}.
+polynomial functors} \cite{HylandGambino}, see also the comprehensive
+notes \cite{kock2009notes}.  Indeed, at a very general level one could
+think of indexed containers as the type theoretic version of dependent
+polynomials and vice versa. However, the different needs of
+programmers from category theorists has taken our development of
+indexed containers in a different direction from that of dependent
+polynomials. In this vein an important contribution is the Agda
+implementation of our ideas which makes our work more useful to
+programmers than the categorical work on dependent polynomials.  We
+also focus on syntactic constructions such using indexed containers to
+model mutual and nested inductive definitions. As a consequence we
+show that indexed containers are closed under parametrized initial
+algebras and coalgebras and reduce the construction of parameterised
+final coalgebras to that of initial algebras. Hence we can apply both
+the initial algebra and final coalgebra construction several
+times. The flexibility of indexed containers allows us to also
+establish closure under the adjoints of reindexing. This leads
+directly to a grammar for strictly positive families, which itself is
+an instance of a strictly positive family (section \ref{sec:spf}) ---
+see also our previous work \cite{alti:cats07,alti:jcats07}. This
+generalizes previous results on strictly positive datatypes by Dybjer
+\cite{dybjer1997representing} which have been further developed in
+\cite{alti:cont-tcs}.
 
 Containers are related to Girard's normal functors \cite{GirardNormal}
 which themselves are a special case of Joyal's analytic functors
 \cite{JoyalA:fonaes} --- those that allow only finite sets of
-positions.  Fiore, Gambino, Hyland and Winskel's work on generalized
+positions. Fiore, Gambino, Hyland and Winskel's work on generalized
 species \cite{fiore2008ccb} considers those concepts in a more generic
 setting --- the precise relation of this work to indexed containers
 remains to be explored but it appears that generalised species can be
 thought of as indexed containers closed under quotients.
 
-
 Perhaps the earliest publication related to indexed containers occurs
 in Petersson and Synek's paper \cite{PS89} from 1989. They present
 rules extending Martin-L{\"o}f's type theory with a set constructor
 for `tree sets' : families of mutually defined inductive sets, over a
-fixed index set. Inspired in part by Petersson and Synek's
-constructor, Hancock, Hyvernat and Setzer \cite{hancock-apal06}
-applied indexed (and unindexed) containers, under the name
-`interaction structures' to the task of modelling imperative
-interfaces such as command-response interfaces in a number of
-publications.
+fixed index set. Indeed, Petersson-Synek trees are semantically
+equivalent to the |WI|-type we define in section 5 --- the difference
+is that |WI|-types represents positions as a family indexed over the
+output positions while the tree type use a set of positions together
+with a function which assignes the output position. This is an
+instance of Grothendieck's well known inverse image construction.
+Inspired in part by Petersson and Synek's constructor, Hancock,
+Hyvernat and Setzer \cite{hancock-apal06} applied indexed (and
+unindexed) containers, under the name `interaction structures' to the
+task of modelling imperative interfaces such as command-response
+interfaces in a number of publications.  The construction of
+|WI|-types from |W|-types in section \ref{sec:w-enough} is related to
+the reduction of indexed induction-recursion to induction-recursion in
+\cite{dybjer2001indexed} and the construction of initial algebras in
+\cite{gambino2004wellfounded}. 
+The use of $\omega$-limits to construct
+final coalgebras in the same section is folklore, e.g. see Adamek
+\cite{adamek1995greatest} and Lindstr\"om \cite{lindstroem89}.
+%Halln\"{a}s \cite{hallnas1987intensional}
+% and Aczel and Mendler  \cite{aczel1989final}.
 
 The implementation of Generalized Algebraic Datatypes 
 (GADTs)~\cite{Hinze:GADT} 
@@ -380,7 +398,7 @@ limits the use of GADTs as a model of inductive families.
 Since the publication of the LICS paper, indexed containers have been used 
 as a base for the generic definition of datatypes for Epigram 2, \cite{chapman2010gentle}
 and to develop the theory of ornaments \cite{mcbride2010ornamental}.
-In recent work it has been shown that indexed containers are sufficent
+In recent work it has been shown that indexed containers are sufficient
 to express all \emph{small} inductive-recursive definitions.
 
 \subsection{Overview over the paper}
@@ -403,7 +421,24 @@ M-types can be derived from ordinary W-types, this is shown in section
 \ref{sec:w-enough}. Finally, we define a syntax from strictly positive
 families and interpret this using indexed containers in section \ref{sec:spf}.
 
-\subsection*{Acknowledgements}
+The sources of this paper are a literate Agda file, that is we have
+formally verified the constructions using Agda. There are some
+exceptions: the propositions 1 - 5 in are only done on paper and
+|MIext|, that bisimilarity of |MI| trees implies extensional equality
+is postulated instead of proven. We also have omitted the functor laws
+and naturality laws from the formal development --- we never rely on
+assuming that something is a functor or a natural
+transformation. These laws are of a particular simple form for indexed
+containers and hence we implicitly prove them when needed, e.g. in
+proposition 10. The propositions which do rely on these assumptions,
+e.g. proposition 3, are only done on paper. The reason for these
+omissions is that the purpose of the paper is to introduce indexed
+containers and a complete formalisation of these more elementary
+results would have introduced significant technical complications
+distracting from our central purpose.
 
-The authors would like to especially thank Peter Hancock whose ideas
-and influence permeate this paper.
+\subsection*{Acknowledgements}
+\label{sec:acknowledgements}
+
+We would like to thank the anonymous referees for useful comments and suggestions.
+

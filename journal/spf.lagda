@@ -59,8 +59,7 @@ open import termcoalg
 We have developed indexed containers as a representations of those
 indexed functors which, intuitively, support a shapes and positions
 metaphor. These shapes and positions are just as with standard
-containers apart from the fact they are indexed. We now turn to the
-question of defining a grammar for generating indexed containers. This
+containers apart from the fact they are indexed. We now introduce a grammar for strict positivity suitable for generating inductive families, and show that they all such functors can be encoded as indexed container functors. This
 grammar defines what we call the strictly positive families. Strictly
 positive families are in turn defined from indexed strictly positive
 types as follows:
@@ -328,3 +327,22 @@ TNf = μ^T  (     Δ^T suc (η^T ∘ inj₂)
                       +^T*  ((η^T ∘ inj₂) ×^T* (η^T ∘ (inj₁ ∘ inj₂))))
 
 \end{code}
+
+From these definitions we can derive the actual datatypes with constructors and eliminators by unfolding all definitions. 
+E.g. in the case of |TFin| we derive the container
+\begin{code}
+TFinC : ICont*  ⊥ ℕ
+TFinC =  ⟦ TFin ⟧^T* 
+\end{code}
+the next step is to construct the associated indexed functor:
+\begin{code}
+TFinF : IFunc*  ⊥ ℕ
+TFinF = ⟦ TFinC ⟧*
+\end{code}
+and finally the actual datatype
+\begin{code}
+Fin : ℕ → Set
+Fin n = IFunc.obj (TFinF n) (λ ())
+\end{code}
+We leave the laborious derivation of the constructors and the eliminator to the reader.
+

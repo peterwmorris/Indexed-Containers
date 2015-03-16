@@ -87,11 +87,10 @@ a value of type |A| and |♭ : ∞ A → A| forces a computation. A simple synta
 test then ensures that co-recursive programs 
 total --- recursive calls must be immediately {\em guarded} by a |♯| 
 constructor. 
-\footnote{Agda's approach to coinduction is at an experimental stage and has some known issues, e.g. see 
-\cite{altenkirch2010termination}}.
+% \footnote{Agda's approach to coinduction has some issues when using nested inductive-coinductive definition which we avoid here, e.g. see \cite{altenkirch2010termination}}.
 % This technology is 
 % at an experimental stage.
-
+ 
 The equality between infinite objects will be bi-simulation, for instance |MI|, 
 types are bi-similar if they have the same node shape, and all their sub-trees 
 are bi-similar:
@@ -279,7 +278,7 @@ data Path  {I J : Set} (S : J → Set)
 
 Just as parameterised initial algebras of indexed containers are
 built from |WI|-types, so parameterised terminal coalgebras of indexed
-containers are built from |WI|-types as follows.
+containers are built from |MI|-types as follows.
 
 \begin{code}
 
@@ -377,14 +376,15 @@ unfoldComm (S ◁* P) (f ◁* r) = (λ j s → refl) ◁* (λ j s i p → refl)
 We also have to show that the |unfold^C| is {\em unique}; that is, any morphism that makes the 
 above diagram commute must be equal to |unfold^C F α|.
 
-In order to show this in Agda, we are going to have to assume a second extensionality principle, namely that if two |MI| trees are bi-similar, then they are in fact equal:
-
+ In order to show this in Agda, we are assuming a second extensionality principle
+\footnote{It should be possible to verify this formally but we didn't manage to complete the proof. We have checked it on paper.}
+, namely that if two |MI| trees are bi-similar, then they are in fact equal:
 \begin{code}
-
 postulate MIext : ∀  {J S PJ} {j : J} {x y : MI S PJ j} →
                      x ≈MI y → x ≅ y
 
 \end{code}
+
 
 \noindent
 The inverse of this principle is obviously true:
@@ -402,33 +402,22 @@ It is reasonable to assume that any language with fully fledged support for co-i
 
 We can now state the property that |unfold^C| is, indeed, unique:
 
-%if style == code
-
-\begin{code}
-
-{-
-
-\end{code}
-
-%endif
-
-\begin{code}
+\begin{spec}
 
 unfoldUniq : ∀  {I J} {F : ICont* (I ⊎ J) J} (G : ICont* I J) 
                 (α : G ⇒* F ⟨ G ⟩C*) (β : G ⇒* ν^C F) → 
                 (out^C F comp^C* β)  ≡⇒* (F ⟨ β ⟩CM* comp^C* α) →
                 β  ≡⇒* (unfold^C F α)
 
-\end{code}
+\end{spec}
 
 \noindent
 The proof that the shape maps agree follows from the proof that |MIunfold| is unique, and the proof that the position maps agree follows the same inductive structure as |runfold|. Unfortunately, because Agda lacks full support for both co-induction and extensional equality it is not feasible to complete the proof terms for these propositions in our Agda development. The main obstacle remains mediating between bi-simulation, the (functional) extensional equality and Agda's built-in notion of equality. We have completed this proof on paper, however, and we are hopeful that soon we may be in a position to complete these proof terms in a system where the built-in equality is sensible for both functions and co-inductive types.
 
 %if style == code
 
-\begin{code}
+\begin{spec}
 
--}
 
 ext⁻¹₂′ :  ∀ {l l' l''} {A A' : Set l} {B : A → Set l'} {B' : A' → Set l'} {C : A → Set l''} {C' : A' → Set l''} {f : (a : A) → B a → C a} {g : (a : A') → B' a → C' a} → A ≡ A' → B ≅ B' → C ≅ C' → f ≅ g →
                   ((a : A) (a' : A') → a ≅ a' → (b : B a) (b' : B' a') → b ≅ b' → f a b ≅ g a' b') 
@@ -443,7 +432,7 @@ unfoldUniq {I} {J} {F} G (αf ◁* αr) (βf ◁* βr) (feq ◁* req) =  (λ j s
 
 --(λ j s → MIext (MIunfoldUniq αf βf (λ j s → cong proj₁ (feq j s)) , ?)) ◁* {!!}
 
-\end{code}
+\end{spec}
 
 %endif
 

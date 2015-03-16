@@ -63,7 +63,7 @@ module paper where
   containers is achieved without having to extend the core type
   theory.
  Most of the construction presented here has been formalized using
-  the Agda system -- the missing bits are due to the current shortcomings of the Agda system.
+  the Agda system.
 
 \end{abstract}
 
@@ -106,15 +106,17 @@ standard infrastructure present in Type Theory, i.e. W-types together
 with $\Pi$, $\Sigma$ and equality types. Indeed, we are able to reduce
 the syntactically rich notion of families to a small collection of
 categorically inspired combinators. This is an alternative to the
-complex syntactic schemes present in the \emph{Calculus of Inductive
-  Constructions} (CIC), or in the Agda and Epigram systems. We are
-able to encode inductively defined families in a small core language
-which means that we rely only on a small trusted code base. The
-reduction to W-types requires an extensional propositional
-equality. Our current approach using an axiom |ext| is sufficient for
-proofs but isn't computationally adequate. A more satisfying approach
-would built on \emph{Observational Type Theory} (OTT)
-\cite{alti:ott-conf}.
+syntactic schemes to define inductive families present in the
+\emph{Calculus of Inductive Constructions} (CIC), or in the Agda and
+Epigram systems. Indeed, indexed containers can also be viewed as
+normal forms of Dybjer-Setzer codes \cite{DybjerSetzer06} for non-recursive indexed
+inductive definitions.  We are able to encode inductively defined
+families in a small core language which means that we rely only on a
+small trusted code base. The reduction to W-types requires an
+extensional propositional equality. Our current approach using an
+axiom |ext| is sufficient for proofs but isn't computationally
+adequate. A more satisfying approach would built on
+\emph{Observational Type Theory} (OTT) \cite{alti:ott-conf}.
 
 %\todo{Mention Epigram 2?}
 
@@ -143,6 +145,6 @@ yet available.
 %\todo{Discuss the relationship to inductive-recursive definitions.}
 
 \bibliographystyle{plain}
-\bibliography{ic}
+\bibliography{paper,ic}
 
 \end{document}

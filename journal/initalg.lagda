@@ -78,6 +78,13 @@ other algebra such that the following diagram commutes:
 \noindent
 In fact we can use this specification as the definition of |WIfold|:
 
+%if style==code
+
+\begin{code}
+{-# NO_TERMINATION_CHECK #-}
+\end{code}
+%endif
+
 \begin{code}
 
 WIfold :  ∀        {J} {S X : J → Set} {PJ} →  
