@@ -128,7 +128,7 @@ material readable.
 
 A more serious challenge are mutual inductively (or coinductively)
 defined families where one type depends on another
-\cite{forsberg2010inductive}. A typical example is the syntax of Type
+\cite{forsberg2010inductive,nordvallforsberg2013thesis}. A typical example is the syntax of Type
 Theory itself which, to simplify, can be encoded by mutually defining
 contexts containing terms, types in a given context and terms in a
 given type:

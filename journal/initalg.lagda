@@ -196,7 +196,7 @@ construct the carrier of the parameterised initial algebra:
 
 \noindent Next, we note that the structure map for this
 parameterised initial algebra is a container morphism from the partial
-application of |F| and its parametrised initial algebra, to the
+application of |F| and its parametrised initial algebra to the
 parameterised initial algebra. This structure map is given by the
 constructor |sup| of |WI| and the deconstructor for |Path|:
 
