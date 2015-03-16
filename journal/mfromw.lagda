@@ -27,7 +27,7 @@ open import cont
 
 %endif
 
-\subsection*{|M| from |W|}
+\subsection{|M| from |W|}
 \label{sec:mfromw}
 
 Since we have shown that both |WI| and |MI| types can be reduced to

@@ -31,12 +31,12 @@ open import tt
 
 
 \noindent Inductive datatypes are a central feature of modern Type Theory
-(e.g. COQ~\cite{CIC}) or functional programming (e.g. 
+(e.g. Coq~\cite{CIC}) or functional programming (e.g. 
 Haskell\footnote{Here we shall view Haskell as an approximation of strong
   functional programming as proposed by Turner \cite{sfp} and ignore
 non-termination.}). Examples include the natural numbers ala Peano:
 \footnote{We are using Agda to represent constructions in Type Theory. Indeed, 
-the source of this document is a literate Agda file which is available online. 
+the source of this document is a literate Agda file which is available online, 
 \cite{alti:ic-code}. For an overview over Agda see \cite{agda-wiki}, in particular the 
 tutorials and the reference manual which explain how to read the code included in this paper.}
 
@@ -128,7 +128,7 @@ data Vec (A : Set) : ℕ → Set where
 
 Notice how using the inductive family |Vec| instead of
 |List| enables us to write a total projection
-function projecting the nth element out of vector: 
+function projecting the $n$th element out of vector: 
 
 \begin{code} 
 _!!_ : {A : Set} → {n : ℕ} → Vec A n → Fin n → A 
@@ -182,10 +182,10 @@ mutual
 
 The initial algebra semantics of inductive types can be extended to
 model inductive families by replacing functors on the category |Set|
-with functors on the category of families indexed by a given type - in
+with functors on the category of families indexed by a given type --- in
 the case of all our examples so far this indexing type was |Nat|. The objects
 of the category of families indexed over a type |I : Set| are
-|I|-indexed families, i.e. functions of type |I → Set|, and a
+|I|-indexed families of sets, i.e. functions of type |I → Set|, and a
 morphism between |I|-indexed families |A, B : I → Set| is given by a
 family of maps |f : (i : I) -> A i -> B i|
 Indeed, this category
@@ -279,7 +279,7 @@ families. The remarkable fact about indexed containers, and the fact
 which underpins their practical usefulness, is that they offer an
 exceedingly compact way to encapsulate all the information inherent
 within the definition of functors such as |FFin|, |FVec| and |FScLam|,
-|FNeLam| and |FNfLam| and hence within the associated inductive
+|FNe| and |FNf| and hence within the associated inductive
 families |Fin|, |Vec|, |ScLam|, |NeLam| and |NfLam|.  The second
 important thing about indexed containers is that not only can they be
 used to represent functors, but the canonical constructions on
@@ -297,13 +297,13 @@ This paper is an expanded and revised version of the LICS paper by the
 first and 4th author \cite{alti:lics09}. In the present paper we have
 integrated the Agda formalisation in the main development, which in
 many instances required extending it. We have made explicit the use of
-relative monads which was only hinted at in the conference version
-based on the recent work on relative monads \cite{alti:fossacs10}. We
+relative monads which was only hinted at in the conference version,
+based on recent work \cite{alti:fossacs10}. We
 have also dualized the development to terminal coalgebras which
 required the type of paths to be defined inductively instead of
 recursively as done in the conference paper (section
 \ref{sec:termcoalg}).  We have also formalized the derivation of
-indexed W-types from ordinary W-types (section \ref{wifromw}. The
+indexed W-types from ordinary W-types (section \ref{wifromw}). The
 derivation of M-types from W-types (section \ref{sec:mfromw}) was
 already given in \cite{alti:cont-tcs} is revisited here exploiting the
 indexed W-type derived previously. Moreover the development is fully

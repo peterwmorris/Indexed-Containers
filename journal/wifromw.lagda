@@ -43,7 +43,7 @@ will revisit our proof of how to derive |M|-types from |W|-types.
 
 %format proj₁≡ = proj₁ ≡
 
-\subsection*{|WI| from |W|}
+\subsection{|WI| from |W|}
 \label{wifromw}
 
 How, then, can we build |WI|-types from |W|-typs? The initial step is
