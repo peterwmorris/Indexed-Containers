@@ -40,7 +40,7 @@ this question directly, we first introduce the basic definitions
 pertaining to final coalgebras and our implementation of them within
 Agda.
 
-In category theory, an $\omega$-chain, is an infinite diagram:
+In category theory, an $\omega$-chain is an infinite diagram:
 
 \[
 \xymatrix{
@@ -377,7 +377,7 @@ module imp (S : Set) (P : S → Set) (A : ℕ → Set) (a : (n : ℕ) → A (suc
 \end{code}
 
 \noindent
-Note that the shape picked at every point along the chain that we a given must 
+Note that the shape picked at every point along the chain that we are given must 
 be the same, in order to make the diagrams commute. This is the key insight
 into constructing this function:
 

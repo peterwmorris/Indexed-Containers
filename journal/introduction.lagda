@@ -351,13 +351,13 @@ rules extending Martin-L{\"o}f's type theory with a set constructor
 for `tree sets' : families of mutually defined inductive sets, over a
 fixed index set. Indeed, Petersson-Synek trees are semantically
 equivalent to the |WI|-type we define in section 5 --- the difference
-is that |WI|-types represents positions as a family indexed over the
+is that |WI|-types represent positions as a family indexed over the
 output positions while the tree type use a set of positions together
-with a function which assignes the output position. This is an
+with a function which assigns the output position. This is an
 instance of Grothendieck's well known inverse image construction.
 Inspired in part by Petersson and Synek's constructor, Hancock,
 Hyvernat and Setzer \cite{hancock-apal06} applied indexed (and
-unindexed) containers, under the name `interaction structures' to the
+unindexed) containers under the name `interaction structures' to the
 task of modelling imperative interfaces such as command-response
 interfaces in a number of publications.  The construction of
 |WI|-types from |W|-types in section \ref{sec:w-enough} is related to
@@ -396,10 +396,10 @@ imported to the type level. This is a difficult problem and probably
 limits the use of GADTs as a model of inductive families.
 
 Since the publication of the LICS paper, indexed containers have been used 
-as a base for the generic definition of datatypes for Epigram 2, \cite{chapman2010gentle}
+as a base for the generic definition of datatypes for Epigram 2 \cite{chapman2010gentle},
 and to develop the theory of ornaments \cite{mcbride2010ornamental}.
 In recent work it has been shown that indexed containers are sufficient
-to express all \emph{small} inductive-recursive definitions.
+to express all \emph{small} inductive-recursive definitions \cite{alti:tlca13-small-ir}
 
 \subsection{Overview over the paper}
 \label{sec:overview-over-paper}
@@ -421,9 +421,9 @@ M-types can be derived from ordinary W-types, this is shown in section
 \ref{sec:w-enough}. Finally, we define a syntax from strictly positive
 families and interpret this using indexed containers in section \ref{sec:spf}.
 
-The sources of this paper are a literate Agda file, that is we have
+The source of this paper is a literate Agda file, that is we have
 formally verified the constructions using Agda. There are some
-exceptions: the propositions 1 - 5 in are only done on paper and
+exceptions: propositions 1 - 5 are only done on paper and
 |MIext|, that bisimilarity of |MI| trees implies extensional equality
 is postulated instead of proven. We also have omitted the functor laws
 and naturality laws from the formal development --- we never rely on
@@ -440,5 +440,6 @@ distracting from our central purpose.
 \subsection*{Acknowledgements}
 \label{sec:acknowledgements}
 
-We would like to thank the anonymous referees for useful comments and suggestions.
+We would like to thank the anonymous referees for useful comments and
+suggestions and Frederik Forsberg for help with proofreading.
 

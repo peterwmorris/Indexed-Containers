@@ -138,7 +138,7 @@ mutual
 As defined above this doesn't pass Agda's termination check, due to
 deriving the |ISPT| from the monad instance. If we define the map of
 the functor directly the whole thing obviously terminates, at the
-expense of having to show the two definitions of the map for |ISPT|
+expense of having to show that the two definitions of the map for |ISPT|
 agree.
 
 %if style == newcode
@@ -301,7 +301,7 @@ TScLam = μ^T  (     SPFmap (λ ()) TFin
 Note that we have to weaken the reference to |TFin| in the definition
 of |TScLam|, since under the |μ^T| we can refer to the recursive
 |TSCLam| trees, but |TFin| itself can refer to no variables. We can
-also define the mutual types, |Ne| and |Nf|. Here, a copy of the
+also define the mutual types |Ne| and |Nf|. Here, a copy of the
 normal forms is defined \emph{inside} the definition of the neutral
 terms, and vice versa:
 

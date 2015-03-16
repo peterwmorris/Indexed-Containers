@@ -92,7 +92,7 @@ representation of polymorphic functions, it is also natural to seek a
 representation of natural transformations in the language of
 containers. We showed in our previous work that a natural
 transformation between two functors arising as containers can be
-represented as morphisms between containers as follows.
+represented as a morphism between containers as follows.
 
 \begin{code}
 
@@ -116,7 +116,7 @@ transformations as the following definition shows:
 representation of natural transformations as container morphisms is a
 bijection, that is every natural transformation between functors
 arising from containers is uniquely represented as a container
-morphism.  Technically, this can be stated by saying that Containers
+morphism.  Technically, this can be stated by saying that container
 and their morphisms form a category which is a full and faithful
 sub-category of the functor category. We have also shown that the
 category of containers is cartesian closed \cite{txa:cie10}, and is
@@ -138,7 +138,7 @@ data WW (S : Set) (P : S → Set) : Set where
 %format μ = "\mu"
 
 However, we have also shown that for |n|-ary containers (containers
-with |n| position sets) which we denote as |Cont n|., it is possible to define a
+with |n| position sets) which we denote as |Cont n|. It is possible to define a
 \emph{parameterised} initial algebra construction |μ : ∀ {n} → Cont
 (suc n) → Cont n|. This allows us to model a broad range of nested and
 mutual types as containers. Further details can be found in the paper

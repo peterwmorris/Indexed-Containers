@@ -69,7 +69,7 @@ positions associated to a given shape. In the case of a container, the positions
 for a given shape simply form a set. In the case of an |I|-indexed
 container, the positions for a given shape form an |I|-indexed set. If
 we think of |I| as a collection of sorts, then not only does
-constructor require input to be stored at its positions, but each
+the constructor require input to be stored at its positions, but each
 of these positions is tagged with an |i : I| and will only store data of sort |i
 : I| at that position.  This intuition is formalised by the following
 definition which shows how singly indexed containers represent singly
@@ -172,7 +172,7 @@ do this in the singly indexed case as follows:
 \begin{align*}
                 & |⟦ S ◁ P ⟧ ⇒^F F| & \hspace{1in} (1) \\
   \equiv  \;    & |∫ X ** Σ* s ∶ S *Σ (P s -*-> X) → F X| & \{\mbox{by definition}\} \\
-  \Llrrarrow  \;    & |∫ X ** (s : s) → (P s -*-> X) → F X| & \{\mbox{currying}\} \\
+  \Llrrarrow  \;    & |∫ X ** (s : S) → (P s -*-> X) → F X| & \{\mbox{currying}\} \\
   \Llrrarrow   \;    & |(s : S) → ∫ X ** (P s -*-> X) → F X| & \{\mbox{commuting end and pi} \} \\
   \Llrrarrow   \;    & |(s : S) → F (P s)| & \{\mbox{Yoneda}\} \\
 \end{align*}

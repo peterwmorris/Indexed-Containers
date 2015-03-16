@@ -46,7 +46,7 @@ will revisit our proof of how to derive |M|-types from |W|-types.
 \subsection{|WI| from |W|}
 \label{wifromw}
 
-How, then, can we build |WI|-types from |W|-typs? The initial step is
+How, then, can we build |WI|-types from |W|-types? The initial step is
 to create a type of \emph{pre}-|WI| trees, with nodes containing a
 shape \emph{and} its index, and branching over positions \emph{and
 their} indices:

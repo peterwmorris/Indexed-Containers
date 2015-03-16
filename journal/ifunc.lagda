@@ -101,7 +101,7 @@ record IFunc (I : Set) : Set₁ where
 such that both |idd| is mapped to |id| and |_⊚_| to |_∘_| under the action of 
 |mor|. We adopt the convention that the projections |obj| and |mor| are silent, 
 \emph{i.e.} depending on the context |F :  IFunc I| can stand for either the 
-functor's action on objects, or on morphisms. A morphism between to such 
+functor's action on objects, or on morphisms. A morphism between two such 
 indexed functors is a natural transformation:
 
 %format ^F = "^{\text{\tiny$" F "$}}"

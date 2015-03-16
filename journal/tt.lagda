@@ -85,8 +85,7 @@ record Σ′ (A : Set) (B : A → Set) : Set where
 We will, however assume that the type-theory we work in has
 $\Sigma$-types as primitive, and has no native support for data-types.
 Instead, we only have |W|-types, the empty-type |⊥|, the unit type |tt
-: ⊤| and the booleans |true , false : Bool|. A type theory has |W|
-types if it has a type former |W : (S : Set) (P : S → Set) → Set| with
+: ⊤| and the booleans |true , false : Bool|. A type theory has |W|-types if it has a type former |W : (S : Set) (P : S → Set) → Set| with
 a constructor |sup| and an eliminator |wrec|:
 
 \begin{code}
@@ -112,7 +111,7 @@ As a notational convenience, we will continue to define extra Agda data-types
 in the rest of the paper, but in the end we will show how each of these can
 be reduced to a theory that contains only |W|. For compactness, and
 readability we will also define functions using Agda's pattern matching
-syntax, rather than encoding them using |wrec|, all of these definitions can 
+syntax, rather than encoding them using |wrec|. All of these definitions can 
 be reduced to terms which only use |wrec|.
 
 We'll also require a notion of propositional equality. To simplify the
@@ -307,7 +306,7 @@ record _<==>_ (A B : Set) : Set where
 \noindent
 We are going to use type theoretic versions of certain category theoretic
 concepts. For example we represent functors by packing up their definition as
-an Agda record. An endofunctor on |Set|, is given by:
+an Agda record. An endofunctor on |Set| is given by:
 
 \begin{code}
 

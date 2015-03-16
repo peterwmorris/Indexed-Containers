@@ -85,14 +85,14 @@ Here, we employ Agda's approach to coprogramming (e.g. see
 |∞|. The type |∞ A| is a suspended computation of type |A|, and |♯ : A → ∞ A| delays
 a value of type |A| and |♭ : ∞ A → A| forces a computation. A simple syntactic 
 test then ensures that co-recursive programs 
-total --- recursive calls must be immediately {\em guarded} by a |♯| 
+are total --- recursive calls must be immediately {\em guarded} by a |♯| 
 constructor. 
 % \footnote{Agda's approach to coinduction has some issues when using nested inductive-coinductive definition which we avoid here, e.g. see \cite{altenkirch2010termination}}.
 % This technology is 
 % at an experimental stage.
  
-The equality between infinite objects will be bi-simulation, for instance |MI|, 
-types are bi-similar if they have the same node shape, and all their sub-trees 
+The equality between infinite objects will be bi-simulation, for instance |MI|.
+Types are bi-similar if they have the same node shape, and all their sub-trees 
 are bi-similar:
 
 %format _≈MI_ = _ "\approx^{" MI "}" _
@@ -134,7 +134,7 @@ It is simple to show that this bi-simulation is an equivalence relation.
 
 We must construct a co-iteration operator |MIunfold|, a morphism in the category 
 of |⟦ S ◁* PJ ⟧|-coalgebras to our candidate terminal coalgebra from any other 
-coalgebra. Such that the following diagram commutes:
+coalgebra such that the following diagram commutes:
 
 \[
 \xymatrix{
@@ -258,7 +258,7 @@ MIunfoldUniq α β comm i x = MIunfoldUniq' α β comm i x ≈MIrefl
 
 
 \noindent
-The paths to positions in an indexed |M|-tree, are always 
+The paths to positions in an indexed |M|-tree are always 
 finite -- in fact modulo the use of |♭|, this |Path| is the same as the 
 definition for the initial algebra case.
 
@@ -322,7 +322,7 @@ in^C' {I} {J} (S ◁* P) = (λ {_ (s , f) → sup (s , λ i x → ♯ (f i x))})
 %endif
 
 \begin{proposition}
-|(ν^C F . out^C F)| is the terminal object in the category of parametrized |F|-coalgebras of indexed containers. By full and faithfulness, |(⟦ ν^C F ⟧* , ⟦ out^C F ⟧⇒*)| will also be terminal in the indexed functor case.
+|(ν^C F , out^C F)| is the terminal object in the category of parametrized |F|-coalgebras of indexed containers. By full and faithfulness, |(⟦ ν^C F ⟧* , ⟦ out^C F ⟧⇒*)| will also be terminal in the indexed functor case.
 \end{proposition}
 
 \begin{proof}
@@ -377,8 +377,8 @@ We also have to show that the |unfold^C| is {\em unique}; that is, any morphism 
 above diagram commute must be equal to |unfold^C F α|.
 
  In order to show this in Agda, we are assuming a second extensionality principle
-\footnote{It should be possible to verify this formally but we didn't manage to complete the proof. We have checked it on paper.}
-, namely that if two |MI| trees are bi-similar, then they are in fact equal:
+%\footnote{It should be possible to verify this formally but we didn't manage to complete the proof. We have checked it on paper.}
+namely that if two |MI| trees are bi-similar, then they are in fact equal:
 \begin{code}
 postulate MIext : ∀  {J S PJ} {j : J} {x y : MI S PJ j} →
                      x ≈MI y → x ≅ y
