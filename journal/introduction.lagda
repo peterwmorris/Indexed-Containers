@@ -307,7 +307,7 @@ recursively as done in the conference paper (section
 \ref{sec:termcoalg}).  We have also formalized the derivation of
 indexed W-types from ordinary W-types (section \ref{wifromw}. The
 derivation of M-types from W-types (section \ref{sec:mfromw}) was
-already given in \cite{alti:cont-tcs} is revisited here exploiting the
+already given in \cite{alti:cont-tcs} and is revisited here exploiting the
 indexed W-type derived previously. Moreover the development is fully
 formalized in Agda.
 
@@ -355,7 +355,7 @@ is that |WI|-types represents positions as a family indexed over the
 output positions while the tree type use a set of positions together
 with a function which assignes the output position. This is an
 instance of Grothendieck's well known inverse image construction.
-Inspired in part by Petersson and Synek's constructor. Hancock,
+Inspired in part by Petersson and Synek's constructor, Hancock,
 Hyvernat and Setzer \cite{hancock-apal06} applied indexed (and
 unindexed) containers, under the name `interaction structures' to the
 task of modelling imperative interfaces such as command-response
@@ -366,7 +366,7 @@ the reduction of indexed induction-recursion to induction-recursion in
 \cite{gambino2004wellfounded}. 
 The use of $\omega$-limits to construct
 final coalgebras in the same section is folklore, e.g. see Adamek
-\cite{adamek1995greatest}.
+\cite{adamek1995greatest} and Lindstr\"om \cite{lindstroem89}.
 %Halln\"{a}s \cite{hallnas1987intensional}
 % and Aczel and Mendler  \cite{aczel1989final}.
 
@@ -440,5 +440,5 @@ distracting from our central purpose.
 \subsection*{Acknowledgements}
 \label{sec:acknowledgements}
 
-We would like to thank the anonymous reference for useful comments and suggestions.
+We would like to thank the anonymous referees for useful comments and suggestions.
 

@@ -402,7 +402,7 @@ A|. A morphism, then, between two such algebras |(A , α)| and |(B ,
 \xymatrix{
 \mbox{|obj* F A|}  \ar[r]^{\;\mbox{|α|}} 
 \ar[d]_{\mbox{|mor* F f|}} & \mbox{|A|} \ar[d]^{\mbox{|f|}}\\
-\mbox{|obj* F B|} \ar[r]^{\;\mbox{|β|}} & \mbox{|B|}}
+\mbox{|obj* F B|} \ar[r]_{\;\mbox{|β|}} & \mbox{|B|}}
 \]
 
 \noindent
@@ -493,7 +493,7 @@ such that the follow diagram commutes:
 \xymatrix{
 \mbox{|F ⟨ G ⟩F*|}  \ar[r]^{\quad\mbox{|α|}} 
 \ar[d]_{\mbox{|F ⟨ γ ⟩M*|}} & \mbox{|G|} \ar[d]^{\mbox{|γ|}}\\
-\mbox{|F ⟨ H ⟩F*|} \ar[r]^{\quad\mbox{|β|}} & \mbox{|H|}}
+\mbox{|F ⟨ H ⟩F*|} \ar[r]_{\quad\mbox{|β|}} & \mbox{|H|}}
 \]
 
 \noindent As you might expect, a parametrised initial algebra for |F|,

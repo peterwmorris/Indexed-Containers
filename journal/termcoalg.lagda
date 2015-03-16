@@ -87,11 +87,10 @@ a value of type |A| and |♭ : ∞ A → A| forces a computation. A simple synta
 test then ensures that co-recursive programs 
 total --- recursive calls must be immediately {\em guarded} by a |♯| 
 constructor. 
-\footnote{Agda's approach to coinduction is at an experimental stage and has some known issues, e.g. see 
-\cite{altenkirch2010termination}}.
+% \footnote{Agda's approach to coinduction has some issues when using nested inductive-coinductive definition which we avoid here, e.g. see \cite{altenkirch2010termination}}.
 % This technology is 
 % at an experimental stage.
-
+ 
 The equality between infinite objects will be bi-simulation, for instance |MI|, 
 types are bi-similar if they have the same node shape, and all their sub-trees 
 are bi-similar:
