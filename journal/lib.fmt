@@ -28,7 +28,7 @@
 %format β = "\beta"
 
 %format ′ = "\prime"
-%format : = "\in"
+%%format : = "\in"
 
 %format minusone = ⁻¹
 %format . = ".\!"
